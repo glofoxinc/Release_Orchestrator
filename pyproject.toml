@@ -1,0 +1,176 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "jira-release-tool"
+version = "3.4.0"
+description = "Release Orchestrator - Streamlit app for Jira release deployment automation, ticket creation, AI triage, release notes, MCP server, and deployment tracking"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [{name = "Lakshmi Yalamarti"}]
+keywords = ["jira", "release", "deployment", "automation", "streamlit", "atlassian"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Bug Tracking",
+]
+dependencies = [
+    "streamlit>=1.36.0",
+    "requests>=2.32.0",
+    "urllib3>=2.2,<2.6",
+    "chardet>=5,<6",
+    "python-dotenv>=1.0.0",
+    "python-docx>=1.1.0",
+    "pywebview>=5.0",
+    "pyyaml>=6.0",
+    "jinja2>=3.1",
+    "pandas>=2.0",
+    "mcp>=2.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-cov>=5.0",
+    "black>=24.0.0",
+    "flake8>=7.0.0",
+    "ruff>=0.4",
+    "mypy>=1.10",
+    "types-PyYAML",
+    "types-requests",
+    "bandit>=1.7",
+    "playwright>=1.40",
+]
+calendar = [
+    "msal>=1.28.0",
+    "pywin32>=306; sys_platform == 'win32'",
+]
+daily_review = [
+    "msal>=1.28.0",
+    "pywin32>=306; sys_platform == 'win32'",
+]
+
+[project.scripts]
+jira-release-tool = "cli:main"
+daily-review-agent = "daily_review_agent.__main__:main"
+
+[project.urls]
+Homepage = "https://github.com/abcfitness-insights/jira-release-tool"
+Repository = "https://github.com/abcfitness-insights/jira-release-tool"
+Issues = "https://github.com/abcfitness-insights/jira-release-tool/issues"
+
+[tool.setuptools]
+py-modules = [
+    "adf_builder",
+    "ai_enhancer",
+    "ai_ticket_creator",
+    "ai_triage",
+    "approver_validator",
+    "cli",
+    "config",
+    "confluence_publisher",
+    "consolidation",
+    "consolidation_detector",
+    "deploy_ops",
+    "deployment_history",
+    "diff_engine",
+    "exclusion_ops",
+    "jira_client",
+    "jira_teams",
+    "team_scope",
+    "linked_ticket_verifier",
+    "notifier",
+    "release_notes_compare",
+    "release_stats",
+    "shipit_preflight",
+    "request_type_setter",
+    "schedule_time",
+    "service_ticket_plans",
+    "slack_announce",
+    "tckt_reference",
+    "template_engine",
+    "template_library",
+    "ticket_validator",
+]
+packages = { find = { where = ["."], include = [
+    "common*",
+    "generators*",
+    "release_mcp*",
+    "mcp_server*",
+    "release_platform*",
+    "ui*",
+    "daily_review_agent*",
+] } }
+include-package-data = true
+
+[tool.setuptools.package-dir]
+ui = "release_platform/ui"
+
+[tool.setuptools.package-data]
+"*" = ["templates/**/*", "workspaces/*.yaml", "workspaces/*.yml"]
+
+[tool.ruff]
+target-version = "py310"
+line-length = 120
+extend-exclude = ["build", "dist", "*.egg-info"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "playwright: optional browser E2E (requires RUN_PLAYWRIGHT=1 and local Streamlit)",
+    "real_scope: opt out of project-wide team scope bypass fixtures",
+]
+
+[tool.coverage.run]
+source = [
+    "release_mcp",
+    "mcp_server",
+    "deploy_ops",
+    "slack_announce",
+    "sharepoint_url",
+    "deployment_history",
+    "jira_client",
+    "confluence_publisher",
+]
+omit = [
+    "tests/*",
+    "venv/*",
+    ".venv/*",
+    "release_platform/*",
+    # Stdio entrypoints are covered by import/tool smoke, not unit fail-under.
+    "release_mcp/server.py",
+    "release_mcp/__main__.py",
+    "mcp_server/*",
+]
+
+[tool.coverage.report]
+show_missing = true
+skip_empty = true
+# Proportionate gate for hardened modules only (not global repo coverage).
+fail_under = 60
+
+[tool.mypy]
+python_version = "3.10"
+ignore_missing_imports = true
+warn_unused_ignores = false
+check_untyped_defs = false
+follow_imports = "skip"
+pretty = true
+# Scoped to hardened modules via CI/CLI path args — avoid brittle whole-repo strictness.
+files = [
+    "release_mcp/wizard_store.py",
+    "deploy_ops.py",
+    "sharepoint_url.py",
+    "slack_announce.py",
+    "deployment_history.py",
+]

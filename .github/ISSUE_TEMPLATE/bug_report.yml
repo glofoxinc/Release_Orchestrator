@@ -1,0 +1,70 @@
+﻿name: Bug report
+description: Report a reproducible defect.
+title: "[bug]: <concise summary>"
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for filing a bug. Please fill in the fields below so we can reproduce and triage quickly.
+  - type: input
+    id: version
+    attributes:
+      label: Version / commit
+      description: e.g. `v1.2.0`, `main @ abc1234`
+      placeholder: "main @ abc1234"
+    validations:
+      required: true
+  - type: dropdown
+    id: environment
+    attributes:
+      label: Environment
+      options:
+        - Windows
+        - macOS
+        - Linux
+        - Docker
+        - GitHub Actions
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Minimal, deterministic steps.
+      placeholder: |
+        1.
+        2.
+        3.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior (include error output / stack trace)
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Additional logs / screenshots
+      description: Paste logs inside a code block. Scrub any secrets, account IDs, or customer data.
+    validations:
+      required: false
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Pre-submit checks
+      options:
+        - label: I have searched existing issues and confirmed this is not a duplicate.
+          required: true
+        - label: My report contains no PII, PCI, secrets, or customer data.
+          required: true

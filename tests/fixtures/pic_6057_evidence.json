@@ -1,0 +1,5 @@
+{
+  "summary": "Jazzercise - enhancement to Course Offering by location for Class Filters to match looker logic",
+  "description_plain": "Enhance Course Offering by location class filters to match Looker logic.\n\n1. Expand beyond exact terms Elevate and Junior Jazzercise to Looker-style variations.\n2. Nikhila Sree Ramisetti (11 Sep 2026) verified and performed data validation with Looker; working as expected.\n\nBefore: Jazzercise class filters only match exact Elevate and Junior Jazzercise.\nAfter: Jazzercise filters include Looker-style variations validated against Looker.\n\nHow it is deployed:\nPublish to the customer-facing V2 Fitness BI workspace.",
+  "comment_plain": ""
+}

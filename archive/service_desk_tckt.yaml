@@ -1,0 +1,68 @@
+# legacy — do not use for new releases; rollback reference only
+# Archived from workspace.yaml when migrating to SHIPIT Manual Change (2026).
+service_desk:
+  enabled: true
+  project_key: "TCKT"
+  issue_type_id: "10502"
+  service_desk_id: "15"
+  request_type_id: "1223"
+  request_type_name: "Submit A Normal or Emergency Change"
+  create_mode: "full_form"
+  fields:
+    change_type: "customfield_11757"
+    change_risk: "customfield_11758"
+    impact: "customfield_11748"
+    urgency: "customfield_11747"
+    planned_start: "customfield_11763"
+    planned_end: "customfield_11764"
+    implementation_plan: "customfield_11760"
+    test_plan: "customfield_11762"
+    backout_plan: "customfield_11761"
+    business_impact: "customfield_14549"
+    approvers: "customfield_11752"
+    approver_groups: "customfield_11794"
+    affected_services: "customfield_11754"
+    team: "customfield_10700"
+    assignment_group: "customfield_13073"
+    affects_pf: "customfield_13074"
+    outage_required: "customfield_13075"
+  defaults:
+    change_type: { id: "10905" }
+    change_risk: { id: "10909" }
+    impact: { id: "10820" }
+    urgency: { id: "10816" }
+    priority: { name: "Medium" }
+    approvers:
+      - { accountId: "6414e24faf3b93d8ecf27b3d" }
+      - { accountId: "641390cc9796ea0a87174587" }
+      - { accountId: "712020:6c6c98b0-a913-41d7-a609-77b44884d631" }
+      - { accountId: "712020:0a7258e8-b186-4fcb-8146-c53f1e73c450" }
+    approver_groups:
+      - { name: "Command Center" }
+      - { name: "Insights Analyze / Customize" }
+    summary_team_name: "Insights Customize BI Team"
+    team: "3b374af6-6998-440a-a5e5-9af5f70493dc"
+    team_name: "Insights Customize Approvers"
+    assignment_group_name: "Insights Analyze/Customize"
+    affected_services:
+      - { id: "ari:cloud:graph::service/551d8872-09ec-11eb-9a52-0a77f3f45304/c6608a68-1c07-11ee-8a53-0abe3f4a6601" }
+    assignment_group: { id: "12712" }
+    affects_pf:
+      - { id: "12660" }
+    outage_required:
+      - { id: "12659" }
+    schedule_timezone: "Asia/Kolkata"
+    schedule_display_timezone: "America/Chicago"
+  deployment_profiles:
+    normal:
+      label: Normal deployment
+      change_type: Normal
+      schedule:
+        start_time: "10:00"
+        end_time: "13:00"
+    emergency:
+      label: Emergency deployment
+      change_type: Emergency
+      schedule:
+        start_time: "18:00"
+        end_time: "20:00"

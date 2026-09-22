@@ -1,0 +1,4 @@
+generator_build=2026.08.20-lean-layout-v3
+paragraphs=43
+tables=8
+docx_bytes=40460

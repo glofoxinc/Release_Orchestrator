@@ -1,0 +1,35 @@
+<p><strong>{{ team_name }} — Deployment</strong></p>
+<p><strong>Release:</strong> {{ version }}</p>
+{% if deploy_window %}
+<p><strong>Deployment window:</strong> {{ deploy_window }}</p>
+{% endif %}
+{% if sharepoint_url %}
+<p><strong>Release notes:</strong> <a href="{{ sharepoint_url }}">{{ sharepoint_url }}</a></p>
+{% endif %}
+{% if tckt_key %}
+<p><strong>Change ticket:</strong> <a href="{{ tckt_url or (base_url ~ '/browse/' ~ tckt_key) }}">{{ tckt_key }}</a></p>
+{% endif %}
+<p><strong>Tickets deploying:</strong> {{ ticket_count }}</p>
+{% if tickets %}
+<table border="1" cellpadding="4" cellspacing="0">
+  <tr>
+    <th>Key</th>
+    <th>Summary</th>
+    <th>Assignee</th>
+  </tr>
+{% for t in tickets %}
+  <tr>
+    <td><a href="{{ t.url }}">{{ t.key }}</a></td>
+    <td>{{ t.summary }}</td>
+    <td>{{ t.assignee }}</td>
+  </tr>
+{% endfor %}
+</table>
+{% endif %}
+<p><strong>Pre-deploy checklist:</strong></p>
+<ul>
+  <li>Release notes published{% if sharepoint_url %} (link above){% endif %}</li>
+  <li>Change ticket approved{% if tckt_key %} ({{ tckt_key }}){% endif %}</li>
+  <li>QA passed for included tickets</li>
+</ul>
+<p>Scheduled via Release Orchestrator.</p>

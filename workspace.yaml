@@ -1,0 +1,379 @@
+# ── Release Orchestrator — Workspace Configuration ─────────────────
+# This file drives all project-specific behaviour. Swap this file to
+# reconfigure the toolkit for a different team / Jira instance.
+# Credentials (email + token) stay in .env for security.
+
+workspace:
+  name: "Insights Customize BI Team"
+
+  jira:
+    base_url: "https://abcfinancial.atlassian.net"
+    # Atlassian Teams field on PIC/AN tickets (lock icon in Jira UI is decorative).
+    issue_team_field: "customfield_10700"
+    issue_team_jql: "cf[10700]"
+    known_teams:
+      - id: "317996a7-118a-4cf3-a3c6-04163516ed32"
+        name: "Glofox Insights Customize"
+        projects: ["PIC", "AN"]
+      - id: "9b5dc24e-0a1b-4634-98ac-9a1a43bcec4e"
+        name: "Ignite Insights Customize"
+        projects: ["PIC"]
+      - id: "610eda40-8934-4ffa-915a-c41767e38a3e"
+        name: "Insights Customize (ETL)"
+        projects: ["PIC"]
+
+  # Projects whose releases are managed by this workspace.
+  # multi_client: true  → tickets are grouped by client name (parsed from title)
+  # client_extraction: "title_prefix"  → client = first segment before dash
+  projects:
+    - key: "PIC"
+      name: "Power BI Insights Customize"
+      multi_client: true
+      client_extraction: "title_prefix"
+      scope:
+        board_id: "490"   # PIC - Kanban Board (Jira Agile)
+        filter_id: ""
+        labels_any: []
+        components_any: []
+        jql: ""
+        allow_project_wide: false
+        owns_version: false
+    - key: "AN"
+      name: "Analyze"
+      multi_client: false
+      scope:
+        board_id: "3634"  # Analytics - Product Backlog
+        filter_id: ""
+        labels_any: []
+        components_any: []
+        jql: ""
+        allow_project_wide: false
+        owns_version: false
+
+  # Service desk project for deployment / change tickets (SHIPIT Manual Change)
+  # Legacy TCKT config: archive/service_desk_tckt.yaml
+  service_desk:
+    enabled: true
+    project_key: "SHIPIT"
+    issue_type_id: "10401"
+    service_desk_id: "2046"
+    request_type_id: "2969"
+    request_type_name: "Manual Change"
+    create_mode: "summary_only"
+    # Post-create parity with SHIPIT-17036: Review Ready, creator assignee, link PIC/AN tickets.
+    post_create:
+      enabled: true
+      transition_to_status: true
+      transition_status: "Review Ready"
+      assign_to_creator: true
+      link_release_tickets: true
+      link_type: "Discovery - Connected"
+      skip_if_test_mode: true
+    fields:
+      change_type: "customfield_11757"
+      change_risk: "customfield_11758"
+      impact: "customfield_11748"
+      urgency: "customfield_11747"
+      planned_start: "customfield_11763"
+      planned_end: "customfield_11764"
+      implementation_steps: "customfield_11720"
+      verification_steps: "customfield_11721"
+      rollback_steps: "customfield_11722"
+      communication_plan: "customfield_11717"
+      reason_for_change: "customfield_11715"
+      business_impact: "customfield_14549"
+      risks_management: "customfield_17225"
+      qa_test_plan: "customfield_11762"
+      approver_groups: "customfield_11794"
+      affected_services: "customfield_11754"
+      team: "customfield_10700"
+      assignment_group: "customfield_12047"
+      unplanned: "customfield_16101"
+      # Legacy aliases (same logical keys used in UI code paths)
+      implementation_plan: "customfield_11720"
+      test_plan: "customfield_11721"
+      backout_plan: "customfield_11722"
+    defaults:
+      change_type: { id: "21532" }
+      change_risk: { id: "10909" }
+      impact: { id: "10820" }
+      urgency: { id: "10816" }
+      priority: { name: "Medium" }
+      unplanned: { id: "17077" }
+      approver_groups:
+        - { name: "Insights Customize Approvers" }
+      summary_team_name: "Insights Customize BI"
+      team: "3b374af6-6998-440a-a5e5-9af5f70493dc"
+      team_name: "Insights Customize Approvers"
+      # SHIPIT assignment group (customfield_12047) is optional — leave blank unless
+      # Jira group lookup succeeds (run: python scripts/shipit_preflight.py).
+      assignment_group_name: ""
+      affected_services:
+        # Glofox production service — verified SHIPIT-17036 / SHIPIT-16769.
+        - { id: "ari:cloud:graph::service/551d8872-09ec-11eb-9a52-0a77f3f45304/28fa658e-0f6f-11f0-a0fc-0afff3dd3477" }
+      change_type_options:
+        Normal: { id: "21532" }
+        Emergency: { id: "21533" }
+      change_risk_options:
+        Low: { id: "10907" }
+        Medium: { id: "10909" }
+        High: { id: "10908" }
+      impact_options:
+        "Extensive / Widespread": { id: "10818" }
+        "Significant / Large": { id: "10819" }
+        "Moderate / Limited": { id: "10820" }
+        "Minor / Localized": { id: "10821" }
+      urgency_options:
+        Critical: { id: "10814" }
+        High: { id: "10815" }
+        Medium: { id: "10816" }
+        Low: { id: "10817" }
+      schedule_timezone: "America/Chicago"
+      schedule_display_timezone: "America/Chicago"
+      schedule_source_timezone: "Asia/Kolkata"
+    deployment_profiles:
+      normal:
+        label: Normal deployment (10:30–11:30 AM IST → CST in Jira)
+        change_type: Normal
+        schedule:
+          start_time: "10:30"
+          end_time: "11:30"
+          source_timezone: "Asia/Kolkata"
+      emergency:
+        label: Emergency deployment (6:00–8:00 PM IST → CST in Jira)
+        change_type: Emergency
+        schedule:
+          start_time: "18:00"
+          end_time: "20:00"
+          source_timezone: "Asia/Kolkata"
+
+  deployment:
+    environment: "Production"
+    done_transition: "done"
+
+  # Cursor Slack MCP metadata (Step 6 — no SLACK_BOT_TOKEN required).
+  slack_mcp:
+    enterprise_host: "grid-abcfitness.enterprise.slack.com"
+    mcp_user_id: "U08N0KDPSDU"  # Lakshmi — Cursor Slack MCP signed-in user
+
+  # Slack deployment announce — SLACK_BOT_TOKEN optional when using Cursor Slack MCP.
+  slack_announce:
+    enabled: true
+    templates:
+      body: slack/deploy_announce.txt.j2
+    channel_ids:
+      insights-customize-squad: "C08HB93PEVD"
+      customize-bi-buddies: "C08KM1USMM1"
+    cc:
+      sushma:
+        name: "Sushma Bhamidipati"
+        user_id: "U08LDAQ7SDV"
+      soumyakant:
+        name: "Soumyakant Mishra"
+        user_id: "U062RM3T87Q"
+      trent:
+        name: "Trent Vanest"
+        user_id: "U0ASR2XGRPZ"
+    channels:
+      - key: squad
+        name: insights-customize-squad
+        cc: [sushma, trent]
+      - key: buddies
+        name: customize-bi-buddies
+        cc: [sushma]
+
+  release_gates:
+    enabled: true
+    templates:
+      pre_review:
+        body: gates/pre_review.txt.j2
+      post_qa:
+        body: gates/post_qa.txt.j2
+    # Feature-flagged OFF — status filter + Slack panels block releases when enabled.
+    # Turn on when ready: pre_review.enabled + filter_ticket_review (Ticket Review Step 2).
+    pre_review:
+      enabled: false
+      filter_ticket_review: false
+      # Ticket Review / MCP Step 1: skip tickets with review-complete comments
+      # (e.g. "review completed!") even if Jira status is still Review.
+      skip_review_completed_comments: true
+      review_completed_phrases:
+        - "review completed"
+        - "review complete"
+        - "review done"
+        - "peer review complete"
+        - "peer review completed"
+        - "code review complete"
+        - "code review completed"
+        - "review approved"
+        - "lgtm"
+      ready_for_review_phrases:
+        - "ready for review"
+        - "ready to review"
+        - "please review"
+        - "ready for peer review"
+      ready_statuses:
+        - "In Review"
+        - "Ready for Review"
+        - "Peer Review"
+        - "Code Review"
+      slack_notify: false
+    github_pr:
+      enabled: true
+      # Post Jira comment @-mentioning assignee when open/unapproved PRs are found.
+      auto_comment: true
+    post_qa:
+      enabled: false
+      filter_release_notes: false
+      passed_statuses:
+        - "Done"
+        - "Closed"
+        - "Resolved"
+        - "Ready for Release"
+        - "Ready for Deployment"
+        - "QA Passed"
+        - "Passed QA"
+      slack_notify: false
+
+  github:
+    report_host_repos:
+      an_default: "glofoxinc/gf-insights-fitnessbi"
+      pic_corp_repos:
+        jetts: "glofoxinc/abc-customize-insights-jetts"
+        jetts fitness: "glofoxinc/abc-customize-insights-jetts"
+        lift: "glofoxinc/abc-customize-insights-lift"
+        lift brands: "glofoxinc/abc-customize-insights-lift"
+        jazzercise: "glofoxinc/abc-customize-insights-jazzercise"
+        snap fitness: "glofoxinc/abc-customize-insights-snapfitness"
+        snapfitness: "glofoxinc/abc-customize-insights-snapfitness"
+        xpo: "glofoxinc/abc-customize-insights-xpo"
+        xtreme: "glofoxinc/abc-customize-insights-xtremefitness"
+        xtreme fitness: "glofoxinc/abc-customize-insights-xtremefitness"
+        chin music: "glofoxinc/abc-customize-ChinMusic"
+        chinmusic: "glofoxinc/abc-customize-ChinMusic"
+        cliste: "glofoxinc/abc-customize-ClisteHospitality"
+        cliste hospitality: "glofoxinc/abc-customize-ClisteHospitality"
+        energie: "glofoxinc/abc-customize-insights-energie"
+        sets hybrid: "glofoxinc/abc-customize-insights-setshybridtraining"
+        setshybrid: "glofoxinc/abc-customize-insights-setshybridtraining"
+
+  release_notes:
+    enabled: true
+    # Release Notes fetch (Step 3) — narrower than Ticket Review defaults above.
+    default_statuses:
+      PIC:
+        - "Ready for Release"
+      AN:
+        - "QA(migrated)"
+    # Mirror Ticket Review comment gate: also include tickets from review statuses
+    # when a Jira comment says "ready for release" (same pattern as ready-for-review).
+    include_ready_for_release_comments: true
+    ready_for_release_comment_phrases:
+      - "ready for release"
+      - "ready to release"
+      - "rfr"
+    # Optional override — defaults to ticket_review.default_checked_statuses per project.
+    # comment_candidate_statuses:
+    #   PIC: ["Review", "In Review", "Ready for Review", "In Progress", "Passed QA"]
+    #   AN: ["Review", "In Review", "Ready for Review", "In Progress", "Passed QA"]
+    generator_script: ""
+    reference_doc: "Release Notes 2026.3.09.09.docx"
+    output_dir: ""
+    team_name: "Customize BI Team"
+    release_owner: "Lakshmi Narasimha"
+    senior_mgr: "Sushma Bhamidipati"
+    director: "Trent Vanest"
+    svp: "Rahul Das"
+    # QA pool for Change Details \"Test by\" — never matches the ticket Jira assignee.
+    # Assignments are balanced evenly across this list.
+    test_by_pool:
+      - Rekha
+      - Mona
+      - Navya
+      - Chanti
+      - Narasimha
+      - Nikhath
+      - Bharathi
+      - Soumya
+      - Sushma
+
+  # Browser automation — SharePoint upload + Slack fallback via Cursor Playwright MCP.
+  # No MS_GRAPH_* or SLACK_BOT_TOKEN required when using these handoffs.
+  browser_automation:
+    enabled: true
+    mcp_server: "playwright"
+    sharepoint:
+      enabled: true
+      hostname: "abcfinancial.sharepoint.com"
+      site_path: "/teams/ABCFitnessSolutionsLLC-Glofox-Customize"
+      folder_path: "Shared Documents/Glofox - Customize/Release Notes"
+      auto_quarter_subfolder: true
+      remote_name_template: "Release Notes {{version}}.docx"
+      viewid: "ba435012-557c-4c11-9c9b-638fba9707f6"
+      # Quarter folder example: .../Release Notes/2026 - Q3 (derived from release version date)
+      # Optional override — paste exact AllItems.aspx URL; use {{quarter}} token for dynamic quarter:
+      # folder_browse_url: "https://abcfinancial.sharepoint.com/teams/.../AllItems.aspx?id=.../Release%20Notes/{{quarter}}"
+    slack:
+      enabled: true
+      # Glofox private channels — Playwright web is primary (Slack MCP cannot see them).
+      prefer_playwright: true
+      prefer_slack_mcp: false
+      workspace_url: "https://app.slack.com/client"
+      team_id: "E05KG0EFGUW"  # Glofox workspace on ABC Fitness grid
+
+  # SharePoint Graph upload — archived (restore from archive/sharepoint_upload.yaml).
+  # Use browser_automation.sharepoint + Playwright MCP when Graph is not provisioned.
+  sharepoint_upload:
+    enabled: false
+    archived: true
+
+  # Teams meeting scheduling — archived (restore from archive/teams_schedule.yaml).
+  teams_schedule:
+    enabled: false
+    archived: true
+
+  # Daily Review Agent — 6 PM PIC/AN review (merged package: daily_review_agent/)
+  # Full config: daily_review_agent/agent.yaml
+  daily_review:
+    enabled: false
+    config_file: "daily_review_agent/agent.yaml"
+    setup_script: "scripts/daily_review/setup.ps1"
+    pilot_signoff: "scripts/daily_review/pilot_signoff.ps1"
+    mcp_tools_prefix: "daily_review_"
+    guided_tool: "daily_review_orchestrator"
+    calendar_backend: "playwright_mcp"
+    playwright_profile: "daily_review_agent/.state/playwright-outlook-profile"
+
+  ticket_review:
+    # Step 1 — never fetch outside-squad assignees (Gabriel/Erasmo / TEAM_CREW_EXCLUDE).
+    skip_outside_squad_assignees: true
+    # Step 1 — also pick up in-squad Review tickets when Jira Team field is empty/wrong.
+    include_squad_assignee_without_team: true
+    # Step 2 auto-check when using "By status (board)" mode.
+    # In Progress tickets are included only when a Jira comment says ready for review.
+    default_checked_statuses:
+      PIC:
+        - "Review"
+        - "In Review"
+        - "Ready for Review"
+        - "In Progress"
+      AN:
+        - "Review"
+        - "In Review"
+        - "Ready for Review"
+        - "In Progress"
+
+  # Which apps are available on the home page
+  apps:
+    ticket_review:
+      enabled: true
+      label: "Ticket Review"
+    release_notes:
+      enabled: true
+      label: "Release Notes"
+    service_ticket:
+      enabled: true
+      label: "Service Ticket (SHIPIT)"
+    release_deployer:
+      enabled: true
+      label: "Release Deployer"

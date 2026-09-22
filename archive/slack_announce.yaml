@@ -1,0 +1,26 @@
+# archived — restore to workspace.yaml and set enabled=true when IT ready
+# Requires SLACK_BOT_TOKEN + bot invited to configured channels.
+slack_announce:
+  enabled: true
+  templates:
+    body: slack/deploy_announce.txt.j2
+  channel_ids:
+    insights-customize-squad: "C08HB93PEVD"
+    customize-bi-buddies: "C08KM1USMM1"
+  cc:
+    sushma:
+      name: "venkatasuryanagasushma.bhamidipati"
+      user_id: "U08LDAQ7SDV"
+    soumyakant:
+      name: "Soumyakant Mishra"
+      user_id: "U062RM3T87Q"
+    trent:
+      name: "Trent Vanest"
+      user_id: "U0ASR2XGRPZ"
+  channels:
+    - key: squad
+      name: insights-customize-squad
+      cc: [sushma, soumyakant, trent]
+    - key: buddies
+      name: customize-bi-buddies
+      cc: [sushma, soumyakant]

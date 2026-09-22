@@ -1,0 +1,45 @@
+# Example: Generic Software Development Team
+# Copy this to workspace.yaml and adjust for your team.
+
+workspace:
+  name: "Engineering Team"
+
+  jira:
+    base_url: "https://yourorg.atlassian.net"
+
+  projects:
+    - key: "ENG"
+      name: "Engineering"
+      multi_client: false
+    - key: "FE"
+      name: "Frontend"
+      multi_client: false
+
+  service_desk:
+    enabled: false
+
+  deployment:
+    environment: "Production"
+
+  release_notes:
+    enabled: true
+    team_name: "Engineering Team"
+    release_owner: "Team Lead Name"
+    senior_mgr: ""
+    director: ""
+    svp: ""
+    generator_script: ""
+
+  apps:
+    ticket_review:
+      enabled: true
+      label: "Ticket Review"
+    release_notes:
+      enabled: true
+      label: "Release Notes"
+    service_ticket:
+      enabled: false
+      label: "Service Ticket"
+    release_deployer:
+      enabled: true
+      label: "Release Deployer"

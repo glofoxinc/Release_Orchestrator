@@ -1,0 +1,9 @@
+﻿# CODEOWNERS - default reviewer for every change.
+# Individual paths can be overridden below.
+
+*   @LakshmiYalamarti
+
+# Security-sensitive files require extra eyes.
+/.github/workflows/                 @LakshmiYalamarti
+/.github/dependabot.yml             @LakshmiYalamarti
+SECURITY.md                         @LakshmiYalamarti

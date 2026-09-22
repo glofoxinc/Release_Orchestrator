@@ -1,0 +1,138 @@
+# One-time team crew templates — copied into .env at welcome onboard.
+# Glofox is pre-filled; Ignite / ETL / other teams customize during onboarding.
+
+teams:
+  glofox:
+    display_name: "Glofox Insights Customize"
+    jira_team_id: "317996a7-118a-4cf3-a3c6-04163516ed32"
+    default_projects: ["PIC", "AN"]
+    description: "Standard Customize BI — PIC custom clients + AN Analyze"
+    # In-squad dev team — ticket assignees from this roster are mandatory on review calls.
+    squad:
+      - name: "Lakshmi Narasimha"
+        email: "lakshminarasimhanaidu.yalamarti@abcfitness.com"
+      - name: "Chanti Kumar Jakkula"
+        email: "chantikumar.jakkula@abcfitness.com"
+      - name: "Rekha"
+      - name: "Mona"
+      - name: "Navya"
+      - name: "Nikhath"
+      - name: "Bharathi"
+    leadership:
+      - name: "Sushma Bhamidipati"
+        email: "VenkataSuryaNagaSushma.Bhamidipati@abcfitness.com"
+      - name: "Soumyakant Mishra"
+        email: "Soumyakant.Mishra@abcfitness.com"
+    qa:
+      - name: "Akhil Sree Kumar"
+        email: "akhil.sreekumar@abcfitness.com"
+      - name: "Nikhila Sree Ramisetti"
+        email: "nikhilasree.ramisetti@abcfitness.com"
+    optional:
+      - name: "Sai Anirudh"
+        email: "saianirudh.karre@abcfitness.com"
+    # Review call only — no separate release-call standing crew for Glofox.
+    review: []
+    release: []
+    exclude:
+      - name: "Gabriel Barbosa"
+        email: "gabriel.barbosa@abcfitness.com"
+      - name: "Erasmo García"
+        email: "erasmo.garcia@abcfitness.com"
+    sharepoint:
+      hostname: "abcfinancial.sharepoint.com"
+      site_path: "/teams/ABCFitnessSolutionsLLC-Glofox-Customize"
+      folder_path: "Shared Documents/Glofox - Customize/Release Notes"
+      auto_quarter_subfolder: true
+      viewid: "ba435012-557c-4c11-9c9b-638fba9707f6"
+      confirm_note: >-
+        Release Notes upload to Glofox - Customize/Release Notes/{Year} - Q{N}.
+        The quarter folder is created automatically each release.
+
+  ignite:
+    display_name: "Ignite Insights Customize"
+    jira_team_id: "9b5dc24e-0a1b-4634-98ac-9a1a43bcec4e"
+    default_projects: ["PIC"]
+    description: "Ignite custom BI — PIC only (no AN)"
+    squad: []
+    leadership: []
+    qa: []
+    optional: []
+    review: []
+    release: []
+    exclude: []
+    setup_note: >-
+      Add your Ignite crew during onboarding — we will ask for: full dev squad,
+      leadership (required on review calls), QA crew, optional attendees, and
+      anyone to exclude (cross-team / outside squad). Use crew add / crew exclude,
+      then crew done. After crew, we will ask for your SharePoint Release Notes
+      folder URL (quarter subfolders are created automatically each release).
+
+  etl:
+    display_name: "Insights Customize (ETL)"
+    jira_team_id: "610eda40-8934-4ffa-915a-c41767e38a3e"
+    default_projects: ["PIC"]
+    description: "ETL-focused Customize BI — PIC only"
+    squad: []
+    leadership: []
+    qa: []
+    optional: []
+    review: []
+    release: []
+    exclude: []
+    setup_note: >-
+      Add your ETL crew during onboarding — full squad, leadership, QA, optional,
+      and exclude list. Use crew add / crew exclude, then crew done. After crew,
+      paste your SharePoint Release Notes parent folder URL (quarter subfolders
+      like 2026 - Q3 are created automatically).
+
+  other:
+    display_name: "Other team"
+    jira_team_id: ""
+    default_projects: ["PIC"]
+    description: "Any other Jira team using Release Orchestrator"
+    squad: []
+    leadership: []
+    qa: []
+    optional: []
+    review: []
+    release: []
+    exclude: []
+    setup_note: >-
+      Provide team name, Jira team UUID, full squad roster, leadership, QA crew,
+      optional attendees, and exclude emails via crew add / crew exclude.
+
+# Standard onboarding questions (shown for non-prefilled teams).
+onboarding_checklist:
+  - id: squad
+    label: "Full dev squad"
+    detail: "Names/emails for in-squad assignees — mandatory on review calls when they own tickets."
+  - id: leadership
+    label: "Leadership"
+    detail: "Required on every review call (e.g. leads, managers)."
+  - id: qa
+    label: "QA crew"
+    detail: "Required on every review call."
+  - id: optional
+    label: "Optional standing attendees"
+    detail: "Invited as optional — not required every time."
+  - id: exclude
+    label: "Exclude list"
+    detail: "Cross-team / outside squad — never invited; their tickets skipped by default."
+  - id: sharepoint
+    label: "SharePoint Release Notes folder"
+    detail: >-
+      Paste your team's Release Notes parent folder URL from SharePoint (AllItems.aspx).
+      We auto-create a quarter subfolder per release (e.g. 2026 - Q3) and upload the DOCX there.
+
+env_vars:
+  team: "DEFAULT_JIRA_TEAM"
+  projects: "DEFAULT_PROJECTS"
+  team_id: "DEFAULT_JIRA_TEAM_ID"
+  squad: "TEAM_CREW_SQUAD"
+  review: "TEAM_CREW_REVIEW"
+  release: "TEAM_CREW_RELEASE"
+  qa: "TEAM_CREW_QA"
+  leadership: "TEAM_CREW_LEADERSHIP"
+  optional: "TEAM_CREW_OPTIONAL"
+  exclude: "TEAM_CREW_EXCLUDE"

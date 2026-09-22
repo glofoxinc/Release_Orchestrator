@@ -1,0 +1,9 @@
+{
+  "name": "jira-release-tool-daily-review",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@shayanline/msteams-mcp": "0.30.0",
+    "playwright": "^1.63.0"
+  }
+}

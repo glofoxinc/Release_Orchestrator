@@ -1,0 +1,28 @@
+<p><strong>{{ team_name }} — Ticket Review</strong></p>
+<p><strong>Release:</strong> {{ version }}</p>
+<p><strong>Tickets for review ({{ ticket_count }}):</strong></p>
+<table border="1" cellpadding="4" cellspacing="0">
+  <tr>
+    <th>Key</th>
+    <th>Summary</th>
+    <th>Status</th>
+    <th>Assignee</th>
+  </tr>
+{% for t in tickets %}
+  <tr>
+    <td><a href="{{ t.url }}">{{ t.key }}</a></td>
+    <td>{{ t.summary }}</td>
+    <td>{{ t.status }}</td>
+    <td>{{ t.assignee }}</td>
+  </tr>
+{% endfor %}
+</table>
+{% if blocked %}
+<p><strong>Not ready for review (release gate):</strong></p>
+<ul>
+{% for b in blocked %}
+  <li>{{ b.key }} — {{ b.status }} — {{ b.reason }}</li>
+{% endfor %}
+</ul>
+{% endif %}
+<p>Scheduled via Release Orchestrator.</p>
