@@ -1,103 +1,396 @@
-# ── Secrets ───────────────────────────────────────────────────────────────
-.env
-
-# ── Personal data ─────────────────────────────────────────────────────────
-.deployment_history.json
-workspaces/*/.deployment_history.json
-.deploy_draft.json
-workspaces/*/.deploy_draft.json
-workspaces/*/.env
-.mcp_wizard_sessions/
-.mcp_onboarding_state.json
-workspaces/*/.mcp_wizard_sessions/
-workspaces/*/.mcp_onboarding_state.json
-.launch/
-
-# ── Python ────────────────────────────────────────────────────────────────
+# Byte-compiled / optimized / DLL files
 __pycache__/
-*.pyc
-*.pyo
-*.egg-info/
-dist/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
 build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
 *.egg
-*.whl
+MANIFEST
 
-# ── Virtual environment ───────────────────────────────────────────────────
-.venv/
-venv/
-env/
+# PyInstaller
+*.manifest
+*.spec
 
-# ── Tool caches ───────────────────────────────────────────────────────────
-.ruff_cache/
-.pytest_cache/
-.mypy_cache/
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
 
-# ── Coverage ──────────────────────────────────────────────────────────────
-coverage/
+# Unit test / coverage reports
 htmlcov/
+.tox/
+.nox/
 .coverage
 .coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+cover/
 
-# ── Streamlit ─────────────────────────────────────────────────────────────
-# Local secrets (Cloud secrets are set in the dashboard)
-.streamlit/secrets.toml
+# Translations
+*.mo
+*.pot
 
-# ── Docker ────────────────────────────────────────────────────────────────
-docker-compose.override.yaml
-docker-compose.override.yml
+# Django stuff:
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
 
-# ── IDE ───────────────────────────────────────────────────────────────────
+# Flask stuff:
+instance/
+.webassets-cache
+
+# Scrapy stuff:
+.scrapy
+
+# Sphinx documentation
+docs/_build/
+
+# PyBuilder
+.pybuilder/
+target/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IPython
+profile_default/
+ipython_config.py
+
+# pyenv
+.python-version
+
+# pipenv
+Pipfile.lock
+
+# poetry
+poetry.lock
+
+# pdm
+.pdm.toml
+.pdm-python
+.pdm-build/
+
+# PEP 582
+__pypackages__/
+
+# Celery stuff
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath parsed files
+*.sage.py
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# pytype static type analyzer
+.pytype/
+
+# Cython debug symbols
+cython_debug/
+
+# PyCharm
 .idea/
-.vscode/
-*.swp
-*.swo
-*~
-.cursor/*
-!.cursor/rules/
-!.cursor/rules/**
 
-# ── OS ────────────────────────────────────────────────────────────────────
-Thumbs.db
-Desktop.ini
+# VS Code
+.vscode/
+
+# Cursor
+.cursor/
+
+# OS
 .DS_Store
+Thumbs.db
+
+# Project-specific
+*.docx
+*.xlsx
+output/
+outputs/
+release_notes/
+shipit/
+*.session
+session_state.json
+.mcp_token
+*.tmp
+*.bak
+
+# Daily review / Teams artifacts
+daily_review_output/
+teams_meeting_cache/
+
+# Local workspace overrides (keep workspace.yaml tracked)
+workspace.local.yaml
+
+# Test artifacts
+.pytest_cache/
+test_output/
+
+# MCP / local dev
+.mcp/
+*.local.json
+
+# Paginated report validation (ephemeral)
+validation.json
+
+# Secrets — never commit
+*credentials*
+*secret*
+*.pem
+*.key
+.env.*
+!.env.example
+
+# Windows
+Desktop.ini
 ehthumbs.db
 
-# ── Generated documents ───────────────────────────────────────────────────
-*.docx
-!examples/*.docx
-output/
+# Large generated files
+*.zip
+*.tar.gz
 
-# ── Logs ──────────────────────────────────────────────────────────────────
-*.log
-
-# --- added by scaffold-projects.ps1 ---
-.env.local
-.env.*.local
-coverage.xml
+# Node (if any tooling)
 node_modules/
-.next/
-logs/
-.vscode/*
-!.vscode/extensions.json
-*.pbix.bak
-~$*
+
+# Lock files from local experiments
+package-lock.json
+yarn.lock
+
+# Playwright
 playwright-report/
 test-results/
 
-# --- added by scaffold-projects.ps1 ---
-*.bak-*
+# Fabric / Power BI local
+*.pbix
+*.SemanticModel
 
-# Daily Review Agent runtime state
-daily_review_agent/.state/playwright-outlook-profile/
-daily_review_agent/.state/*.json
-!daily_review_agent/.state/.gitkeep
-release_mcp/scripts/daily_review/node_modules/
+# RDL worktrees (Paginate MCP)
+data/outputs/tickets/**/worktree/
 
-# Release Orchestrator debug / operator artifacts (never commit)
-.operator_signoff.json
-_pytest_happy_debug*/
-_ref_SHIPIT-*
-_shipit*
-.mcp_wizard_sessions/
-_github_push_batches/
+# Agent / temp
+agent-tools/
+*.swp
+*~
+
+# Compiled docs
+*.pyc
+
+# Local test configs
+pytest.ini.local
+
+# Release orchestrator session backups
+.session_backup/
+
+# Colleague-specific local paths
+local_paths.yaml
+
+# Hackathon / scratch
+scratch/
+tmp/
+
+# Log files from MCP servers
+*.log
+
+# Coverage HTML
+htmlcov/
+
+# Pre-commit
+.pre-commit-config.yaml.local
+
+# uv
+.uv/
+uv.lock
+
+# Ruff cache
+.ruff_cache/
+
+# Streamlit
+.streamlit/secrets.toml
+
+# Jira cache
+.jira_cache/
+
+# Slack tokens
+.slack_token
+
+# Teams auth cache
+.teams_auth/
+
+# Outlook MCP
+outlook_token.json
+
+# SharePoint cache
+.sharepoint_cache/
+
+# Data ops outputs
+data_ops_output/
+
+# Looker migration drafts (local only)
+looker_drafts/
+
+# Paginate CO validation runs
+.paginate_validation/
+
+# Release notes DOCX temp
+~$*.docx
+
+# SHIPIT temp
+shipit_temp/
+
+# Deployer artifacts
+deployer_output/
+
+# Daily review agent state
+daily_review_state.json
+
+# Ticket review snapshots (local only)
+.ticket_review_snapshots/
+
+# Wizard session exports
+wizard_exports/
+
+# MCP server debug
+mcp_debug.log
+
+# Local override for release gates testing
+gates_test.local.yaml
+
+# Binary test fixtures
+*.pdf
+*.png
+!docs/**/*.png
+
+# IDE workspace files
+*.code-workspace
+
+# Terraform / infra scratch
+.terraform/
+
+# Docker local
+.docker/
+
+# Colab / notebook exports
+*.ipynb_checkpoints/
+
+# Generated release metadata
+.release_meta.json
+
+# Local git hooks override
+.githooks.local/
+
+# Windows path artifacts
+*.lnk
+
+# Editor backup
+*.orig
+
+# Performance profiling
+*.prof
+
+# SQLite local DBs
+*.sqlite
+*.db
+
+# Changelog temp
+CHANGELOG.draft.md
+
+# Release branch tracking
+.release_branch
+
+# MCP stdio debug captures
+stdio_capture/
+
+# Fabric lakehouse local query cache
+.lakehouse_cache/
+
+# Power BI REST token cache
+.pbi_token_cache/
+
+# Atlassian MCP local state
+.atlassian_mcp/
+
+# GitHub token files (never commit)
+.github_token
+gh_token.txt
+
+# Release orchestrator venv
+.venv/
+venv/
+
+# pytest xdist
+.pytest_cache/v/cache/
+
+# Hypothesis
+.hypothesis/
+
+# tox
+.tox/
+
+# Coverage
+.coverage
+htmlcov/
+
+# mypy
+.mypy_cache/
+
+# Local workspace experiments
+workspace.experiment.yaml
+
+# Ticket pipeline debug output
+pipeline_debug/
+
+# Review agent artifacts
+review_agent_output/
+
+# Comment gate test fixtures (generated)
+comment_gate_fixtures/
+
+# End of .gitignore
