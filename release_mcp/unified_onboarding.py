@@ -179,12 +179,12 @@ DAILY_REVIEW_STEPS: tuple[dict[str, Any], ...] = (
         "instructions": (
             "From repo root:\n"
             "```\n"
-            "cd scripts/daily_review\n"
+            "cd release_mcp/scripts/daily_review\n"
             "npm install\n"
             "```\n"
             "Or run MCP tool: `daily_review_setup(install=true)`"
         ),
-        "where": "scripts/daily_review/ or sibling teams-mcp project.",
+        "where": "release_mcp/scripts/daily_review/ or sibling teams-mcp project.",
     },
     {
         "id": "agent_yaml",
@@ -262,7 +262,7 @@ DAILY_REVIEW_STEPS: tuple[dict[str, Any], ...] = (
             "Run `daily_review_preflight(live=true)` then register Task Scheduler.\n"
             "`daily_review_schedule_batch` is **pilot smoke only** — production schedules **one** meeting per run."
         ),
-        "where": "daily_review_agent/agent.yaml + scripts/daily_review/pilot_signoff.ps1",
+        "where": "daily_review_agent/agent.yaml + release_mcp/scripts/daily_review/pilot_signoff.ps1",
     },
     {
         "id": "daily_review_preflight",

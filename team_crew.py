@@ -128,6 +128,8 @@ def resolve_team_key_from_phrase(text: str) -> str | None:
 
 def parse_projects_phrase(text: str) -> list[str] | None:
     lowered = (text or "").lower()
+    if re.search(r"\bpic-\d+\b", lowered):
+        return None
     if "pic" in lowered and "an" in lowered:
         return ["PIC", "AN"]
     if re.search(r"\bpic\b", lowered) and "an" not in lowered:

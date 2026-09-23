@@ -106,7 +106,7 @@ workspace:
       team: "3b374af6-6998-440a-a5e5-9af5f70493dc"
       team_name: "Insights Customize Approvers"
       # SHIPIT assignment group (customfield_12047) is optional — leave blank unless
-      # Jira group lookup succeeds (run: python scripts/shipit_preflight.py).
+      # Jira group lookup succeeds (run: python release_mcp/scripts/shipit_preflight.py).
       assignment_group_name: ""
       affected_services:
         # Glofox production service — verified SHIPIT-17036 / SHIPIT-16769.
@@ -337,8 +337,8 @@ workspace:
   daily_review:
     enabled: false
     config_file: "daily_review_agent/agent.yaml"
-    setup_script: "scripts/daily_review/setup.ps1"
-    pilot_signoff: "scripts/daily_review/pilot_signoff.ps1"
+    setup_script: "release_mcp/scripts/daily_review/setup.ps1"
+    pilot_signoff: "release_mcp/scripts/daily_review/pilot_signoff.ps1"
     mcp_tools_prefix: "daily_review_"
     guided_tool: "daily_review_orchestrator"
     calendar_backend: "playwright_mcp"

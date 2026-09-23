@@ -50,6 +50,9 @@ def test_onboarding_phrase_routes_to_setup_guide():
 
 
 def test_run_guided_onboarding_without_env(monkeypatch):
+    from release_mcp import onboarding_store
+
+    onboarding_store.clear_state()
     monkeypatch.delenv("JIRA_API_TOKEN", raising=False)
     monkeypatch.delenv("JIRA_EMAIL", raising=False)
     monkeypatch.setenv("JIRA_BASE_URL", "")
@@ -59,15 +62,14 @@ def test_run_guided_onboarding_without_env(monkeypatch):
         result = guided.run_guided("welcome onboard")
     assert result.get("step") == "onboarding"
     say = result.get("say_to_user", "").lower()
-    assert "onboard" in say or "setup" in say or "pick your setup path" in say
-    can_say = result.get("user_can_say", [])
-    track_picker = {"both", "release only", "daily review only"} & set(can_say)
-    step_phrases = {"done", "mcp configured"} & set(can_say)
-    assert track_picker or step_phrases
-    assert result.get("whats_next")
+    assert "onboard" in say or "continue" in say or "welcome" in say
+    assert "continue" in result.get("user_can_say", [])
 
 
 def test_welcome_ready_includes_whats_next():
+    from release_mcp import onboarding_store
+
+    onboarding_store.clear_state()
     with patch.object(welcome.config, "JIRA_EMAIL", "a@x.com"), patch.object(
         welcome.config, "JIRA_API_TOKEN", "tok"
     ), patch.object(welcome.config, "JIRA_BASE_URL", "https://abcfinancial.atlassian.net"):

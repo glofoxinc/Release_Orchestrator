@@ -92,7 +92,7 @@ test-results/
 daily_review_agent/.state/playwright-outlook-profile/
 daily_review_agent/.state/*.json
 !daily_review_agent/.state/.gitkeep
-scripts/daily_review/node_modules/
+release_mcp/scripts/daily_review/node_modules/
 
 # Release Orchestrator debug / operator artifacts (never commit)
 .operator_signoff.json

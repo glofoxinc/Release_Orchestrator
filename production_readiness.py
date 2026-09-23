@@ -60,7 +60,7 @@ def _assess_daily_review_readiness() -> dict[str, list[dict[str, str]]]:
         operator.append(
             {
                 "name": "daily_review_pilot_signoff",
-                "detail": "Run .\\scripts\\daily_review\\pilot_signoff.ps1 before Task Scheduler",
+                "detail": "Run .\\release_mcp\\scripts\\daily_review\\pilot_signoff.ps1 before Task Scheduler",
             }
         )
     except Exception as exc:  # noqa: BLE001
@@ -211,7 +211,7 @@ def assess_production_readiness(*, surface: Surface = "both") -> dict[str, Any]:
         _add(
             "live_shipit_dry_run",
             False,
-            "Run: python scripts/complete_launch.py --dry-run-version VERSION --sharepoint-url URL",
+            "Run: python release_mcp/scripts/complete_launch.py --dry-run-version VERSION --sharepoint-url URL",
             op=True,
         )
     if signoffs.get("slack_live_confirm"):
@@ -220,7 +220,7 @@ def assess_production_readiness(*, surface: Surface = "both") -> dict[str, Any]:
         _add(
             "live_slack_confirm",
             False,
-            "After Step 6 Slack MCP post: python scripts/complete_launch.py --confirm-slack \"posted\"",
+            "After Step 6 Slack MCP post: python release_mcp/scripts/complete_launch.py --confirm-slack \"posted\"",
             op=True,
         )
     _add(

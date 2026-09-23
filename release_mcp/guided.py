@@ -118,6 +118,7 @@ WELCOME_ONBOARD_PHRASES = frozenset({
 START_MENU_PHRASES = frozenset({"start", "lets start", "let's start", "go"})
 ONBOARDING_PROGRESS_PHRASES = frozenset({
     "done", "next", "next setup step", "setup done", "step done", "continue setup",
+    "continue", "next step",
 })
 TRACK_PICKER_PHRASES = frozenset({
     "both", "release only", "daily review only", "release and daily review",
@@ -173,6 +174,9 @@ FETCH_RELEASE_LIST_PHRASES = frozenset({
     "list release tickets",
     "list release tkts",
     "list release tkt",
+})
+ENV_CHECKLIST_PHRASES = frozenset({
+    "env checklist", "env params", "show env", "env status", ".env checklist",
 })
 SETUP_PHRASES = frozenset({
     "onboarding", "onboard", "setup", "setup status", "check setup",
@@ -511,24 +515,20 @@ def interpret_message(
     from release_mcp import unified_onboarding as uo
 
     if any(p in lowered for p in WELCOME_ONBOARD_PHRASES):
-        track_from_msg = uo.resolve_track_phrase(lowered)
-        if track_from_msg:
-            uo.set_track(track_from_msg)
-        inputs: dict[str, Any] = {
-            "onboarding": True,
-            "interactive_onboarding": True,
-            "_trigger": "onboard",
-            "team_inputs": onboarding_store.load_state(),
+        return {
+            "action": "beginner_wizard",
+            "inputs": {"message": raw, "team_name": team},
+            "intent": "welcome_onboard",
         }
-        if team:
-            inputs["team_name"] = team
-        stored = onboarding_store.get_track()
-        if stored:
-            inputs["onboarding_track"] = stored
-        return {"action": "welcome", "inputs": inputs, "intent": "welcome_onboard"}
 
     track = uo.resolve_track_phrase(lowered)
     if track and not workflow_id:
+        if onboarding_store.load_state().get("wizard_mode") == "beginner":
+            return {
+                "action": "beginner_wizard",
+                "inputs": {"message": raw},
+                "intent": "onboarding_track",
+            }
         uo.set_track(track)
         return {
             "action": "welcome",
@@ -564,6 +564,17 @@ def interpret_message(
             inputs["team_name"] = team
         return {"action": "welcome", "inputs": inputs, "intent": "start_menu"}
 
+    from release_mcp import env_onboarding as env_ob
+
+    if lowered in ENV_CHECKLIST_PHRASES or (
+        not workflow_id and env_ob.is_env_onboarding_message(raw)
+    ):
+        return {
+            "action": "env_onboard",
+            "inputs": {"message": raw},
+            "intent": "env_checklist" if lowered in ENV_CHECKLIST_PHRASES else "env_onboard",
+        }
+
     if any(p in lowered for p in SETUP_PHRASES) or lowered.startswith("setup"):
         assessment = onboarding.assess_setup(from_mcp=True)
         uo.apply_progress_from_message(raw, assessment=assessment)
@@ -580,7 +591,14 @@ def interpret_message(
     if not workflow_id and (
         lowered in ONBOARDING_PROGRESS_PHRASES
         or any(p in lowered for p in ("mcp configured", "outlook done", "teams done"))
+        or onboarding_store.load_state().get("wizard_mode") == "beginner"
     ):
+        if onboarding_store.load_state().get("wizard_mode") == "beginner" or lowered in ONBOARDING_PROGRESS_PHRASES:
+            return {
+                "action": "beginner_wizard",
+                "inputs": {"message": raw},
+                "intent": "onboarding_progress",
+            }
         assessment = onboarding.assess_setup(from_mcp=True)
         uo.apply_progress_from_message(raw, assessment=assessment)
         inputs: dict[str, Any] = {
@@ -983,6 +1001,46 @@ def run_guided(
 ) -> dict[str, Any]:
     """Single entry point: natural language → wizard → friendly response."""
     plan = interpret_message(message, workflow_id=workflow_id, confirmation_token=confirmation_token)
+
+    if plan.get("action") == "beginner_wizard":
+        from release_mcp import beginner_wizard
+
+        body = beginner_wizard.process_message(message)
+        assessment = onboarding.assess_setup(from_mcp=True)
+        body = {
+            **body,
+            "status": "complete" if body.get("wizard_step") == "complete" else (
+                "ok" if body.get("step_done") else "setup"
+            ),
+            "step": "onboarding",
+            "interactive_onboarding": True,
+            "setup_checklist": assessment.get("items") or [],
+            "user_can_say": ["continue", "env checklist", "help", "production ready"],
+        }
+        return enrich_response(body, user_message=message)
+
+    if plan.get("action") == "env_onboard":
+        from release_mcp import env_onboarding as env_ob
+
+        body = env_ob.process_env_message(message)
+        assessment = onboarding.assess_setup(from_mcp=True)
+        body = {
+            **body,
+            "status": "ok" if body.get("status", {}).get("all_required_ready") else "setup",
+            "step": "onboarding",
+            "prompt": body.get("prompt") or env_ob.format_env_checklist(),
+            "env_checklist": body.get("status"),
+            "setup_checklist": assessment.get("items") or [],
+            "user_can_say": [
+                "env checklist",
+                "use glofox",
+                "email you@abcfitness.com",
+                "org is abcfinancial",
+                "done",
+                "mcp configured",
+            ],
+        }
+        return enrich_response(body, user_message=message)
 
     if plan.get("action") == "list_release_tickets":
         from release_mcp import release_ops

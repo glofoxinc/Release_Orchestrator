@@ -234,7 +234,7 @@ def collect_readiness_items(*, include_excluded: bool = True) -> list[ReadinessI
                         f"Organizer {ts_cfg.organizer_upn}; "
                         f"{len(ts_cfg.default_attendees)} default attendee(s). MS_GRAPH_* required."
                     ),
-                    fix="Add MS_GRAPH_* to .env (Calendars.ReadWrite). Test: python scripts/test_teams_schedule.py --dry-run",
+                    fix="Add MS_GRAPH_* to .env (Calendars.ReadWrite). Test: python release_mcp/scripts/test_teams_schedule.py --dry-run",
                     excluded_from_ops=True,
                 ))
             else:
@@ -407,7 +407,7 @@ def collect_readiness_items(*, include_excluded: bool = True) -> list[ReadinessI
                 status="partial",
                 category="optional",
                 detail=f"Build `{GENERATOR_BUILD_ID}` — fixture E2E needs attention.",
-                fix="Run: python scripts/test_release_notes_e2e.py",
+                fix="Run: python release_mcp/scripts/test_release_notes_e2e.py",
             ))
     except Exception as exc:  # noqa: BLE001
         items.append(ReadinessItem(

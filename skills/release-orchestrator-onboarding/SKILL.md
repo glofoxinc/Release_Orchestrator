@@ -37,12 +37,19 @@ Ask once if unclear (or infer from message):
 
 Persist via chat: user’s phrase maps to `onboarding_track` in MCP state.
 
-### 2. Run automated checks (do not skip)
+### 2. Drive beginner wizard (default for new users)
+
+1. User says **`welcome onboard`** → call **`onboarding_wizard(message="welcome onboard")`**
+2. After each step, user says **`continue`** — re-call wizard with their message
+3. Auto steps (venv, pip, `.env`, **`install_mcp_config`**) run inside the wizard — agent reports ✅/❌
+4. Manual steps: list **exactly one** user action, then wait for **`continue`**
+
+### 3. Run automated checks (do not skip)
 
 Execute in order:
 
 1. **`release_orchestrator(message="setup status")`** or **`production_readiness(surface="mcp")`**
-2. **`daily_review_mcp_config`** — copy-paste blocks for missing `mcp.json` servers
+2. **`install_mcp_config`** or **`daily_review_mcp_config`** if MCP merge failed
 3. **`daily_review_setup(install=true)`** — if Daily Review track and npm bridge missing
 4. Read **`validate_cursor_mcp_config`** output if parse errors (fix JSON before continuing)
 
@@ -61,7 +68,7 @@ Report a table:
 | Gap | Agent action |
 |-----|----------------|
 | No venv | Run `.\scripts\setup_e2e.ps1` (or `python -m venv .venv` + pip install) |
-| No `.env` | Copy `.env.example` → `.env`; **ask user** for Jira email + API token only |
+| No `.env` | Call **`onboarding_env`** or let user say values in plain English (`org is abcfinancial`, `email you@…`, `use glofox`) — agent writes `.env`. Token: paste in `.env` only (recommended) |
 | No MCP JSON | Show blocks from `daily_review_mcp_config`; user saves `~/.cursor/mcp.json` → **reload Cursor** |
 | No team crew | **use glofox** → **crew done** (writes TEAM_CREW_* to `.env`) |
 | Playwright not signed in | Open Slack/M365 once via Playwright MCP; user signs in → **playwright confirmed** |

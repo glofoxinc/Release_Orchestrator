@@ -6,7 +6,7 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 DAILY_REVIEW_DIR = REPO_ROOT / "daily_review_agent"
-SCRIPTS_DIR = REPO_ROOT / "scripts" / "daily_review"
+SCRIPTS_DIR = REPO_ROOT / "release_mcp" / "scripts" / "daily_review"
 STATE_DIR = DAILY_REVIEW_DIR / ".state"
 PLAYWRIGHT_PROFILE_DIR = STATE_DIR / "playwright-outlook-profile"
 

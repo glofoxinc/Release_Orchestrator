@@ -245,7 +245,7 @@ def run_daily_review_guided(message: str = "daily review welcome", workflow_id: 
                     "complete",
                     (
                         f"Scheduled until **{reg.get('active_until')}** at {cfg.run_at} {cfg.timezone}.\n\n"
-                        "Run `.\\scripts\\daily_review\\pilot_signoff.ps1` then register Task Scheduler.\n"
+                        "Run `.\\release_mcp\\scripts\\daily_review\\pilot_signoff.ps1` then register Task Scheduler.\n"
                         "Release flow: say **welcome onboard** on the same MCP."
                     ),
                     workflow_id=wid,

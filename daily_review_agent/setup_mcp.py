@@ -261,7 +261,7 @@ def validate_cursor_mcp_config() -> dict[str, Any]:
         env = ro.get("env") if isinstance(ro.get("env"), dict) else {}
         if not env.get("TEAMS_MCP_ROOT"):
             result["issues"].append(
-                "release-orchestrator: missing env.TEAMS_MCP_ROOT — add scripts/daily_review path"
+                "release-orchestrator: missing env.TEAMS_MCP_ROOT — add release_mcp/scripts/daily_review path"
             )
         if not env.get("RELEASE_ORCHESTRATOR_ROOT"):
             result["issues"].append(

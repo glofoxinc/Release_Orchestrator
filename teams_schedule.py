@@ -327,7 +327,7 @@ def status(cfg: TeamsScheduleConfig) -> dict[str, Any]:
         "pending_step_count": len(pending),
         "note": (
             "Ticket Review + Service Ticket — add MS_GRAPH_* to .env for live scheduling. "
-            "Run: python scripts/test_teams_schedule.py --dry-run"
+            "Run: python release_mcp/scripts/test_teams_schedule.py --dry-run"
         ),
     }
 

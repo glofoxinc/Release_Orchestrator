@@ -82,7 +82,7 @@ MCP_CATALOG: tuple[dict[str, Any], ...] = (
         "cursor_setup": "Add **teams** stdio server (see daily_review_mcp_config). First use: **teams_login**.",
         "user_phrases": ["teams_login", "teams done"],
         "mcp_tools": ["teams_login", "teams_send_message"],
-        "notes": "Sibling teams-mcp project or bundled bridge under scripts/daily_review/.",
+        "notes": "Sibling teams-mcp project or bundled bridge under release_mcp/scripts/daily_review/.",
     },
     {
         "id": "daily-review",

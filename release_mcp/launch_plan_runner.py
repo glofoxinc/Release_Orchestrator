@@ -109,7 +109,7 @@ def phase1_slack_e2e(*, refresh_probes: bool = False) -> dict[str, Any]:
         operator.extend([
             "Invite Cursor Slack app to #insights-customize-squad and #customize-bi-buddies.",
             "Verify channel IDs in workspace.yaml (Copy link from Slack).",
-            "Re-probe: slack_read_channel in Cursor, then scripts/refresh_slack_probes.py --from-mcp.",
+            "Re-probe: slack_read_channel in Cursor, then release_mcp/scripts/refresh_slack_probes.py --from-mcp.",
             "Fallback: send slack playwright in release_orchestrator chat.",
         ])
     return {
@@ -249,7 +249,7 @@ def phase4_daily_review_pilot() -> dict[str, Any]:
             "Run: teams_login in Cursor (Teams MCP).",
             "Production: daily_review_run_live schedules ONE meeting; batch is pilot only.",
             "Fallback: daily review calendar playwright (Playwright MCP).",
-            "Run: scripts/daily_review/pilot_signoff.ps1 before enabled: true.",
+            "Run: release_mcp/scripts/daily_review/pilot_signoff.ps1 before enabled: true.",
         ],
     }
 

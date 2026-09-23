@@ -45,8 +45,8 @@ def run_onboarding(*, verbose: bool = True) -> dict[str, Any]:
             bridge.is_file() and node_modules.is_dir(),
             "teams_bridge.mjs + @shayanline/msteams-mcp installed"
             if node_modules.is_dir()
-            else "Run: npm install in scripts/daily_review",
-            "cd scripts/daily_review; npm install",
+            else "Run: npm install in release_mcp/scripts/daily_review",
+            "cd release_mcp/scripts/daily_review; npm install",
         )
     )
 

@@ -880,6 +880,65 @@ def onboarding_guide() -> dict:
 
 
 @mcp.tool()
+def onboarding_wizard(message: str = "welcome onboard") -> dict:
+    """Beginner linear onboarding — one step at a time, auto-install where possible.
+
+    Say **welcome onboard**, then **`continue`** after each step. Auto-runs venv, pip,
+    `.env` template, and MCP merge (generic template — no personal paths).
+
+    Args:
+        message: welcome onboard, continue, release only, use glofox, env inputs, etc.
+    """
+    from release_mcp import beginner_wizard
+
+    payload = beginner_wizard.process_message(message)
+    return enrich_tool_response(payload, tool="onboarding_wizard")
+
+
+@mcp.tool()
+def install_mcp_config(track: str = "release") -> dict:
+    """Merge Release Orchestrator + Playwright MCP blocks into Cursor mcp.json.
+
+    Uses detected repo paths — no hard-coded usernames. Backs up existing mcp.json.
+    Reload Cursor MCP after this tool returns ok.
+
+    Args:
+        track: release, daily_review, or both (adds teams server when both).
+    """
+    from release_mcp import mcp_installer
+
+    key = (track or "release").strip().lower()
+    if key not in {"release", "daily_review", "both"}:
+        key = "release"
+    result = mcp_installer.merge_starter_servers(track=key, backup=True)
+    return enrich_tool_response(result, tool="install_mcp_config")
+
+
+@mcp.tool()
+def onboarding_env(message: str = "") -> dict:
+    """Natural-language `.env` onboarding — parse chat inputs and show required params.
+
+    Users can say random phrases (org name, email, use glofox, projects pic an).
+    The tool writes recognized keys to local ``.env`` and returns what is still missing.
+
+    Args:
+        message: Free-form chat, or empty for full checklist. Examples:
+            ``env checklist``, ``org is abcfinancial``, ``email you@abcfitness.com``,
+            ``use glofox``, ``projects pic an``.
+    """
+    from release_mcp import env_onboarding as env_ob
+
+    if not (message or "").strip():
+        payload = {
+            "prompt": env_ob.format_env_checklist(),
+            "status": env_ob.assess_env_params(),
+        }
+    else:
+        payload = env_ob.process_env_message(message)
+    return enrich_tool_response(payload, tool="onboarding_env")
+
+
+@mcp.tool()
 def slack_reference(reference_key: str = "") -> dict:
     """Operator-approved Slack deployment announce references (SHIPIT-17191 gold standard).
 

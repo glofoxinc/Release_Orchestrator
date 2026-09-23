@@ -229,7 +229,7 @@ SETUP_STEPS: tuple[dict[str, Any], ...] = (
         "check": lambda: True,
         "instructions": (
             "Say **production ready** (or call `production_readiness()`).\n"
-            "Finish launch: `python scripts/complete_launch.py` (or mark sign-offs in MCP):\n"
+            "Finish launch: `python release_mcp/scripts/complete_launch.py` (or mark sign-offs in MCP):\n"
             "- **shipit confirmed** after SHIPIT dry-run\n"
             "- **slack confirmed** after Step 6 Slack MCP post\n"
             "When both are recorded → **launch complete**."
@@ -409,6 +409,14 @@ def format_interactive_onboarding_prompt(
     elif next_item.get("env_var"):
         lines.append("")
         lines.append(f"`.env` → `{next_item['env_var']}=...`")
+
+    if next_id.startswith("jira_") or next_id in {"team_and_projects", "env_file"}:
+        from release_mcp import env_onboarding as env_ob
+
+        lines.append("")
+        lines.append(env_ob.format_env_checklist(compact=True))
+        lines.append("")
+        lines.append("*Say values in plain English — agent writes `.env` for you.*")
 
     lines.append("")
     lines.append(step_ux.compact_onboarding_footer(manual_confirm=bool(next_item.get("manual_confirm"))))
