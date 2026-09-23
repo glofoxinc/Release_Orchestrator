@@ -1,0 +1,5 @@
+{
+  "summary": "Xtreme Fitness - Sales League Report - Change to Filter Logic",
+  "description_plain": "Change Sales League Report filter logic for group/location selection.\n\nTC-01 — clear Location, select one group; Location/table shows clubs for that group only.\nTC-02 — clear all groups; select two or more clubs from different groups; table shows only selected clubs.\nTC-03 — groups cleared; select one club; table shows only that club.\n\nNikhila confirmed working as expected (10 Sep 2026).\nPhilip Dudley approved publish to customer-facing (14 Sep 2026).\n\nBefore: Xtreme Fitness Sales League does not support the requested no-group + multi-location selection behavior.\nAfter: Xtreme Fitness keeps group-selected behavior and, with groups cleared, shows only selected clubs in Location.\n\nPerformance testing: Not performed/documented.",
+  "comment_plain": ""
+}

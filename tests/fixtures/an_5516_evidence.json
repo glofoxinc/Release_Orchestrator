@@ -1,0 +1,5 @@
+{
+  "summary": "Visits Analysis - Member Details - Add Unique Visits column",
+  "description_plain": "Add a Unique Visits column to the Visits Analysis - Member Details paginated report.\n\n1. Unique Visits counts one unique visit per calendar day per member, aligned to the Glofox dashboard.\n2. Example on ticket: 51 event-based visits vs 19 distinct visit days for the same member/period.\n3. Product has not replied to Option A vs Option B on the ticket.\n4. Excel export was requested and not separately signed off.\n5. Performance testing: Not performed/documented.\n\nNot included in this change:\n- Production RLS, workspace access, and capacity settings.\n- Switching to an alternate metric definition not approved on the ticket.\n\nHow it is deployed:\nPublish updated paginated report to Glofox Analyze workspace only.",
+  "comment_plain": "Nikhila Sree Ramisetti on 10 Sep 2026 validated against the Glofox dashboard (one unique visit per calendar day).\n\nBrid confirmed Option B — proceed with Glofox dashboard definition. Excel and PDF checkout mandatory post-deploy."
+}
