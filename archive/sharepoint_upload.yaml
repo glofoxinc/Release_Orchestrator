@@ -1,0 +1,12 @@
+# archived — restore to workspace.yaml and set enabled=true when MS_GRAPH_* ready
+# Requires Entra app with Sites.ReadWrite.All admin consent.
+sharepoint_upload:
+  enabled: false
+  hostname: "abcfinancial.sharepoint.com"
+  site_path: "/sites/ABCFitnessSolutionsLLC-Glofox-Customize"
+  folder_path: "Release Notes/{{quarter}}"
+  remote_name_template: "Release Notes {{version}}.docx"
+  auto_quarter_subfolder: false
+  conflict_behavior: "replace"
+  site_id: ""
+  drive_id: ""

@@ -1,0 +1,33 @@
+# archived — restore to workspace.yaml and set enabled=true when MS_GRAPH_* ready
+# Requires Calendars.ReadWrite (app) on the Entra application.
+teams_schedule:
+  enabled: true
+  organizer_upn: "lakshminarasimhanaidu.yalamarti@abcfitness.com"
+  default_timezone: "Asia/Kolkata"
+  review_duration_minutes: 45
+  deployment_duration_minutes: 180
+  default_attendees:
+    - { email: "VenkataSuryaNagaSushma.Bhamidipati@abcfitness.com", name: "Sushma Bhamidipati" }
+    - { email: "Soumyakant.Mishra@abcfitness.com", name: "Soumyakant Mishra" }
+    - { email: "Trent.Vanest@abcfitness.com", name: "Trent Vanest" }
+  review_attendees: []
+  deployment_attendees: []
+  attendee_groups:
+    review_core:
+      - { email: "VenkataSuryaNagaSushma.Bhamidipati@abcfitness.com", name: "Sushma Bhamidipati" }
+      - { email: "Soumyakant.Mishra@abcfitness.com", name: "Soumyakant Mishra" }
+    deployment_core:
+      - { email: "VenkataSuryaNagaSushma.Bhamidipati@abcfitness.com", name: "Sushma Bhamidipati" }
+      - { email: "Soumyakant.Mishra@abcfitness.com", name: "Soumyakant Mishra" }
+      - { email: "Trent.Vanest@abcfitness.com", name: "Trent Vanest" }
+  templates:
+    review:
+      subject: "Insights Customize BI Ticket Review — {{version}}"
+      default_day_offset: -3
+      default_time: "15:00"
+      attendee_groups: [review_core]
+    deployment:
+      subject: "Insights Customize BI Deployment — {{version}}"
+      default_day_offset: 0
+      default_time: "10:00"
+      attendee_groups: [deployment_core]
