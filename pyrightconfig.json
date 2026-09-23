@@ -1,0 +1,21 @@
+{
+  "exclude": [
+    ".venv",
+    "**/.venv",
+    "**/__pycache__",
+    "**/node_modules",
+    "**/.next",
+    ".pytest_cache",
+    "**/.pytest_cache",
+    "dist",
+    "build",
+    ".git",
+    "workspaces",
+    ".mcp_wizard_sessions"
+  ],
+  "ignore": [
+    ".venv/**",
+    "**/node_modules/**"
+  ],
+  "typeCheckingMode": "basic"
+}
