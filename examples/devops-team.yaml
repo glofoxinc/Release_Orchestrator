@@ -1,0 +1,39 @@
+# Example: DevOps / Infrastructure Team
+# Deployment-focused — no release notes or service tickets needed.
+
+workspace:
+  name: "DevOps Team"
+
+  jira:
+    base_url: "https://yourorg.atlassian.net"
+
+  projects:
+    - key: "OPS"
+      name: "Operations"
+      multi_client: false
+    - key: "INFRA"
+      name: "Infrastructure"
+      multi_client: false
+
+  service_desk:
+    enabled: false
+
+  deployment:
+    environment: "Production"
+
+  release_notes:
+    enabled: false
+
+  apps:
+    ticket_review:
+      enabled: true
+      label: "Ticket Review"
+    release_notes:
+      enabled: false
+      label: "Release Notes"
+    service_ticket:
+      enabled: false
+      label: "Service Ticket"
+    release_deployer:
+      enabled: true
+      label: "Release Deployer"
