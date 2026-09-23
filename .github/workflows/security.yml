@@ -1,0 +1,16 @@
+name: Security
+on:
+  push: {branches: [main]}
+  pull_request: {branches: [main]}
+  schedule: [{cron: '0 0 * * 1'}]
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - run: pip install pip-audit bandit
+      - run: pip-audit -r requirements.txt
+      # Exclude offline analysis helpers and the local Streamlit health probe.
+      - run: bandit -r . -x ./tests,./venv,./.venv,./build,./dist,./scripts/_ref_title_gap.py,./scripts/_analyze_tckt_reference.py,./launcher.pyw -ll

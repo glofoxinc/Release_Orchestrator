@@ -1,0 +1,16 @@
+.git
+.gitignore
+.env
+.venv
+__pycache__
+*.pyc
+.deployment_history.json
+workspaces/*/.deployment_history.json
+tests/
+*.egg-info
+.cursor/
+.pytest_cache/
+.ruff_cache/
+.pre-commit-config.yaml
+*.md
+!templates/**/*.md

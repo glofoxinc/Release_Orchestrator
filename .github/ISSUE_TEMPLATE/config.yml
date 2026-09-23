@@ -1,0 +1,8 @@
+﻿blank_issues_enabled: false
+contact_links:
+  - name: Security report (private)
+    url: https://github.com/abcfitness-insights/.github/security/advisories/new
+    about: Report a security vulnerability privately. Do not open a public issue.
+  - name: ABC Fitness - Insights & Reporting (internal)
+    url: https://abcfinancial.atlassian.net
+    about: Internal users should file Jira tickets in the AN / PIIN / PIC / TCKT projects.
