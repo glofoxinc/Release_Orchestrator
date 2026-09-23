@@ -1,19 +1,5 @@
-"""Daily Review Agent — optional 6 PM fetch + Teams review scheduling."""
+"""Compatibility package — implementation in ``orchestrator/agents/review/``."""
 
-from daily_review_agent.bootstrap import bootstrap
+from pathlib import Path
 
-bootstrap()
-
-from daily_review_agent.config_loader import load_agent_config, readiness_report
-from daily_review_agent.demo_call import run_demo_call
-from daily_review_agent.runner import run_daily_agent
-from daily_review_agent.slack_notify import run_slack_delivery, slack_readiness
-
-__all__ = [
-    "load_agent_config",
-    "readiness_report",
-    "run_daily_agent",
-    "run_demo_call",
-    "run_slack_delivery",
-    "slack_readiness",
-]
+__path__ = [str(Path(__file__).resolve().parent.parent / "orchestrator" / "agents" / "review")]

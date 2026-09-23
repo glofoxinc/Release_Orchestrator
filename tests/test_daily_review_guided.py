@@ -17,7 +17,7 @@ def test_daily_review_advances_to_setup_on_yes():
     first = daily_review_guided.run_daily_review_guided("daily review welcome")
     wid = first["workflow_id"]
     second = daily_review_guided.run_daily_review_guided("yes", workflow_id=wid)
-    assert second.get("step") in {"setup", "mcp", "outlook", "teams"}
+    assert second.get("step") in {"setup", "mcp", "outlook", "teams", "playwright"}
     say = second.get("say_to_user", "")
     assert (
         "setup_report" in second

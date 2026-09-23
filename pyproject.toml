@@ -56,6 +56,21 @@ daily_review = [
     "msal>=1.28.0",
     "pywin32>=306; sys_platform == 'win32'",
 ]
+platform = [
+    "streamlit>=1.36.0",
+    "pywebview>=5.0",
+    "pandas>=2.0",
+]
+mcp = [
+    "requests>=2.32.0",
+    "urllib3>=2.2,<2.6",
+    "chardet>=5,<6",
+    "python-dotenv>=1.0.0",
+    "python-docx>=1.1.0",
+    "pyyaml>=6.0",
+    "jinja2>=3.1",
+    "mcp>=2.0.0",
+]
 
 [project.scripts]
 jira-release-tool = "cli:main"
@@ -68,53 +83,56 @@ Issues = "https://github.com/abcfitness-insights/jira-release-tool/issues"
 
 [tool.setuptools]
 py-modules = [
-    "adf_builder",
-    "ai_enhancer",
-    "ai_ticket_creator",
-    "ai_triage",
-    "approver_validator",
-    "cli",
-    "config",
-    "confluence_publisher",
-    "consolidation",
-    "consolidation_detector",
-    "deploy_ops",
-    "deployment_history",
-    "diff_engine",
-    "exclusion_ops",
-    "jira_client",
-    "jira_teams",
-    "team_scope",
-    "linked_ticket_verifier",
-    "notifier",
-    "release_notes_compare",
-    "release_stats",
-    "shipit_preflight",
-    "request_type_setter",
-    "schedule_time",
-    "service_ticket_plans",
-    "slack_announce",
-    "tckt_reference",
-    "template_engine",
-    "template_library",
-    "ticket_validator",
+    "adf_builder", "ai_enhancer", "ai_ticket_creator", "ai_triage",
+    "approver_validator", "assignment_ops", "browser_automation", "config",
+    "confluence_publisher", "consolidation", "consolidation_detector",
+    "deploy_draft", "deploy_ops", "deploy_prefill", "deployment_history",
+    "diff_engine", "exclusion_ops", "gate_message_content", "github_host_repo",
+    "github_pr_gate", "integration_archive", "integration_readiness",
+    "jira_client", "jira_teams", "linked_ticket_verifier", "ms_graph",
+    "notifier", "operator_signoff", "production_readiness", "recovery_contract",
+    "release_critical", "release_date_confirm", "release_defaults", "release_gates",
+    "release_notes_compare", "release_session", "release_stats", "request_type_setter",
+    "schedule_time", "service_ticket_plans", "session_persist", "session_restore",
+    "sharepoint_upload", "sharepoint_url", "shipit_post_create", "shipit_preflight",
+    "shipit_reference", "shipit_test_mode", "slack_announce", "slack_assignee_notify",
+    "slack_mcp_verify", "slack_message_content", "slack_reference", "tckt_reference",
+    "team_crew", "team_scope", "teams_meeting_content", "teams_schedule",
+    "template_engine", "template_library", "ticket_validator", "workspace_profile",
 ]
 packages = { find = { where = ["."], include = [
-    "common*",
-    "generators*",
-    "release_mcp*",
+    "orchestrator*",
     "mcp_server*",
+    "release_mcp*",
     "release_platform*",
-    "ui*",
     "daily_review_agent*",
+    "generators*",
+    "common*",
+    "persistence*",
+    "ui*",
 ] } }
 include-package-data = true
 
 [tool.setuptools.package-dir]
-ui = "release_platform/ui"
+"" = "orchestrator/core"
+"cli" = "."
+"mcp_server" = "mcp_server"
+"orchestrator" = "orchestrator"
+"release_mcp" = "orchestrator/server"
+"release_platform" = "orchestrator/web"
+"daily_review_agent" = "orchestrator/agents/review"
+"generators" = "orchestrator/generators"
+"common" = "orchestrator/shared/common"
+"persistence" = "orchestrator/shared/persistence"
+"ui" = "orchestrator/web/ui"
 
 [tool.setuptools.package-data]
-"*" = ["templates/**/*", "workspaces/*.yaml", "workspaces/*.yml"]
+"*" = [
+    "assets/templates/**/*",
+    "profiles/workspaces/*.yaml",
+    "profiles/workspaces/*.yml",
+    "orchestrator/agents/review/agent.yaml",
+]
 
 [tool.ruff]
 target-version = "py310"

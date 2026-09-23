@@ -61,7 +61,8 @@ def test_interpret_onboarding():
 def test_interpret_welcome_onboard():
     plan = guided.interpret_message("welcome onboard")
     assert plan["intent"] == "welcome_onboard"
-    assert plan["inputs"].get("interactive_onboarding") is True
+    assert plan["action"] == "beginner_wizard"
+    assert plan["inputs"].get("message") == "welcome onboard"
 
 
 def test_interpret_start_shows_menu():

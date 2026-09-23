@@ -1,0 +1,11 @@
+# MCP chat only (weekly PIC+AN releases) — no Streamlit / platform UI.
+# Install: pip install -r requirements-mcp.txt && pip install -e .
+requests>=2.32.0
+urllib3>=2.2,<2.6
+chardet>=5,<6
+python-dotenv>=1.0.0
+python-docx>=1.1.0
+pyyaml>=6.0
+jinja2>=3.1
+mcp>=2.0.0
+tzdata>=2024.1; sys_platform == "win32"

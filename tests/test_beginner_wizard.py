@@ -13,7 +13,7 @@ def test_starter_template_uses_placeholders():
     from pathlib import Path
 
     raw = json.loads(
-        (Path(__file__).resolve().parent.parent / "templates" / "cursor-mcp.starter.json").read_text(
+        (Path(__file__).resolve().parent.parent / "assets" / "templates" / "cursor-mcp.starter.json").read_text(
             encoding="utf-8"
         )
     )

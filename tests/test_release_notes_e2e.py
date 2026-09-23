@@ -41,7 +41,7 @@ class TestReleaseNotesE2E:
     def test_cli_script(self):
         root = os.path.dirname(os.path.dirname(__file__))
         proc = subprocess.run(
-            [sys.executable, os.path.join(root, "scripts", "test_release_notes_e2e.py")],
+            [sys.executable, os.path.join(root, "orchestrator", "ops", "test_release_notes_e2e.py")],
             cwd=root,
             capture_output=True,
             text=True,

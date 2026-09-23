@@ -4,7 +4,7 @@ Cursor MCP server for guided PIC + AN releases.
 
 | Item | Location |
 |------|----------|
-| **Python package** | `release_mcp/` |
+| **Python package** | `orchestrator/server/` (import: `release_mcp`) |
 | **Run** | `python -m release_mcp` |
 | **Legacy shim** | `python -m mcp_server` (same server) |
 | **Per-step tools** | `release_mcp/steps/` + `release_step_status` MCP tool |
@@ -23,4 +23,5 @@ Cursor MCP server for guided PIC + AN releases.
 }
 ```
 
-Entry chat phrase: **`welcome onboard!`**
+| **Weekly operator page** | `docs/OPERATOR_GUIDE.md` |
+| **First-time setup** | `docs/COMPLETE_ONBOARDING.md` — say **`welcome onboard!`** |

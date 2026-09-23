@@ -355,10 +355,12 @@ class TestExactChannelsAndCcAcceptance:
         assert set(by_name) >= {"insights-customize-squad", "customize-bi-buddies"}
         squad_ids = {p.user_id for p in by_name["insights-customize-squad"].cc}
         buddies_ids = {p.user_id for p in by_name["customize-bi-buddies"].cc}
-        # Sushma, Trent on squad (Soumyakant removed per user request); Trent absent from buddies.
+        # Squad CC: Sushma, Sai Anirudh, Zeke, Eoin; buddies CC = Sushma only.
         assert "U08LDAQ7SDV" in squad_ids  # Sushma
-        assert "U0ASR2XGRPZ" in squad_ids  # Trent
-        assert "U062RM3T87Q" not in squad_ids  # Soumyakant removed from squad
+        assert "U0BSG4ABZC0" in squad_ids  # Sai Anirudh
+        assert "U083R8TP1J9" in squad_ids  # Zeke
+        assert "U01H0UL5JGP" in squad_ids  # Eoin
         assert "U08LDAQ7SDV" in buddies_ids  # Sushma
-        assert "U062RM3T87Q" not in buddies_ids  # buddies CC = Sushma only
-        assert "U0ASR2XGRPZ" not in buddies_ids  # Trent absent from buddies
+        assert "U0BSG4ABZC0" not in buddies_ids
+        assert "U083R8TP1J9" not in buddies_ids
+        assert "U01H0UL5JGP" not in buddies_ids

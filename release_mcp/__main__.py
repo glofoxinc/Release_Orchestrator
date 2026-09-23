@@ -1,4 +1,4 @@
-﻿"""Entry point for `python -m release_mcp`."""
+﻿"""Entry point for ``python -m release_mcp``."""
 
 from release_mcp.server import main
 

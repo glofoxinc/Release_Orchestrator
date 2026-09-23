@@ -44,17 +44,21 @@ def test_build_messages_match_channel_ccs():
 
     assert squad.channel.name == "insights-customize-squad"
     assert buddies.channel.name == "customize-bi-buddies"
-    assert "Trent Vanest" in squad.preview
-    assert "Trent Vanest" not in buddies.preview
-    assert "<@U0ASR2XGRPZ>" in squad.text
-    assert "<@U0ASR2XGRPZ>" not in buddies.text
+    assert "Sai Anirudh Karre" in squad.preview
+    assert "Zeke Brustkern" in squad.preview
+    assert "Eoin George" in squad.preview
+    assert "Sai Anirudh Karre" not in buddies.preview
+    assert "<@U0BSG4ABZC0>" in squad.text
+    assert "<@U083R8TP1J9>" in squad.text
+    assert "<@U01H0UL5JGP>" in squad.text
+    assert "<@U0BSG4ABZC0>" not in buddies.text
     assert "Wednesday, August 05, 2026" in squad.preview
     assert "Our upcoming deployment is scheduled for" in squad.preview
     assert "Production Deployment" in squad.preview
-    assert "SharePoint:" in squad.preview
+    assert "SharePoint — Download:" in squad.preview
+    assert "SharePoint — Folder:" in squad.preview
     assert "Release Notes 2026.3.08.05.docx" in squad.preview
     assert "<@U08LDAQ7SDV>" in squad.text
-    assert "<@U062RM3T87Q>" not in buddies.text
     assert "Sushma Bhamidipati" in buddies.preview
 
 
@@ -92,13 +96,14 @@ def test_operator_gold_standard_buddies_channel_2026_3_09_23():
     preview = buddies.preview
     assert "Our upcoming deployment is scheduled for Wednesday, September 23, 2026." in preview
     assert "Deployment notes and the deployment ticket are below for reference:" in preview
-    assert "SharePoint: Release Notes 2026.3.09.23.docx" in preview
+    assert "SharePoint — Download: Release Notes 2026.3.09.23.docx" in preview
+    assert "SharePoint — Folder:" in preview
     assert (
         "Service Desk: Glofox Insights Customize BI - Prod Deployment - Release Version 2026.3.09.23"
         in preview
     )
     assert "CC: @Sushma Bhamidipati" in preview
-    assert "Trent Vanest" not in preview
+    assert "Sai Anirudh Karre" not in preview
     assert "Thanks!" not in preview
 
 
@@ -120,9 +125,11 @@ def test_shipit_17191_style_message_preview():
     assert "Release Notes 2026.3.09.16.docx" in squad.preview
     assert "Glofox Insights Customize BI - Prod Deployment - Release Version 2026.3.09.16" in squad.preview
     assert "Sushma Bhamidipati" in squad.preview
-    assert "Trent Vanest" in squad.preview
-    assert "Trent Vanest" not in buddies.preview
+    assert "Sai Anirudh Karre" in squad.preview
+    assert "Sai Anirudh Karre" not in buddies.preview
     assert "Sushma Bhamidipati" in buddies.preview
+    assert "SharePoint — Download:" in squad.preview
+    assert "SharePoint — Folder:" in squad.preview
 
 
 def test_load_announce_config_workspace_channels_cc():
@@ -133,7 +140,7 @@ def test_load_announce_config_workspace_channels_cc():
                     {
                         "key": "squad",
                         "name": "insights-customize-squad",
-                        "cc": ["sushma", "trent"],
+                        "cc": ["sushma", "sai_anirudh", "zeke", "eoin"],
                     },
                     {
                         "key": "buddies",
@@ -148,7 +155,7 @@ def test_load_announce_config_workspace_channels_cc():
         "insights-customize-squad",
         "customize-bi-buddies",
     ]
-    assert len(cfg.channels[0].cc) == 2
+    assert len(cfg.channels[0].cc) == 4
     assert len(cfg.channels[1].cc) == 1
 
 
@@ -237,18 +244,18 @@ def test_ensure_canonical_cc_survives_body_edit_without_cc():
     safe = sa.ensure_canonical_cc(edited, channel, for_preview=False)
     assert "Updated body for squad" in safe
     assert safe.rstrip().endswith(sa.format_cc_line(channel, for_preview=False))
-    assert "<@U0ASR2XGRPZ>" in safe
+    assert "<@U0BSG4ABZC0>" in safe
     assert not sa.missing_required_cc_tokens(safe, channel)
 
 
 def test_ensure_canonical_cc_replaces_tampered_cc_line():
-    channel = sa.default_channels()[1]  # buddies — no Trent
+    channel = sa.default_channels()[1]  # buddies — Sushma only
     tampered = "Hello\nThanks!\nCC: @someone-else"
     safe = sa.ensure_canonical_cc(tampered, channel, for_preview=False)
     assert "@someone-else" not in safe
     assert "<@U08LDAQ7SDV>" in safe
-    assert "<@U062RM3T87Q>" not in safe
-    assert "<@U0ASR2XGRPZ>" not in safe
+    assert "<@U0BSG4ABZC0>" not in safe
+    assert "<@U083R8TP1J9>" not in safe
 
 
 def test_validate_announce_config_accepts_workspace_defaults():
@@ -260,7 +267,7 @@ def test_validate_announce_config_accepts_workspace_defaults():
                     {
                         "key": "squad",
                         "name": "insights-customize-squad",
-                        "cc": ["sushma", "trent"],
+                        "cc": ["sushma", "sai_anirudh", "zeke", "eoin"],
                     },
                     {
                         "key": "buddies",
@@ -350,3 +357,21 @@ def test_pending_and_merge_partial_retry():
     merged = sa.merge_send_results(prior, retry)
     assert all(r.ok for r in merged)
     assert len(merged) == 2
+
+
+def test_draft_from_session_includes_download_and_folder_links():
+    draft = sa.draft_from_session(
+        ticket_key="SHIPIT-17191",
+        summary="Glofox Insights Customize BI - Prod Deployment - Release Version 2026.3.09.23",
+        ticket_url="https://abcfinancial.atlassian.net/browse/SHIPIT-17191",
+        planned_start=date(2026, 9, 23),
+        sharepoint_url=(
+            "https://abcfinancial.sharepoint.com/:w:/r/teams/x/Release%20Notes%202026.3.09.23.docx"
+            "?action=default"
+        ),
+    )
+    assert draft.sharepoint_download_url.endswith("action=download")
+    assert "Release Notes/2026" in draft.sharepoint_folder_label
+    preview = sa.build_channel_messages(draft)[0].preview
+    assert "SharePoint — Download:" in preview
+    assert "SharePoint — Folder:" in preview

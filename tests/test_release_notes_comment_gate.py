@@ -100,3 +100,31 @@ def test_fetch_release_notes_extracted_applies_comment_gate(monkeypatch):
     assert result["status"] == "ok"
     assert sorted(result["release_ready_ticket_keys"]) == ["PIC-2"]
     assert result["comment_included_keys"] == ["PIC-2"]
+
+
+def test_fetch_release_notes_extracted_runs_github_pr_gate(monkeypatch):
+    monkeypatch.setattr(rg, "include_ready_for_release_comments_enabled", lambda: False)
+    monkeypatch.setattr(rg, "require_ready_for_release_comment_all", lambda: False)
+
+    release_fetch = {
+        "status": "ok",
+        "extracted": [{"ticket": "PIC-1", "status": "Ready for Release", "summary": "a"}],
+    }
+    pr_gate_result = {
+        "github_pr_gate": {"status": "ok", "blocking_count": 1, "tickets_with_blocking_prs": []},
+        "github_pr_comments": {"status": "ok", "posted": [{"ticket": "PIC-1"}], "dry_run": True},
+        "github_pr_summary": "GitHub PR check — 1 ticket(s) have open PRs not merged:",
+    }
+
+    with patch.object(release_ops, "fetch_release_tickets", return_value=release_fetch):
+        with patch.object(release_ops, "apply_github_pr_gate", return_value=pr_gate_result) as apply_gate:
+            result = release_ops.fetch_release_notes_extracted(
+                selection_mode="status",
+                projects=["PIC"],
+                release_notes_statuses_by_project={"PIC": ["Ready for Release"]},
+                github_pr_comment_dry_run=True,
+            )
+
+    apply_gate.assert_called_once()
+    assert result["github_pr_gate"]["blocking_count"] == 1
+    assert result["github_pr_summary"].startswith("GitHub PR check")

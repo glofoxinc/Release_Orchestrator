@@ -1,0 +1,23 @@
+{
+  "_comment": "Merge mcpServers into ~/.cursor/mcp.json — paths auto-filled by install_mcp_config MCP tool",
+  "mcpServers": {
+    "release-orchestrator": {
+      "_description": "Release Orchestrator — say welcome onboard",
+      "type": "stdio",
+      "command": "{{PYTHON_EXE}}",
+      "args": ["-m", "release_mcp"],
+      "cwd": "{{REPO_ROOT}}",
+      "env": {
+        "TEAMS_MCP_ROOT": "{{REPO_ROOT}}/orchestrator/ops/daily_review",
+        "RELEASE_ORCHESTRATOR_ROOT": "{{REPO_ROOT}}"
+      }
+    },
+    "playwright": {
+      "_description": "Playwright MCP — SharePoint, Slack, calendar (sign in once)",
+      "type": "stdio",
+      "command": "{{NPX_CMD}}",
+      "args": ["-y", "@playwright/mcp@latest", "--browser", "msedge"],
+      "env": {}
+    }
+  }
+}
