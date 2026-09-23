@@ -887,11 +887,17 @@ def _say_to_user(result: dict[str, Any]) -> str:
             body = f"{result.get('prompt') or 'Review release notes draft.'}{comment_block}{gh_block}"
             return step_ux.wrap_user_message(step, body, status=status)
         if step == "ticket_review" and count is not None:
+            missing = preview.get("in_progress_gate") or {}
             held = preview.get("review_comment_gate") or {}
             held_lines = ""
+            if missing.get("held_back_keys"):
+                keys = ", ".join(missing["held_back_keys"])
+                held_lines = (
+                    f"\n\nHeld back (no **ready for review** Jira comment): **{keys}**"
+                )
             if held.get("held_back_keys"):
                 keys = ", ".join(held["held_back_keys"])
-                held_lines = f"\n\nHeld back (already review-complete in Jira): **{keys}**"
+                held_lines += f"\n\nHeld back (already review-complete in Jira): **{keys}**"
             assignee_lines = _format_assignee_check(preview)
             assignee_block = f"\n\n{assignee_lines}" if assignee_lines else ""
             body = f"Found **{count}** ticket(s) ready for review.{held_lines}{assignee_block}"
@@ -1057,15 +1063,24 @@ def run_guided(
         count = int(body.get("ticket_count") or 0)
         formatted = str(body.get("formatted_list") or "").strip()
         status = str(body.get("status") or "error")
+        held_back = body.get("held_back_keys") or []
+        held_note = ""
+        if held_back:
+            held_note = (
+                f"\n\nHeld back (no **ready for release** comment): **{', '.join(held_back)}**"
+            )
         if status == "ok" and formatted:
             prompt = (
                 f"**{count} release-ready ticket(s)** — list only (not locked):\n\n"
-                f"{formatted}\n\n"
+                f"{formatted}{held_note}\n\n"
                 "Next: **fetch review tickets** to lock for release · "
                 "**create release notes** · **schedule review call**."
             )
         elif status == "ok":
-            prompt = "No release-ready tickets found for the configured statuses."
+            prompt = (
+                "No release-ready tickets with a ready-for-release Jira comment."
+                + held_note
+            )
         else:
             prompt = str(body.get("message") or "Could not fetch release tickets.")
         body = {
