@@ -146,18 +146,25 @@ def _ensure_ticket_snapshot(session: dict[str, Any]) -> tuple[dict[str, Any], di
         )
     inputs = dict(session.get("inputs") or {})
     selection_mode = str(inputs.get("selection_mode") or "fix_version").strip()
-    if selection_mode == "status":
-        from release_mcp import welcome as welcome_mod
+    from release_mcp import welcome as welcome_mod
 
-        projects = _selected_projects(inputs)
+    projects = _selected_projects(inputs)
+    team_map = welcome_mod.team_ids_map_for_projects(projects, inputs)
+    if selection_mode == "status":
         rn_statuses = welcome_mod.release_notes_default_statuses_by_project(projects)
-        team_map = welcome_mod.team_ids_map_for_projects(projects, inputs)
-        fetch = release_ops.fetch_release_tickets(
+        rn_result = release_ops.fetch_release_notes_extracted(
             selection_mode="status",
             projects=projects,
-            statuses_by_project=rn_statuses,
+            release_notes_statuses_by_project=rn_statuses,
             jira_team_ids_by_project=team_map or None,
         )
+        fetch = {
+            "status": rn_result.get("status"),
+            "extracted": rn_result.get("extracted") or [],
+            "by_project": (rn_result.get("fetch") or {}).get("by_project") or {},
+            "projects": projects,
+            "total_tickets": len(rn_result.get("extracted") or []),
+        }
     else:
         version = str(inputs.get("version_name") or "").strip()
         if not version:
@@ -167,7 +174,20 @@ def _ensure_ticket_snapshot(session: dict[str, Any]) -> tuple[dict[str, Any], di
                 prompt="Standalone mode requires version_name to fetch tickets from Jira.",
                 questions=[_question("version_name", "Fix version name (e.g. 2026.3.08.12)")],
             )
-        fetch = _fetch_projects(inputs)
+        rn_result = release_ops.fetch_release_notes_extracted(
+            selection_mode="fix_version",
+            projects=projects,
+            version_name=version,
+            jira_team_ids_by_project=team_map or None,
+        )
+        fetch = {
+            "status": rn_result.get("status"),
+            "extracted": rn_result.get("extracted") or [],
+            "by_project": (rn_result.get("fetch") or {}).get("by_project") or {},
+            "projects": projects,
+            "total_tickets": len(rn_result.get("extracted") or []),
+            "message": rn_result.get("message"),
+        }
     if fetch.get("status") == "blocked":
         return session, _response(session, status="blocked", prompt="Team scope blocked ticket fetch.", preview=fetch)
     if fetch.get("status") != "ok" or fetch.get("missing_projects"):
@@ -969,8 +989,10 @@ def _process_ticket_review(session: dict[str, Any]) -> dict[str, Any]:
             session,
             status="blocked",
             prompt=(
-                "No tickets left after comment filters — In Progress needs a 'ready for review' "
-                "comment; tickets with 'review done' comments are excluded. Move release-ready "
+                "No tickets left after comment filters — every ticket needs a "
+                "'ready for review' Jira comment (status alone is not enough); "
+                "tickets with 'review done' comments are excluded. "
+                "Move release-ready "
                 "tickets to Ready for Release / QA or pick **start with release notes**."
             ),
             preview={
@@ -1049,6 +1071,13 @@ def _process_ticket_review(session: dict[str, Any]) -> dict[str, Any]:
         "excluded_ticket_keys": excluded,
         "tickets_by_project": {key: value.get("tickets", []) for key, value in fetch["by_project"].items()},
     }
+    if in_progress_payload.get("held_back"):
+        preview["in_progress_gate"] = {
+            "held_back_count": len(in_progress_payload.get("held_back") or []),
+            "held_back_keys": in_progress_payload.get("held_back_keys") or [],
+            "held_back": in_progress_payload.get("held_back") or [],
+            "phrases": in_progress_payload.get("phrases") or [],
+        }
     if review_comment_payload and review_comment_payload.get("held_back"):
         preview["review_comment_gate"] = {
             "held_back_count": len(review_comment_payload.get("held_back") or []),
@@ -1103,6 +1132,11 @@ def _process_ticket_review(session: dict[str, Any]) -> dict[str, Any]:
         + (
             " Pre-review gate removed tickets that are not review-ready."
             if pre_review_payload and pre_review_payload.get("blocked_count")
+            else ""
+        )
+        + (
+            " Tickets missing a ready-for-review Jira comment were held back."
+            if in_progress_payload.get("held_back")
             else ""
         )
         + (

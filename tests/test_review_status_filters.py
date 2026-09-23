@@ -19,7 +19,26 @@ def test_in_progress_requires_ready_for_review_comment(monkeypatch):
     ]
     result = rg.filter_extracted_in_progress_review_candidates(extracted)
     kept_keys = {row["ticket"] for row in result["kept"]}
-    assert kept_keys == {"PIC-1", "PIC-3"}
+    assert kept_keys == {"PIC-1"}
+    assert set(result["held_back_keys"]) == {"PIC-2", "PIC-3"}
+
+
+def test_review_status_requires_ready_for_review_comment(monkeypatch):
+    monkeypatch.setattr(rg.jira_client, "get_issue_comments", lambda _key: [])
+    extracted = [{"ticket": "PIC-9", "status": "Review", "summary": "no comment"}]
+    result = rg.filter_extracted_in_progress_review_candidates(extracted)
+    assert result["kept"] == []
+    assert result["held_back_keys"] == ["PIC-9"]
+
+
+def test_ready_for_release_requires_comment_all_statuses(monkeypatch):
+    monkeypatch.setattr(rg.jira_client, "get_issue_comments", lambda key: [{"body": "ready for release"}] if key == "PIC-1" else [])
+    extracted = [
+        {"ticket": "PIC-1", "status": "Ready for Release", "summary": "has comment"},
+        {"ticket": "PIC-2", "status": "Ready for Release", "summary": "status only"},
+    ]
+    result = rg.filter_extracted_ready_for_release_comments(extracted)
+    assert [row["ticket"] for row in result["kept"]] == ["PIC-1"]
     assert result["held_back_keys"] == ["PIC-2"]
 
 

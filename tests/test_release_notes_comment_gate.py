@@ -58,7 +58,7 @@ def test_merge_release_ready_comment_candidates(monkeypatch):
         )
 
     keys = {row["ticket"] for row in result["extracted"]}
-    assert keys == {"PIC-1", "PIC-100"}
+    assert keys == {"PIC-100"}
     assert result["comment_included_keys"] == ["PIC-100"]
 
 
@@ -98,5 +98,5 @@ def test_fetch_release_notes_extracted_applies_comment_gate(monkeypatch):
             )
 
     assert result["status"] == "ok"
-    assert sorted(result["release_ready_ticket_keys"]) == ["PIC-1", "PIC-2"]
+    assert sorted(result["release_ready_ticket_keys"]) == ["PIC-2"]
     assert result["comment_included_keys"] == ["PIC-2"]

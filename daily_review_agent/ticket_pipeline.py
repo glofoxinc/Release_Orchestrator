@@ -8,7 +8,8 @@ from daily_review_agent.assignee_scope import TicketScopeConfig, filter_assignee
 from daily_review_agent.config_loader import AgentConfig
 from daily_review_agent.review_filter import filter_already_reviewed
 from daily_review_agent.ticket_fetch import fetch_review_tickets
-from release_gates import issue_project_key
+from release_gates import filter_extracted_in_progress_review_candidates, issue_project_key
+from release_mcp.release_ops import extracted_from_jira_issue
 
 
 def _rebuild_by_project(by_project: dict[str, Any], kept_issues: list[dict]) -> dict[str, Any]:
@@ -36,7 +37,17 @@ def resolve_review_issues(cfg: AgentConfig) -> dict[str, Any]:
     scoped, skipped_scope = filter_assignee_scope(raw_issues, scope)
     kept, skipped_reviewed = filter_already_reviewed(scoped, cfg.review_filter)
 
+    extracted = [extracted_from_jira_issue(issue) for issue in kept]
+    comment_gate = filter_extracted_in_progress_review_candidates(extracted)
+    kept_keys = {
+        str(row.get("ticket") or "").upper()
+        for row in (comment_gate.get("kept") or [])
+        if str(row.get("ticket") or "").strip()
+    }
+    kept = [issue for issue in kept if str(issue.get("key") or "").upper() in kept_keys]
+
     fetch["issues"] = kept
+    fetch["skipped_missing_review_comment"] = comment_gate.get("held_back") or []
     fetch["total"] = len(kept)
     fetch["raw_total"] = len(raw_issues)
     fetch["skipped_outside_squad"] = skipped_scope

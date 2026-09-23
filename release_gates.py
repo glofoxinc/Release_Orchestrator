@@ -325,9 +325,12 @@ def keys_matching_assignee_patterns(
 
 
 def ready_for_review_comment_phrases() -> tuple[str, ...]:
-    raw = _section("pre_review").get("ready_for_review_phrases") or list(
-        DEFAULT_READY_FOR_REVIEW_PHRASES
-    )
+    ticket_review = getattr(config, "TICKET_REVIEW", {}) or {}
+    raw = ticket_review.get("ready_for_review_comment_phrases")
+    if not raw:
+        raw = _section("pre_review").get("ready_for_review_phrases") or list(
+            DEFAULT_READY_FOR_REVIEW_PHRASES
+        )
     if not isinstance(raw, list):
         raw = list(DEFAULT_READY_FOR_REVIEW_PHRASES)
     values = tuple(str(s).strip().lower() for s in raw if str(s).strip())
@@ -360,16 +363,42 @@ def ticket_has_ready_for_review_comment(issue_key: str) -> tuple[bool, str]:
     return False, ""
 
 
+def require_ready_for_review_comment_all() -> bool:
+    """When true, Step 1 requires a ready-for-review Jira comment on every ticket."""
+    section = getattr(config, "TICKET_REVIEW", {}) or {}
+    return bool(section.get("require_ready_for_review_comment_all", True))
+
+
+def statuses_requiring_ready_for_review_comment() -> frozenset[str]:
+    """Jira statuses that need a ready-for-review comment (when not require_all)."""
+    section = getattr(config, "TICKET_REVIEW", {}) or {}
+    raw = section.get("require_ready_for_review_comment_statuses")
+    if raw is None:
+        defaults = ("In Progress", "Review", "In Review")
+    elif isinstance(raw, list):
+        defaults = tuple(str(s).strip() for s in raw if str(s).strip())
+    else:
+        defaults = ("In Progress", "Review", "In Review")
+    return frozenset(s.lower() for s in defaults if s)
+
+
+def _item_requires_ready_for_review_comment(item: dict) -> bool:
+    if require_ready_for_review_comment_all():
+        return True
+    status = str(item.get("status") or "").strip().lower()
+    return status in statuses_requiring_ready_for_review_comment()
+
+
 def filter_extracted_in_progress_review_candidates(
     extracted: Iterable[dict],
 ) -> dict[str, Any]:
-    """Keep In Progress tickets only when a comment says ready for review."""
+    """Keep tickets only when a Jira comment says ready for review (status alone is not enough)."""
     kept: list[dict] = []
     held_back: list[dict] = []
     for item in extracted:
         key = str(item.get("ticket") or item.get("key") or "").strip().upper()
-        status = str(item.get("status") or "").strip().lower()
-        if status != "in progress":
+        status = str(item.get("status") or "").strip()
+        if not _item_requires_ready_for_review_comment(item):
             kept.append(item)
             continue
         ready, snippet = ticket_has_ready_for_review_comment(key)
@@ -380,8 +409,11 @@ def filter_extracted_in_progress_review_candidates(
             {
                 "key": key,
                 "summary": str(item.get("summary") or ""),
-                "status": str(item.get("status") or ""),
-                "reason": "In Progress without ready-for-review comment",
+                "status": status,
+                "reason": (
+                    f"{status or 'Ticket'} without ready-for-review comment "
+                    "(Jira status alone does not mean review-ready)"
+                ),
                 "comment_snippet": snippet,
             }
         )
@@ -391,6 +423,8 @@ def filter_extracted_in_progress_review_candidates(
         "held_back": held_back,
         "held_back_keys": [row["key"] for row in held_back if row.get("key")],
         "phrases": list(ready_for_review_comment_phrases()),
+        "require_all": require_ready_for_review_comment_all(),
+        "required_statuses": sorted(statuses_requiring_ready_for_review_comment()),
     }
 
 
@@ -402,6 +436,55 @@ def _release_notes_section() -> dict[str, Any]:
 def include_ready_for_release_comments_enabled() -> bool:
     """Include tickets whose Jira comments say ready for release (Release Notes fetch)."""
     return bool(_release_notes_section().get("include_ready_for_release_comments", True))
+
+
+def require_ready_for_release_comment_all() -> bool:
+    """When true, Release Notes requires a ready-for-release Jira comment on every ticket."""
+    return bool(_release_notes_section().get("require_ready_for_release_comment_all", True))
+
+
+def filter_extracted_ready_for_release_comments(
+    extracted: Iterable[dict],
+) -> dict[str, Any]:
+    """Keep release-notes tickets only when a Jira comment says ready for release."""
+    if not require_ready_for_release_comment_all():
+        seq = list(extracted)
+        return {
+            "status": "disabled",
+            "kept": seq,
+            "held_back": [],
+            "held_back_keys": [],
+        }
+
+    kept: list[dict] = []
+    held_back: list[dict] = []
+    for item in extracted:
+        key = str(item.get("ticket") or item.get("key") or "").strip().upper()
+        status = str(item.get("status") or "").strip()
+        ready, snippet = ticket_has_ready_for_release_comment(key)
+        if ready:
+            kept.append(item)
+            continue
+        held_back.append(
+            {
+                "key": key,
+                "summary": str(item.get("summary") or ""),
+                "status": status,
+                "reason": (
+                    f"{status or 'Ticket'} without ready-for-release comment "
+                    "(Jira status alone does not mean release-ready)"
+                ),
+                "comment_snippet": snippet,
+            }
+        )
+    return {
+        "status": "ok",
+        "kept": kept,
+        "held_back": held_back,
+        "held_back_keys": [row["key"] for row in held_back if row.get("key")],
+        "phrases": list(ready_for_release_comment_phrases()),
+        "require_all": True,
+    }
 
 
 def ready_for_release_comment_phrases() -> tuple[str, ...]:
