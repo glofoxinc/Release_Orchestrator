@@ -1,0 +1,7 @@
+Hi {{ assignee_name }},
+
+*{{ ticket_key }}* did not pass QA for{% if version_name %} release *{{ version_name }}*{% else %} this release{% endif %} (status: *{{ status }}*) and will be excluded from Release Notes and deployment.
+Please update to one of: {{ passed_statuses }}.
+
+Summary: {{ summary }}
+Link: {{ ticket_url }}
