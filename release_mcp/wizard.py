@@ -515,6 +515,63 @@ def _ticket_keys(extracted: list[dict]) -> list[str]:
     return [str(item.get("ticket") or "") for item in extracted if item.get("ticket")]
 
 
+def _ticket_row_from_extracted(item: dict) -> dict:
+    key = str(item.get("ticket") or "").strip().upper()
+    return {
+        "key": key,
+        "summary": str(item.get("summary") or ""),
+        "status": str(item.get("status") or ""),
+        "type": str(item.get("type") or ""),
+        "client": str(item.get("client") or ""),
+        "report": str(item.get("report") or ""),
+        "assignee": str(item.get("assignee") or ""),
+    }
+
+
+def _sync_fetch_by_project_to_extracted(
+    fetch: dict[str, Any],
+    extracted: list[dict],
+) -> dict[str, Any]:
+    """Keep ticket_fetch.by_project rows aligned with the post-filter extracted list."""
+    kept_keys = {
+        str(item.get("ticket") or "").strip().upper()
+        for item in extracted
+        if str(item.get("ticket") or "").strip()
+    }
+    if not kept_keys:
+        return {**fetch, "extracted": extracted}
+
+    by_project: dict[str, Any] = {}
+    for pk, block in (fetch.get("by_project") or {}).items():
+        row = dict(block) if isinstance(block, dict) else {}
+        tickets = [
+            ticket
+            for ticket in (row.get("tickets") or [])
+            if str(ticket.get("key") or "").strip().upper() in kept_keys
+        ]
+        row["tickets"] = tickets
+        row["count"] = len(tickets)
+        by_project[str(pk).strip().upper()] = row
+
+    for item in extracted:
+        key = str(item.get("ticket") or "").strip().upper()
+        if not key or key not in kept_keys:
+            continue
+        pk = str(item.get("project") or (key.split("-", 1)[0] if "-" in key else "")).strip().upper()
+        if not pk:
+            continue
+        project_block = by_project.setdefault(pk, {"tickets": []})
+        tickets = list(project_block.get("tickets") or [])
+        if any(str(ticket.get("key") or "").strip().upper() == key for ticket in tickets):
+            continue
+        tickets.append(_ticket_row_from_extracted(item))
+        project_block["tickets"] = tickets
+        project_block["count"] = len(tickets)
+        by_project[pk] = project_block
+
+    return {**fetch, "extracted": extracted, "by_project": by_project}
+
+
 def _effective_extracted(session: dict[str, Any]) -> list[dict]:
     """Post-QA filtered extracted list when release notes step has run."""
     artifacts = session.get("artifacts") or {}
@@ -961,29 +1018,7 @@ def _process_ticket_review(session: dict[str, Any]) -> dict[str, Any]:
     )
     if outside_squad_payload.get("status") == "ok":
         extracted = list(outside_squad_payload.get("kept") or extracted)
-    if held_keys:
-        fetch = {
-            **fetch,
-            "extracted": extracted,
-            "by_project": {
-                pk: {
-                    **block,
-                    "tickets": [
-                        t
-                        for t in (block.get("tickets") or [])
-                        if str(t.get("key") or "").upper() not in held_keys
-                    ],
-                    "count": len(
-                        [
-                            t
-                            for t in (block.get("tickets") or [])
-                            if str(t.get("key") or "").upper() not in held_keys
-                        ]
-                    ),
-                }
-                for pk, block in (fetch.get("by_project") or {}).items()
-            },
-        }
+    fetch = _sync_fetch_by_project_to_extracted(fetch, extracted)
     if not extracted and (review_comment_payload or in_progress_payload.get("held_back_keys")):
         return _response(
             session,
