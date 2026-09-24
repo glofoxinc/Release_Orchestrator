@@ -9,8 +9,8 @@ $RepoRoot = (Resolve-Path (Join-Path $PSScriptRoot "..\..\..")).Path
 $Python = Join-Path $RepoRoot ".venv\Scripts\python.exe"
 if (-not (Test-Path $Python)) { $Python = "python" }
 
-$SessionMarker = Join-Path $RepoRoot "daily_review_agent\.state\playwright-outlook-profile\.outlook_session_ok"
-$LastRun = Join-Path $RepoRoot "daily_review_agent\.state\last_run.json"
+$SessionMarker = Join-Path $RepoRoot "orchestrator\agents\review\.state\playwright-outlook-profile\.outlook_session_ok"
+$LastRun = Join-Path $RepoRoot "orchestrator\agents\review\.state\last_run.json"
 $Node = (Get-Command node -ErrorAction SilentlyContinue).Source
 if (-not $Node) { $Node = "node" }
 $Bridge = Join-Path $PSScriptRoot "teams_bridge.mjs"
@@ -63,7 +63,7 @@ $steps = @(
         Name = "Playwright MCP fallback module present"
         Command = 'daily_review_calendar_playwright_handoff in Cursor'
         Check = {
-            Test-Path (Join-Path $RepoRoot "daily_review_agent\calendar_playwright_handoff.py")
+            Test-Path (Join-Path $RepoRoot "orchestrator\agents\review\calendar_playwright_handoff.py")
         }
     }
 )
@@ -83,7 +83,7 @@ Write-Host "Passed: $passed / $($steps.Count)" -ForegroundColor $(if ($passed -e
 Write-Host ""
 Write-Host "When all steps pass, set enabled: true in orchestrator/agents/review/agent.yaml" -ForegroundColor Cyan
 Write-Host "Then register Task Scheduler:" -ForegroundColor Cyan
-Write-Host "  .\scripts\daily_review\register_scheduled_task.ps1" -ForegroundColor DarkGray
+Write-Host "  .\orchestrator\ops\daily_review\register_scheduled_task.ps1" -ForegroundColor DarkGray
 
 if ($passed -lt $steps.Count) { exit 1 }
 exit 0

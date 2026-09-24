@@ -8,7 +8,7 @@ $Python = Join-Path $RepoRoot ".venv\Scripts\python.exe"
 if (-not (Test-Path $Python)) { $Python = "python" }
 $ModuleArgs = "-m daily_review_agent --live --force"
 $TaskName = "DailyReviewAgent-Glofox"
-$OutlookMarker = Join-Path $RepoRoot "daily_review_agent\.state\playwright-outlook-profile\.outlook_session_ok"
+$OutlookMarker = Join-Path $RepoRoot "orchestrator\agents\review\.state\playwright-outlook-profile\.outlook_session_ok"
 
 if (-not (Test-Path $OutlookMarker)) {
     Write-Error "Outlook web session not ready — run: python -m daily_review_agent --outlook-login"

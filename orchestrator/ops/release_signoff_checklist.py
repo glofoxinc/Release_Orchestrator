@@ -22,7 +22,7 @@ import sys
 from typing import Any
 
 _ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-_SCRIPTS = os.path.join(_ROOT, "release_mcp", "scripts")
+_SCRIPTS = os.path.join(_ROOT, "orchestrator", "ops")
 if _ROOT not in sys.path:
     sys.path.insert(0, _ROOT)
 
