@@ -115,4 +115,6 @@ orchestrator/zones/platform/ops/daily_review/node_modules/
 # Release Orchestrator debug / operator artifacts (never commit)
 scratch/
 _pytest_happy_debug*/
+_ref_SHIPIT-*
+_shipit*
 _github_push_batches/

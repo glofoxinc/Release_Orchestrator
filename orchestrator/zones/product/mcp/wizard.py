@@ -532,7 +532,9 @@ def _sync_fetch_by_project_to_extracted(
 ) -> dict[str, Any]:
     """Keep ticket_fetch.by_project rows aligned with the post-filter extracted list."""
     kept_keys = {
-        str(item.get("ticket") or "").strip().upper() for item in extracted if str(item.get("ticket") or "").strip()
+        str(item.get("ticket") or "").strip().upper()
+        for item in extracted
+        if str(item.get("ticket") or "").strip()
     }
     if not kept_keys:
         return {**fetch, "extracted": extracted}
@@ -541,7 +543,9 @@ def _sync_fetch_by_project_to_extracted(
     for pk, block in (fetch.get("by_project") or {}).items():
         row = dict(block) if isinstance(block, dict) else {}
         tickets = [
-            ticket for ticket in (row.get("tickets") or []) if str(ticket.get("key") or "").strip().upper() in kept_keys
+            ticket
+            for ticket in (row.get("tickets") or [])
+            if str(ticket.get("key") or "").strip().upper() in kept_keys
         ]
         row["tickets"] = tickets
         row["count"] = len(tickets)
