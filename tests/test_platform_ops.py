@@ -229,7 +229,7 @@ class TestVerifyIntegrationsHelpers:
         from pathlib import Path
 
         monkeypatch.setenv("MOCK_MODE", "true")
-        path = Path(__file__).resolve().parents[1] / "scripts" / "verify_integrations.py"
+        path = Path(__file__).resolve().parents[1] / "orchestrator" / "ops" / "verify_integrations.py"
         spec = importlib.util.spec_from_file_location("verify_integrations", path)
         assert spec and spec.loader
         vi = importlib.util.module_from_spec(spec)
@@ -291,7 +291,7 @@ class TestVerifyWorkspaceAndServiceDesk:
         from pathlib import Path
 
         monkeypatch.setenv("MOCK_MODE", "true")
-        path = Path(__file__).resolve().parents[1] / "scripts" / "verify_integrations.py"
+        path = Path(__file__).resolve().parents[1] / "orchestrator" / "ops" / "verify_integrations.py"
         spec = importlib.util.spec_from_file_location("verify_integrations", path)
         assert spec and spec.loader
         vi = importlib.util.module_from_spec(spec)

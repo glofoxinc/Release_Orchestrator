@@ -177,7 +177,7 @@ class TestCreateTicket:
             "description": "body",
             "component": "General",
         }
-        with patch("release_mcp.server.parse_ticket_from_nl", return_value=parsed):
+        with patch("ai_ticket_creator.parse_ticket_from_nl", return_value=parsed):
             out = server.create_ticket(
                 "PIC",
                 "something broke",
@@ -199,9 +199,9 @@ class TestCreateTicket:
             "description": "body",
             "component": "General",
         }
-        with patch("release_mcp.server.parse_ticket_from_nl", return_value=parsed), \
+        with patch("ai_ticket_creator.parse_ticket_from_nl", return_value=parsed), \
              patch("jira_client.resolve_issue_type_id", return_value="10001") as mock_type, \
-             patch("release_mcp.server.build_jira_create_fields", return_value={}) as mock_fields, \
+             patch("ai_ticket_creator.build_jira_create_fields", return_value={}) as mock_fields, \
              patch("jira_client.create_issue", return_value={"key": "PIC-99"}) as mock_create:
             out = server.create_ticket(
                 "PIC",
@@ -224,7 +224,7 @@ class TestCreateTicket:
 
     def test_dry_run_skips_jira_create(self):
         with patch(
-            "release_mcp.server.parse_ticket_from_nl",
+            "ai_ticket_creator.parse_ticket_from_nl",
             return_value={"summary": "x", "issue_type": "Task", "priority": "Medium"},
         ), patch("jira_client.create_issue") as mock_create:
             server.create_ticket("PIC", "desc", dry_run=True)
@@ -233,7 +233,7 @@ class TestCreateTicket:
 
     def test_create_ticket_defaults_to_dry_run(self):
         with patch(
-            "release_mcp.server.parse_ticket_from_nl",
+            "ai_ticket_creator.parse_ticket_from_nl",
             return_value={"summary": "x", "issue_type": "Task", "priority": "Medium"},
         ), patch("jira_client.create_issue") as mock_create:
             server.create_ticket("PIC", "desc")

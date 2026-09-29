@@ -53,7 +53,7 @@ class TestTeamsE2ECli:
     def test_dry_run_script(self):
         root = Path(__file__).resolve().parent.parent
         proc = subprocess.run(
-            [sys.executable, str(root / "scripts" / "test_teams_schedule.py"), "--dry-run"],
+            [sys.executable, str(root / "orchestrator" / "ops" / "test_teams_schedule.py"), "--dry-run"],
             cwd=str(root),
             capture_output=True,
             text=True,

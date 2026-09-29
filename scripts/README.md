@@ -1,14 +1,11 @@
 # Scripts moved
 
-All operational scripts live under **`release_mcp/scripts/`** (part of the Release Orchestrator MCP package).
-
-Examples:
+All operational scripts live under **`orchestrator/ops/`**.
 
 ```powershell
-python release_mcp/scripts/verify_integrations.py --check=all
-python release_mcp/scripts/complete_launch.py --dry-run-version VERSION --sharepoint-url URL
-.\release_mcp\scripts\daily_review\setup.ps1
-.\release_mcp\scripts\daily_review\pilot_signoff.ps1
+python orchestrator/ops/verify_integrations.py --check=all
+python orchestrator/ops/complete_launch.py
+.\orchestrator\ops\setup_e2e.ps1
 ```
 
-Do not add new top-level scripts here — add them under `release_mcp/scripts/`.
+Product code lives under **`orchestrator/`** — see [REPO_LAYOUT.md](../REPO_LAYOUT.md).

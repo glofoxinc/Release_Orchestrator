@@ -1,0 +1,83 @@
+# Canonical deployment Slack announce references — Customize BI / Glofox Analytics.
+# Used by slack_reference.py and MCP slack_reference / slack_mcp_e2e_handoff.
+#
+# Operator-approved copy (2026-09-23): dual SharePoint links + updated squad CC list.
+
+gold_standard_keys:
+  - SHIPIT-17191
+  - SHIPIT-17036
+
+body_rules:
+  - "Open with Hello Team,"
+  - "Line 2: Our upcoming deployment is scheduled for {Weekday, Month DD, YYYY}."
+  - "Blank line, then: Deployment notes and the deployment ticket are below for reference:"
+  - "Blank line, then SharePoint — Download: Release Notes {version}.docx (direct download link)"
+  - "SharePoint — Folder: Release Notes/{quarter} (exact quarter folder link)"
+  - "Service Desk: full ticket title — e.g. Glofox Insights Customize BI - Prod Deployment - Release Version {version}"
+  - "Close with CC: line with required mentions per channel (no Thanks! line)"
+  - "Squad CC: Sushma, Sai Anirudh, Zeke, Eoin. Buddies CC: Sushma only."
+
+channels:
+  squad:
+    name: insights-customize-squad
+    cc_display: "@Sushma Bhamidipati @Sai Anirudh Karre @Zeke Brustkern @Eoin George"
+    cc_keys: [sushma, sai_anirudh, zeke, eoin]
+  buddies:
+    name: customize-bi-buddies
+    cc_display: "@Sushma Bhamidipati"
+    cc_keys: [sushma]
+
+examples:
+  SHIPIT-17191:
+    ticket_key: SHIPIT-17191
+    version: "2026.3.09.23"
+    deploy_day: "Wednesday, September 23, 2026"
+    sharepoint_label: "Release Notes 2026.3.09.23.docx"
+    jira_url: "https://abcfinancial.atlassian.net/browse/SHIPIT-17191"
+    ticket_summary: "Glofox Insights Customize BI - Prod Deployment - Release Version 2026.3.09.23"
+    note: "Current gold standard — operator-approved 2026-09-23"
+    squad_preview: |
+      Hello Team,
+      Our upcoming deployment is scheduled for Wednesday, September 23, 2026.
+      Deployment notes and the deployment ticket are below for reference:
+
+      SharePoint — Download: Release Notes 2026.3.09.23.docx
+      SharePoint — Folder: Release Notes/2026 - Q3
+      Service Desk: Glofox Insights Customize BI - Prod Deployment - Release Version 2026.3.09.23
+      CC: @Sushma Bhamidipati @Sai Anirudh Karre @Zeke Brustkern @Eoin George
+    buddies_preview: |
+      Hello Team,
+      Our upcoming deployment is scheduled for Wednesday, September 23, 2026.
+      Deployment notes and the deployment ticket are below for reference:
+
+      SharePoint — Download: Release Notes 2026.3.09.23.docx
+      SharePoint — Folder: Release Notes/2026 - Q3
+      Service Desk: Glofox Insights Customize BI - Prod Deployment - Release Version 2026.3.09.23
+      CC: @Sushma Bhamidipati
+
+  SHIPIT-17036:
+    ticket_key: SHIPIT-17036
+    version: "2026.3.09.14"
+    deploy_day: "Monday, September 14, 2026"
+    sharepoint_label: "Release Notes 2026.3.09.14.docx"
+    jira_url: "https://abcfinancial.atlassian.net/browse/SHIPIT-17036"
+    ticket_summary: "Glofox Insights Customize BI - Prod Deployment - Release Version 2026.3.09.14"
+    note: "Earlier release — same body structure"
+    squad_preview: |
+      Hello Team,
+      Our upcoming deployment is scheduled for Monday, September 14, 2026.
+      Deployment notes and the deployment ticket are below for reference:
+
+      SharePoint — Download: Release Notes 2026.3.09.14.docx
+      SharePoint — Folder: Release Notes/2026 - Q3
+      Service Desk: Glofox Insights Customize BI - Prod Deployment - Release Version 2026.3.09.14
+      CC: @Sushma Bhamidipati @Sai Anirudh Karre @Zeke Brustkern @Eoin George
+    buddies_preview: |
+      Hello Team,
+      Our upcoming deployment is scheduled for Monday, September 14, 2026.
+      Deployment notes and the deployment ticket are below for reference:
+
+      SharePoint — Download: Release Notes 2026.3.09.14.docx
+      SharePoint — Folder: Release Notes/2026 - Q3
+      Service Desk: Glofox Insights Customize BI - Prod Deployment - Release Version 2026.3.09.14
+      CC: @Sushma Bhamidipati

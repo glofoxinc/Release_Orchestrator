@@ -1,6 +1,6 @@
 # Release Orchestrator MCP — Guided E2E (v3.4)
 
-Platform-parity release workflow **and Daily Review Agent** in one MCP server (`python -m mcp_server`).
+Platform-parity release workflow **and Daily Review Agent** in one MCP server (`python -m release_mcp`).
 
 ## Quick start
 
@@ -27,7 +27,7 @@ Platform-parity release workflow **and Daily Review Agent** in one MCP server (`
      "mcpServers": {
        "release-orchestrator": {
          "command": "C:/Users/YOU/ZABC/projects/done/small/jira-release-tool/.venv/Scripts/python.exe",
-         "args": ["-m", "mcp_server"]
+         "args": ["-m", "release_mcp"]
        }
      }
    }
@@ -36,13 +36,13 @@ Platform-parity release workflow **and Daily Review Agent** in one MCP server (`
 3. Reload MCP. In chat say:
    - **onboarding** — first clone setup
    - **production ready** — readiness (releases + daily review)
-   - **welcome** — start release
+   - **week release** — start weekly PIC+AN (see [OPERATOR_GUIDE.md](./OPERATOR_GUIDE.md))
    - **daily review welcome** — guided 6 PM review setup
 
 ## Full E2E setup (one script)
 
 ```powershell
-.\scripts\setup_e2e.ps1
+.\orchestrator\ops\setup_e2e.ps1
 ```
 
 Installs Python extras, npm + Playwright Edge for calendar, prints MCP config reminder.

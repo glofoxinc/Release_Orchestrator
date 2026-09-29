@@ -89,10 +89,10 @@ test-results/
 *.bak-*
 
 # Daily Review Agent runtime state
-daily_review_agent/.state/playwright-outlook-profile/
-daily_review_agent/.state/*.json
-!daily_review_agent/.state/.gitkeep
-release_mcp/scripts/daily_review/node_modules/
+orchestrator/agents/review/.state/playwright-outlook-profile/
+orchestrator/agents/review/.state/*.json
+!orchestrator/agents/review/.state/.gitkeep
+orchestrator/ops/daily_review/node_modules/
 
 # Release Orchestrator debug / operator artifacts (never commit)
 .operator_signoff.json
