@@ -1,0 +1,10 @@
+{% if deployment_window %}{{ deployment_window }}
+{% endif %}{% if deployment_window_note %}{{ deployment_window_note }}
+{% endif %}Take backups of all impacted Power BI dashboards, paginated reports, and semantic models across {{ scope }} client workspaces before deployment.
+Deploy updated and newly created dashboards/reports to the corresponding client workspaces ({{ workspaces }}).
+{% if validation_items %}
+Validate {{ validation_items }} and data accuracy in all impacted reports.
+{% endif %}
+Verify newly created and updated dashboards and paginated reports are published correctly, filters are working as expected, and report naming/display changes are reflected properly.
+Notify stakeholders upon successful validation and accessibility confirmation.
+Close tickets after team sanity checks and sign-off.

@@ -1,0 +1,7 @@
+Hi {{ assignee_name }},
+
+*{{ ticket_key }}* is on the upcoming release{% if version_name %} for release *{{ version_name }}*{% endif %} but is not ready for Ticket Review (current status: *{{ status }}*).
+Please move it to one of: {{ ready_statuses }}.
+
+Summary: {{ summary }}
+Link: {{ ticket_url }}

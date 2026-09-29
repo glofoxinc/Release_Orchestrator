@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - uses: docker/setup-buildx-action@v3
+      - uses: docker/setup-buildx-action@v4
 
       # Uncomment when DOCKERHUB_TOKEN and DOCKERHUB_USERNAME are configured as repo secrets.
       # - name: Log in to Docker Hub
