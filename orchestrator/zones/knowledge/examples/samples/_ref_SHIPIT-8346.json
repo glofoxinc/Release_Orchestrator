@@ -1,0 +1,252 @@
+{
+  "key": "SHIPIT-8346",
+  "requestTypeId": "2969",
+  "requestType": null,
+  "fields": {
+    "issuetype": {
+      "self": "https://abcfinancial.atlassian.net/rest/api/3/issuetype/10401",
+      "id": "10401",
+      "description": "",
+      "iconUrl": "https://abcfinancial.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10300?size=medium",
+      "name": "Change Request",
+      "subtask": false,
+      "avatarId": 10300,
+      "hierarchyLevel": 0
+    },
+    "description": {
+      "type": "doc",
+      "version": 1,
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "As part of the work to support organizational hierarchy for Glofox, we need to align on how the Glofox namespace and corporate structure should be modeled and consumed end to end."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "From the data perspective, the proposed approach is to map:"
+            }
+          ]
+        },
+        {
+          "type": "bulletList",
+          "content": [
+            {
+              "type": "listItem",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Glofox namespace as Organization (dim_org)"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "listItem",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "corporate_id as Organization Group (dim_org_group)"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "customfield_17225": null,
+    "customfield_11720": {
+      "type": "doc",
+      "version": 1,
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Below are scripts to update  "
+            }
+          ]
+        },
+        {
+          "type": "codeBlock",
+          "content": [
+            {
+              "type": "text",
+              "text": "--DimOrganizations\n--DimClub\n-- PROD replacement: use DimOrganizations and DimClub.\n-- Adhoc goal:\n-- 1) Seed missing organizations in DimOrganizations from Glofox staging.\n-- 2) Update DimClub to map clubs to the correct organization key/name.\n-- 3) Output the final dataset used as input for the app-side DimClub update.\n-- NOTE: This script is scoped to test tables (*_giuseppe_*). Run blocks in order.\n-- NOTE: corp_Test filter is temporary test scope and must be removed/generalized.\n\n-- Step 1: Insert organizations not yet present in the test organizations table.\n-- Join key: OrganizationGroupName -> DimOrganizationGroup.OrganizationGroupKey.\n-- Writes: OrganizationName, InsertDt, InsightsAnalyze, FitnessBI, GroupingDatabaseName, OrganizationGroupKey.\nINSERT dimfact.DimOrganizations ( OrganizationName, InsertDt, InsightsAnalyze, FitnessBI\n                                              , GroupingDatabaseName, OrganizationGroupKey)\nSELECT org.OrganizationName           AS OrganizationName\n     , org.InsertDt                   AS InsertDt\n     , 0                              AS InsightsAnalyze\n     , 0                              AS FitnessBI\n     , 'FitnessBI'                    AS GroupingDatabaseName\n     , org_group.OrganizationGroupKey AS OrganizationGroupKey\nFROM Glofox.stg_glofox_organization org\n         INNER JOIN dimfact.DimOrganizationGroup org_group\n                    ON org_group.OrganizationGroupName = org.OrganizationGroupName\nWHERE NOT EXISTS(\n    SELECT 1 FROM dimfact.DimOrganizations src WHERE src.OrganizationName = org.OrganizationName )\n  AND org.OrganizationGroupName = 'corp_Test' -- REMOVE AFTER TEST\n\n\n-- Step 2: Update test clubs with organization name/key derived from stg_clubs.namespace.\n-- Join keys:\n-- - stg_clubs.id = DimClub.Glofox_ClubNumber\n-- - DimOrganizations.OrganizationName = stg_clubs.namespace\n-- Writes: DimClub.OrganizationName, DimClub.Organization_Key.\nUPDATE c\nSET OrganizationName = stg_c.namespace\n  , Organization_Key = org.OrganizationKey\nFROM dimfact.DimClub c\n         INNER JOIN Glofox.stg_clubs stg_c ON stg_c.id = c.Glofox_ClubNumber\n         INNER JOIN dimfact.DimOrganizations org ON org.OrganizationName = stg_c.namespace\n         INNER JOIN dimfact.DimOrganizationGroup org_group ON org_group.OrganizationGroupKey = org.OrganizationGroupKey\nWHERE c.SourceNm = 'GloFox'\n  AND org_group.OrganizationGroupName = 'corp_Test' -- REMOVE AFTER TEST\n\n\n-- Step 3 (read-only): Validation/output dataset for app-side DimClub update process.\n-- No data changes in this block; this SELECT is the expected handoff payload.\nSELECT c.Club_Key\n     , c.OrganizationName\n     , c.Organization_Key\nFROM dimfact.DimClub c\n         INNER JOIN Glofox.stg_clubs stg_c ON stg_c.id = c.Glofox_ClubNumber\n         INNER JOIN dimfact.DimOrganizations org ON org.OrganizationName = stg_c.namespace\n         INNER JOIN dimfact.DimOrganizationGroup org_group ON org_group.OrganizationGroupKey = org.OrganizationGroupKey\nWHERE c.SourceNm = 'GloFox'\n  AND org_group.OrganizationGroupName = 'corp_Test' -- REMOVE AFTER TEST\n "
+            }
+          ]
+        }
+      ]
+    },
+    "customfield_11764": "2026-02-25T23:00:00.000-0600",
+    "customfield_11763": "2026-02-25T09:00:00.000-0600",
+    "customfield_11754": [
+      {
+        "id": "ari:cloud:graph::service/551d8872-09ec-11eb-9a52-0a77f3f45304/f11e56a0-c0db-11ec-ab09-0abe3f4a6601"
+      }
+    ],
+    "customfield_11757": {
+      "self": "https://abcfinancial.atlassian.net/rest/api/3/customFieldOption/21532",
+      "value": "Normal",
+      "id": "21532"
+    },
+    "customfield_10700": null,
+    "customfield_14549": {
+      "type": "doc",
+      "version": 1,
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Glofox namespace of Organization and Organization "
+            },
+            {
+              "type": "text",
+              "text": "organization mapping",
+              "marks": [
+                {
+                  "type": "code"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": " will be updated "
+            }
+          ]
+        }
+      ]
+    },
+    "customfield_11715": "Mapping update of Glofox namespace of Organization and Organization ",
+    "customfield_11759": null,
+    "customfield_11758": {
+      "self": "https://abcfinancial.atlassian.net/rest/api/3/customFieldOption/10908",
+      "value": "High",
+      "id": "10908"
+    },
+    "customfield_11717": {
+      "type": "doc",
+      "version": 1,
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "The OrganizationKey needs to be updated and synchronized across both dimfact.DimClub and dimfact.DimOrganizations tables to ensure referential integrity and consistent organization mapping.",
+              "marks": [
+                {
+                  "type": "code"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Jira ticket "
+            },
+            {
+              "type": "inlineCard",
+              "attrs": {
+                "url": "https://abcfinancial.atlassian.net/browse/AN-5093"
+              }
+            },
+            {
+              "type": "text",
+              "text": " "
+            }
+          ]
+        }
+      ]
+    },
+    "summary": " Glofox namespace of Organization and Organization in FitnessBi synapse historical Load ",
+    "customfield_16101": {
+      "self": "https://abcfinancial.atlassian.net/rest/api/3/customFieldOption/17077",
+      "value": "No",
+      "id": "17077"
+    },
+    "customfield_11794": [
+      {
+        "name": "Insights Customize Approvers",
+        "groupId": "7e6deb19-8ce4-46c8-88cd-a695a554e5f8",
+        "self": "https://abcfinancial.atlassian.net/rest/api/3/group?groupId=7e6deb19-8ce4-46c8-88cd-a695a554e5f8"
+      }
+    ],
+    "customfield_12047": null,
+    "customfield_11766": null,
+    "customfield_11722": {
+      "type": "doc",
+      "version": 1,
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "As this is an ad hoc update, full backups of both tables will be captured prior to execution to mitigate risk and ensure rollback capability."
+            }
+          ]
+        }
+      ]
+    },
+    "customfield_11721": {
+      "type": "doc",
+      "version": 1,
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Peer review is in progress with the Customized and Engineering teams, and testing is currently underway by the Glofox team"
+            }
+          ]
+        },
+        {
+          "type": "paragraph"
+        }
+      ]
+    },
+    "customfield_11765": "2026-03-03T06:00:00.000-0600",
+    "environment": null,
+    "customfield_11748": null,
+    "customfield_11747": null,
+    "status": {
+      "self": "https://abcfinancial.atlassian.net/rest/api/3/status/10880",
+      "description": "",
+      "iconUrl": "https://abcfinancial.atlassian.net/images/icons/status_generic.gif",
+      "name": "Completed",
+      "id": "10880",
+      "statusCategory": {
+        "self": "https://abcfinancial.atlassian.net/rest/api/3/statuscategory/3",
+        "id": 3,
+        "key": "done",
+        "colorName": "green",
+        "name": "Done"
+      }
+    }
+  }
+}

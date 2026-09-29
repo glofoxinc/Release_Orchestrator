@@ -6,7 +6,7 @@ alwaysApply: true
 
 # Phrase E2E handling (Release Orchestrator)
 
-Canonical map: **`release_mcp/phrase_catalog.py`** · tests: **`tests/test_guided_phrase_e2e.py`**
+Canonical map: **`release_mcp/phrase_catalog.py`** · tests: **`orchestrator/zones/quality/tests/test_guided_phrase_e2e.py`**
 
 ## Mandatory distinctions
 
@@ -29,4 +29,4 @@ Canonical map: **`release_mcp/phrase_catalog.py`** · tests: **`tests/test_guide
 1. Call `interpret_message` / `release_orchestrator` — do not reimplement routing
 2. Follow `next_mcp_call` and `user_can_say` in enriched response
 3. After browser handoffs (SharePoint, Slack, calendar), wait for user **done** phrase
-4. Run `pytest tests/test_guided_phrase_e2e.py` after changing phrase routing
+4. Run `pytest orchestrator/zones/quality/tests/test_guided_phrase_e2e.py` after changing phrase routing

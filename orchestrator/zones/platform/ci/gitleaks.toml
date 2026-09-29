@@ -1,0 +1,15 @@
+title = "gitleaks config"
+
+[[rules]]
+id = "generic-api-key"
+description = "Generic API Key"
+regex = '''(?i)(api[_-]?key|apikey|token|secret)['"]*\s*[:=]\s*['"][a-z0-9_-]{20,}['"]'''
+
+[[rules]]
+id = "azure-key"
+description = "Azure key"
+regex = '''[0-9a-zA-Z\-_]{40,}'''
+keywords = ["azure", "AccountKey", "SharedKey"]
+
+[allowlist]
+paths = ['''orchestrator/zones/runtime/local/.env.example''', '''README.md''', '''orchestrator/zones/knowledge/guides/CHANGELOG.md''', '''orchestrator/zones/quality/tests/''', '''__tests__/''']

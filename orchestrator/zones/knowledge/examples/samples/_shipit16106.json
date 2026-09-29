@@ -1,0 +1,977 @@
+{
+  "issue": {
+    "expand": "renderedFields,names,schema,operations,editmeta,changelog,versionedRepresentations,customfield_11809.properties,customfield_17223.cmdb.label,customfield_17223.cmdb.objectKey,customfield_17223.cmdb.attributes,customfield_14848.cmdb.label,customfield_14848.cmdb.objectKey,customfield_14848.cmdb.attributes,customfield_14849.cmdb.label,customfield_14849.cmdb.objectKey,customfield_14849.cmdb.attributes,customfield_11200.requestTypePractice,customfield_17091.cmdb.label,customfield_17091.cmdb.objectKey,customfield_17091.cmdb.attributes",
+    "id": "958900",
+    "self": "https://abcfinancial.atlassian.net/rest/api/3/issue/958900",
+    "key": "SHIPIT-16106",
+    "fields": {
+      "customfield_16299": null,
+      "customfield_14551": null,
+      "statusCategory": {
+        "self": "https://abcfinancial.atlassian.net/rest/api/3/statuscategory/3",
+        "id": 3,
+        "key": "done",
+        "colorName": "green",
+        "name": "Done"
+      },
+      "resolution": null,
+      "customfield_11720": {
+        "type": "doc",
+        "version": 1,
+        "content": []
+      },
+      "customfield_10500": "{}",
+      "customfield_14549": null,
+      "customfield_11715": null,
+      "customfield_11717": {
+        "type": "doc",
+        "version": 1,
+        "content": []
+      },
+      "customfield_24484": null,
+      "customfield_22968": null,
+      "customfield_20544": 0.0,
+      "lastViewed": "2026-09-06T23:56:57.016-0500",
+      "customfield_15995": {
+        "type": "doc",
+        "version": 1,
+        "content": [
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "As I user:"
+              }
+            ]
+          },
+          {
+            "type": "bulletList",
+            "content": [
+              {
+                "type": "listItem",
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "I "
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "customfield_15993": {
+        "self": "https://abcfinancial.atlassian.net/rest/api/3/customFieldOption/16731",
+        "value": "No",
+        "id": "16731"
+      },
+      "customfield_15872": {
+        "self": "https://abcfinancial.atlassian.net/rest/api/3/customFieldOption/16472",
+        "value": "Unassigned",
+        "id": "16472"
+      },
+      "customfield_14547": null,
+      "customfield_15876": null,
+      "labels": [],
+      "customfield_11704": null,
+      "aggregatetimeoriginalestimate": null,
+      "customfield_11948": null,
+      "issuelinks": [],
+      "assignee": {
+        "self": "https://abcfinancial.atlassian.net/rest/api/3/user?accountId=712020%3Adf0d5bd0-c115-4c10-a15f-08f5b64383bb",
+        "accountId": "712020:df0d5bd0-c115-4c10-a15f-08f5b64383bb",
+        "emailAddress": "chantikumar.jakkula@abcfitness.com",
+        "avatarUrls": {
+          "48x48": "https://secure.gravatar.com/avatar/c21870b7cf83b64dd4da5d62557f24c1?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FCJ-3.png",
+          "24x24": "https://secure.gravatar.com/avatar/c21870b7cf83b64dd4da5d62557f24c1?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FCJ-3.png",
+          "16x16": "https://secure.gravatar.com/avatar/c21870b7cf83b64dd4da5d62557f24c1?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FCJ-3.png",
+          "32x32": "https://secure.gravatar.com/avatar/c21870b7cf83b64dd4da5d62557f24c1?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FCJ-3.png"
+        },
+        "displayName": "Chanti Kumar Jakkula",
+        "active": true,
+        "timeZone": "America/Chicago",
+        "accountType": "atlassian"
+      },
+      "components": [],
+      "customfield_15740": {
+        "self": "https://abcfinancial.atlassian.net/rest/api/3/customFieldOption/16762",
+        "value": "-",
+        "id": "16762"
+      },
+      "customfield_13203": null,
+      "customfield_13202": null,
+      "customfield_15867": "2026-08-26T01:01:44.064-0500",
+      "customfield_11810": null,
+      "customfield_14528": null,
+      "customfield_11812": null,
+      "customfield_11811": null,
+      "customfield_11814": "<p>Please ensure that all the following fields set and are accurate. </p>",
+      "customfield_11813": null,
+      "customfield_16266": null,
+      "subtasks": [],
+      "customfield_14642": null,
+      "reporter": {
+        "self": "https://abcfinancial.atlassian.net/rest/api/3/user?accountId=712020%3Adf0d5bd0-c115-4c10-a15f-08f5b64383bb",
+        "accountId": "712020:df0d5bd0-c115-4c10-a15f-08f5b64383bb",
+        "emailAddress": "chantikumar.jakkula@abcfitness.com",
+        "avatarUrls": {
+          "48x48": "https://secure.gravatar.com/avatar/c21870b7cf83b64dd4da5d62557f24c1?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FCJ-3.png",
+          "24x24": "https://secure.gravatar.com/avatar/c21870b7cf83b64dd4da5d62557f24c1?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FCJ-3.png",
+          "16x16": "https://secure.gravatar.com/avatar/c21870b7cf83b64dd4da5d62557f24c1?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FCJ-3.png",
+          "32x32": "https://secure.gravatar.com/avatar/c21870b7cf83b64dd4da5d62557f24c1?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FCJ-3.png"
+        },
+        "displayName": "Chanti Kumar Jakkula",
+        "active": true,
+        "timeZone": "America/Chicago",
+        "accountType": "atlassian"
+      },
+      "customfield_14640": null,
+      "customfield_15971": {
+        "self": "https://abcfinancial.atlassian.net/rest/api/3/customFieldOption/16789",
+        "value": "No",
+        "id": "16789"
+      },
+      "customfield_14645": null,
+      "customfield_14646": null,
+      "customfield_14643": null,
+      "customfield_14644": null,
+      "customfield_11920": 0.0,
+      "customfield_14638": null,
+      "customfield_14517": null,
+      "customfield_15727": {
+        "self": "https://abcfinancial.atlassian.net/rest/api/3/customFieldOption/16821",
+        "value": "No",
+        "id": "16821"
+      },
+      "customfield_14639": null,
+      "customfield_11922": 1.0,
+      "customfield_14636": null,
+      "customfield_14515": null,
+      "customfield_11921": 0.0,
+      "customfield_14516": null,
+      "customfield_14637": null,
+      "customfield_11807": null,
+      "progress": {
+        "progress": 0,
+        "total": 0
+      },
+      "votes": {
+        "self": "https://abcfinancial.atlassian.net/rest/api/3/issue/SHIPIT-16106/votes",
+        "votes": 0,
+        "hasVoted": false
+      },
+      "customfield_11809": null,
+      "customfield_11808": null,
+      "worklog": {
+        "startAt": 0,
+        "maxResults": 20,
+        "total": 0,
+        "worklogs": []
+      },
+      "customfield_15040": null,
+      "issuetype": {
+        "self": "https://abcfinancial.atlassian.net/rest/api/3/issuetype/10401",
+        "id": "10401",
+        "description": "",
+        "iconUrl": "https://abcfinancial.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10300?size=medium",
+        "name": "Change Request",
+        "subtask": false,
+        "avatarId": 10300,
+        "hierarchyLevel": 0
+      },
+      "customfield_15041": null,
+      "customfield_16013": null,
+      "customfield_15044": null,
+      "customfield_16134": null,
+      "customfield_17223": [],
+      "customfield_23101": null,
+      "customfield_15045": null,
+      "customfield_16011": null,
+      "customfield_15042": null,
+      "customfield_15043": null,
+      "customfield_14630": null,
+      "customfield_16137": null,
+      "customfield_14631": null,
+      "project": {
+        "self": "https://abcfinancial.atlassian.net/rest/api/3/project/16108",
+        "id": "16108",
+        "key": "SHIPIT",
+        "name": "Software Delivery",
+        "projectTypeKey": "service_desk",
+        "simplified": false,
+        "avatarUrls": {
+          "48x48": "https://abcfinancial.atlassian.net/rest/api/3/universal_avatar/view/type/project/avatar/17865",
+          "24x24": "https://abcfinancial.atlassian.net/rest/api/3/universal_avatar/view/type/project/avatar/17865?size=small",
+          "16x16": "https://abcfinancial.atlassian.net/rest/api/3/universal_avatar/view/type/project/avatar/17865?size=xsmall",
+          "32x32": "https://abcfinancial.atlassian.net/rest/api/3/universal_avatar/view/type/project/avatar/17865?size=medium"
+        }
+      },
+      "customfield_16136": null,
+      "customfield_15046": null,
+      "customfield_17225": null,
+      "customfield_15047": null,
+      "customfield_14634": null,
+      "customfield_14635": null,
+      "customfield_15845": {
+        "self": "https://abcfinancial.atlassian.net/rest/api/3/customFieldOption/17010",
+        "value": "No",
+        "id": "17010"
+      },
+      "customfield_14511": null,
+      "customfield_14632": null,
+      "customfield_14633": null,
+      "customfield_14627": null,
+      "customfield_15837": {
+        "self": "https://abcfinancial.atlassian.net/rest/api/3/customFieldOption/16794",
+        "value": "No",
+        "id": "16794"
+      },
+      "customfield_10700": {
+        "id": "317996a7-118a-4cf3-a3c6-04163516ed32",
+        "name": "🔒︎ Glofox Insights Customize",
+        "avatarUrl": "https://teams-directory-frontend.prod-east.frontend.public.atl-paas.net/assets/teams/avatars/v4/lime_no-highlight_1.svg",
+        "isVisible": true,
+        "isVerified": true,
+        "title": "🔒︎ Glofox Insights Customize",
+        "isShared": true
+      },
+      "customfield_14625": null,
+      "customfield_14626": null,
+      "customfield_14629": null,
+      "resolutiondate": null,
+      "customfield_14508": null,
+      "customfield_11919": 1.0,
+      "watches": {
+        "self": "https://abcfinancial.atlassian.net/rest/api/3/issue/SHIPIT-16106/watchers",
+        "watchCount": 1,
+        "isWatching": false
+      },
+      "customfield_19990": [
+        {
+          "self": "https://abcfinancial.atlassian.net/rest/api/3/customFieldOption/21569",
+          "value": "No",
+          "id": "21569"
+        }
+      ],
+      "customfield_22240": null,
+      "customfield_14620": null,
+      "customfield_10022": [
+        {
+          "id": "63271",
+          "name": "Review Ready",
+          "finalDecision": "approved",
+          "canAnswerApproval": false,
+          "approvers": [
+            {
+              "approver": {
+                "accountId": "712020:0a7258e8-b186-4fcb-8146-c53f1e73c450",
+                "emailAddress": "venkatasuryanagasushma.bhamidipati@abcfitness.com",
+                "displayName": "Sushma Bhamidipati",
+                "active": true,
+                "timeZone": "America/Chicago",
+                "_links": {
+                  "jiraRest": "https://abcfinancial.atlassian.net/rest/api/3/user?accountId=712020%3A0a7258e8-b186-4fcb-8146-c53f1e73c450",
+                  "avatarUrls": {
+                    "48x48": "https://secure.gravatar.com/avatar/193bbf814432dbc06ebe75f533402b5b?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSB-3.png",
+                    "24x24": "https://secure.gravatar.com/avatar/193bbf814432dbc06ebe75f533402b5b?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSB-3.png",
+                    "16x16": "https://secure.gravatar.com/avatar/193bbf814432dbc06ebe75f533402b5b?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSB-3.png",
+                    "32x32": "https://secure.gravatar.com/avatar/193bbf814432dbc06ebe75f533402b5b?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSB-3.png"
+                  },
+                  "self": "https://abcfinancial.atlassian.net/rest/api/3/user?accountId=712020%3A0a7258e8-b186-4fcb-8146-c53f1e73c450"
+                }
+              },
+              "approverDecision": "approved"
+            }
+          ],
+          "createdDate": {
+            "iso8601": "2026-08-25T06:54:07-0500",
+            "jira": "2026-08-25T06:54:07.273-0500",
+            "friendly": "25/Aug/26 6:54 AM",
+            "epochMillis": 1787658847273
+          },
+          "completedDate": {
+            "iso8601": "2026-08-25T07:24:33-0500",
+            "jira": "2026-08-25T07:24:33.992-0500",
+            "friendly": "25/Aug/26 7:24 AM",
+            "epochMillis": 1787660673992
+          },
+          "_links": {
+            "self": "https://abcfinancial.atlassian.net/rest/servicedeskapi/request/958900/approval/63271"
+          }
+        },
+        {
+          "id": "63343",
+          "name": "Review Ready",
+          "finalDecision": "approved",
+          "canAnswerApproval": false,
+          "approvers": [
+            {
+              "approver": {
+                "accountId": "712020:0f3938b5-0120-4157-a9f8-0e08d974b2b6",
+                "emailAddress": "rahul.das@abcfitness.com",
+                "displayName": "Rahul Das",
+                "active": true,
+                "timeZone": "America/Chicago",
+                "_links": {
+                  "jiraRest": "https://abcfinancial.atlassian.net/rest/api/3/user?accountId=712020%3A0f3938b5-0120-4157-a9f8-0e08d974b2b6",
+                  "avatarUrls": {
+                    "48x48": "https://secure.gravatar.com/avatar/9a70399836ed74a1c0fcb16acff369f8?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FRD-1.png",
+                    "24x24": "https://secure.gravatar.com/avatar/9a70399836ed74a1c0fcb16acff369f8?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FRD-1.png",
+                    "16x16": "https://secure.gravatar.com/avatar/9a70399836ed74a1c0fcb16acff369f8?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FRD-1.png",
+                    "32x32": "https://secure.gravatar.com/avatar/9a70399836ed74a1c0fcb16acff369f8?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FRD-1.png"
+                  },
+                  "self": "https://abcfinancial.atlassian.net/rest/api/3/user?accountId=712020%3A0f3938b5-0120-4157-a9f8-0e08d974b2b6"
+                }
+              },
+              "approverDecision": "approved"
+            }
+          ],
+          "createdDate": {
+            "iso8601": "2026-08-26T00:58:30-0500",
+            "jira": "2026-08-26T00:58:30.206-0500",
+            "friendly": "26/Aug/26 12:58 AM",
+            "epochMillis": 1787723910206
+          },
+          "completedDate": {
+            "iso8601": "2026-08-26T01:00:30-0500",
+            "jira": "2026-08-26T01:00:30.892-0500",
+            "friendly": "26/Aug/26 1:00 AM",
+            "epochMillis": 1787724030892
+          },
+          "_links": {
+            "self": "https://abcfinancial.atlassian.net/rest/servicedeskapi/request/958900/approval/63343"
+          }
+        }
+      ],
+      "customfield_14623": null,
+      "customfield_14502": null,
+      "customfield_15954": null,
+      "customfield_14503": null,
+      "customfield_15955": null,
+      "customfield_14624": null,
+      "customfield_14621": null,
+      "customfield_14500": null,
+      "customfield_14501": null,
+      "customfield_14622": null,
+      "customfield_14616": null,
+      "customfield_14617": null,
+      "customfield_14735": null,
+      "customfield_14615": null,
+      "customfield_14618": null,
+      "customfield_14619": null,
+      "updated": "2026-09-02T00:32:38.739-0500",
+      "customfield_16475": null,
+      "customfield_16474": null,
+      "timeoriginalestimate": null,
+      "description": null,
+      "customfield_14730": null,
+      "customfield_16477": null,
+      "customfield_14976": null,
+      "customfield_14731": null,
+      "timetracking": {},
+      "customfield_14605": null,
+      "customfield_14606": null,
+      "customfield_14848": [],
+      "customfield_14604": null,
+      "customfield_10008": null,
+      "customfield_15819": {
+        "self": "https://abcfinancial.atlassian.net/rest/api/3/customFieldOption/16880",
+        "value": "FALSE",
+        "id": "16880"
+      },
+      "customfield_14609": null,
+      "customfield_14607": null,
+      "customfield_14849": [],
+      "summary": "A test ticket ",
+      "customfield_13192": {
+        "self": "https://abcfinancial.atlassian.net/rest/api/3/customFieldOption/12814",
+        "value": "No",
+        "id": "12814"
+      },
+      "customfield_16101": {
+        "self": "https://abcfinancial.atlassian.net/rest/api/3/customFieldOption/17077",
+        "value": "No",
+        "id": "17077"
+      },
+      "customfield_11690": null,
+      "customfield_16468": null,
+      "customfield_11691": null,
+      "customfield_10000": "2026-08-26T01:01:44.064-0500",
+      "customfield_10001": null,
+      "customfield_11696": null,
+      "customfield_10002": "1|i1j8hx:",
+      "customfield_14844": null,
+      "customfield_10003": null,
+      "customfield_10004": null,
+      "customfield_11697": null,
+      "customfield_11689": null,
+      "customfield_11688": null,
+      "environment": null,
+      "duedate": null,
+      "customfield_15928": {
+        "type": "doc",
+        "version": 1,
+        "content": [
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "Important Notes:",
+                "marks": [
+                  {
+                    "type": "strong"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "Extra details:",
+                "marks": [
+                  {
+                    "type": "strong"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "comment": {
+        "comments": [
+          {
+            "self": "https://abcfinancial.atlassian.net/rest/api/3/issue/958900/comment/1467290",
+            "id": "1467290",
+            "author": {
+              "self": "https://abcfinancial.atlassian.net/rest/api/3/user?accountId=712020%3A0a7258e8-b186-4fcb-8146-c53f1e73c450",
+              "accountId": "712020:0a7258e8-b186-4fcb-8146-c53f1e73c450",
+              "emailAddress": "venkatasuryanagasushma.bhamidipati@abcfitness.com",
+              "avatarUrls": {
+                "48x48": "https://secure.gravatar.com/avatar/193bbf814432dbc06ebe75f533402b5b?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSB-3.png",
+                "24x24": "https://secure.gravatar.com/avatar/193bbf814432dbc06ebe75f533402b5b?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSB-3.png",
+                "16x16": "https://secure.gravatar.com/avatar/193bbf814432dbc06ebe75f533402b5b?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSB-3.png",
+                "32x32": "https://secure.gravatar.com/avatar/193bbf814432dbc06ebe75f533402b5b?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSB-3.png"
+              },
+              "displayName": "Sushma Bhamidipati",
+              "active": true,
+              "timeZone": "America/Chicago",
+              "accountType": "atlassian"
+            },
+            "body": {
+              "type": "doc",
+              "version": 1,
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Cancelling the test ticket."
+                    }
+                  ],
+                  "attrs": {
+                    "localId": "0750d6447061"
+                  }
+                }
+              ]
+            },
+            "updateAuthor": {
+              "self": "https://abcfinancial.atlassian.net/rest/api/3/user?accountId=712020%3A0a7258e8-b186-4fcb-8146-c53f1e73c450",
+              "accountId": "712020:0a7258e8-b186-4fcb-8146-c53f1e73c450",
+              "emailAddress": "venkatasuryanagasushma.bhamidipati@abcfitness.com",
+              "avatarUrls": {
+                "48x48": "https://secure.gravatar.com/avatar/193bbf814432dbc06ebe75f533402b5b?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSB-3.png",
+                "24x24": "https://secure.gravatar.com/avatar/193bbf814432dbc06ebe75f533402b5b?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSB-3.png",
+                "16x16": "https://secure.gravatar.com/avatar/193bbf814432dbc06ebe75f533402b5b?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSB-3.png",
+                "32x32": "https://secure.gravatar.com/avatar/193bbf814432dbc06ebe75f533402b5b?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSB-3.png"
+              },
+              "displayName": "Sushma Bhamidipati",
+              "active": true,
+              "timeZone": "America/Chicago",
+              "accountType": "atlassian"
+            },
+            "created": "2026-08-26T01:01:44.064-0500",
+            "updated": "2026-08-26T01:01:44.064-0500",
+            "jsdPublic": true
+          }
+        ],
+        "self": "https://abcfinancial.atlassian.net/rest/api/3/issue/958900/comment",
+        "maxResults": 1,
+        "total": 1,
+        "startAt": 0
+      },
+      "customfield_20950": null,
+      "customfield_22698": [
+        {
+          "id": "ae42b936-31ba-4835-af46-c8b56e5874e7"
+        }
+      ],
+      "statuscategorychangedate": "2026-09-02T00:32:38.739-0500",
+      "customfield_11681": null,
+      "customfield_11680": null,
+      "customfield_11683": null,
+      "customfield_11682": null,
+      "customfield_15245": null,
+      "fixVersions": [],
+      "customfield_11200": {
+        "_links": {
+          "jiraRest": "https://abcfinancial.atlassian.net/rest/api/2/issue/958900",
+          "web": "https://abcfinancial.atlassian.net/servicedesk/customer/portal/2046/SHIPIT-16106",
+          "agent": "https://abcfinancial.atlassian.net/browse/SHIPIT-16106",
+          "self": "https://abcfinancial.atlassian.net/rest/servicedeskapi/request/958900"
+        },
+        "requestType": {
+          "_expands": [
+            "field"
+          ],
+          "id": "2969",
+          "_links": {
+            "self": "https://abcfinancial.atlassian.net/rest/servicedeskapi/servicedesk/2046/requesttype/2969"
+          },
+          "name": "Manual Change",
+          "description": "Changes that are processed by a person, and not through automation.",
+          "helpText": "",
+          "defaultName": "Manual Change",
+          "issueTypeId": "10401",
+          "serviceDeskId": "2046",
+          "portalId": "2046",
+          "groupIds": [
+            "2139"
+          ],
+          "icon": {
+            "id": "17866",
+            "_links": {
+              "iconUrls": {
+                "48x48": "https://abcfinancial.atlassian.net/rest/api/3/universal_avatar/view/type/SD_REQTYPE/avatar/17866?size=large",
+                "24x24": "https://abcfinancial.atlassian.net/rest/api/3/universal_avatar/view/type/SD_REQTYPE/avatar/17866?size=small",
+                "16x16": "https://abcfinancial.atlassian.net/rest/api/3/universal_avatar/view/type/SD_REQTYPE/avatar/17866?size=xsmall",
+                "32x32": "https://abcfinancial.atlassian.net/rest/api/3/universal_avatar/view/type/SD_REQTYPE/avatar/17866?size=medium"
+              }
+            }
+          }
+        },
+        "currentStatus": {
+          "status": "Canceled",
+          "statusCategory": "DONE",
+          "statusDate": {
+            "iso8601": "2026-09-02T00:32:38-0500",
+            "jira": "2026-09-02T00:32:38.739-0500",
+            "friendly": "Wednesday 12:32 AM",
+            "epochMillis": 1788327158739
+          }
+        }
+      },
+      "customfield_11685": null,
+      "customfield_15801": {
+        "type": "doc",
+        "version": 1,
+        "content": [
+          {
+            "type": "bulletList",
+            "content": [
+              {
+                "type": "listItem",
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "Endpoint (url + data at least aproximated)"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "bulletList",
+            "content": [
+              {
+                "type": "listItem",
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "What changes are needed in the code?"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "bulletList",
+            "content": [
+              {
+                "type": "listItem",
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "Types names"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "customfield_11684": null,
+      "customfield_11687": null,
+      "customfield_11686": null,
+      "customfield_15920": null,
+      "customfield_10900": [],
+      "customfield_11670": null,
+      "customfield_11672": 0.0,
+      "customfield_11793": "Changes",
+      "customfield_11671": null,
+      "customfield_11674": 0.0,
+      "priority": {
+        "self": "https://abcfinancial.atlassian.net/rest/api/3/priority/3",
+        "iconUrl": "https://abcfinancial.atlassian.net/rest/api/2/universal_avatar/view/type/priority/avatar/17679?size=medium",
+        "name": "Medium",
+        "id": "3"
+      },
+      "customfield_11673": 1.0,
+      "customfield_11794": [
+        {
+          "name": "Insights Customize Approvers",
+          "groupId": "7e6deb19-8ce4-46c8-88cd-a695a554e5f8",
+          "self": "https://abcfinancial.atlassian.net/rest/api/3/group?groupId=7e6deb19-8ce4-46c8-88cd-a695a554e5f8"
+        }
+      ],
+      "customfield_11676": 4.0,
+      "customfield_11797": [],
+      "customfield_11675": 0.0,
+      "timeestimate": null,
+      "customfield_15908": {
+        "self": "https://abcfinancial.atlassian.net/rest/api/3/customFieldOption/16658",
+        "value": "New app",
+        "id": "16658"
+      },
+      "versions": [],
+      "status": {
+        "self": "https://abcfinancial.atlassian.net/rest/api/3/status/10873",
+        "description": "This was auto-generated by Jira Service Management during workflow import",
+        "iconUrl": "https://abcfinancial.atlassian.net/images/icons/status_generic.gif",
+        "name": "Canceled",
+        "id": "10873",
+        "statusCategory": {
+          "self": "https://abcfinancial.atlassian.net/rest/api/3/statuscategory/3",
+          "id": 3,
+          "key": "done",
+          "colorName": "green",
+          "name": "Done"
+        }
+      },
+      "customfield_17091": [],
+      "customfield_14494": null,
+      "customfield_14495": null,
+      "customfield_14493": null,
+      "customfield_14499": null,
+      "customfield_14496": null,
+      "customfield_11663": null,
+      "customfield_11662": [],
+      "customfield_11664": null,
+      "customfield_19823": null,
+      "customfield_11657": null,
+      "aggregatetimeestimate": null,
+      "creator": {
+        "self": "https://abcfinancial.atlassian.net/rest/api/3/user?accountId=712020%3A0a7258e8-b186-4fcb-8146-c53f1e73c450",
+        "accountId": "712020:0a7258e8-b186-4fcb-8146-c53f1e73c450",
+        "emailAddress": "venkatasuryanagasushma.bhamidipati@abcfitness.com",
+        "avatarUrls": {
+          "48x48": "https://secure.gravatar.com/avatar/193bbf814432dbc06ebe75f533402b5b?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSB-3.png",
+          "24x24": "https://secure.gravatar.com/avatar/193bbf814432dbc06ebe75f533402b5b?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSB-3.png",
+          "16x16": "https://secure.gravatar.com/avatar/193bbf814432dbc06ebe75f533402b5b?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSB-3.png",
+          "32x32": "https://secure.gravatar.com/avatar/193bbf814432dbc06ebe75f533402b5b?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSB-3.png"
+        },
+        "displayName": "Sushma Bhamidipati",
+        "active": true,
+        "timeZone": "America/Chicago",
+        "accountType": "atlassian"
+      },
+      "customfield_11771": null,
+      "customfield_11770": null,
+      "aggregateprogress": {
+        "progress": 0,
+        "total": 0
+      },
+      "customfield_11773": null,
+      "customfield_11772": null,
+      "customfield_11766": null,
+      "customfield_11765": null,
+      "customfield_11768": null,
+      "customfield_11767": null,
+      "customfield_11769": null,
+      "timespent": null,
+      "customfield_11760": null,
+      "customfield_11762": null,
+      "aggregatetimespent": null,
+      "customfield_11761": null,
+      "customfield_11764": "2026-08-26T12:00:00.000-0500",
+      "customfield_11763": "2026-08-26T10:30:00.000-0500",
+      "customfield_11755": null,
+      "customfield_11754": null,
+      "customfield_11757": {
+        "self": "https://abcfinancial.atlassian.net/rest/api/3/customFieldOption/21532",
+        "value": "Normal",
+        "id": "21532"
+      },
+      "customfield_15318": null,
+      "customfield_11756": null,
+      "customfield_11759": null,
+      "customfield_11758": null,
+      "workratio": -1,
+      "customfield_14462": null,
+      "created": "2026-08-25T06:50:45.933-0500",
+      "customfield_15312": null,
+      "customfield_15313": null,
+      "customfield_11870": null,
+      "customfield_15310": null,
+      "customfield_15311": null,
+      "customfield_15795": 0.0,
+      "customfield_11872": null,
+      "customfield_11751": null,
+      "customfield_15316": null,
+      "customfield_11750": null,
+      "customfield_15317": null,
+      "customfield_12047": null,
+      "customfield_11753": null,
+      "customfield_10300": null,
+      "customfield_15314": null,
+      "customfield_11752": null,
+      "customfield_15315": null,
+      "customfield_11865": null,
+      "customfield_15309": null,
+      "customfield_11864": null,
+      "customfield_11867": null,
+      "customfield_11746": {
+        "languageCode": "en",
+        "displayName": "English"
+      },
+      "customfield_11745": null,
+      "customfield_11866": null,
+      "customfield_11748": null,
+      "customfield_11747": null,
+      "customfield_11749": null,
+      "customfield_15782": null,
+      "customfield_15540": null,
+      "customfield_16630": null,
+      "customfield_11861": null,
+      "customfield_11863": null,
+      "customfield_11862": null,
+      "security": null,
+      "attachment": [],
+      "customfield_23035": null,
+      "customfield_23034": null,
+      "customfield_13232": null,
+      "customfield_15896": {
+        "self": "https://abcfinancial.atlassian.net/rest/api/3/customFieldOption/16650",
+        "value": "No",
+        "id": "16650"
+      },
+      "customfield_11722": {
+        "type": "doc",
+        "version": 1,
+        "content": []
+      },
+      "customfield_11721": {
+        "type": "doc",
+        "version": 1,
+        "content": []
+      }
+    }
+  },
+  "sd_request": {
+    "_expands": [
+      "participant",
+      "status",
+      "sla",
+      "requestType",
+      "serviceDesk",
+      "attachment",
+      "action",
+      "comment"
+    ],
+    "issueId": "958900",
+    "issueKey": "SHIPIT-16106",
+    "summary": "A test ticket ",
+    "requestTypeId": "2969",
+    "serviceDeskId": "2046",
+    "createdDate": {
+      "iso8601": "2026-08-25T06:50:45-0500",
+      "jira": "2026-08-25T06:50:45.933-0500",
+      "friendly": "25/Aug/26 6:50 AM",
+      "epochMillis": 1787658645933
+    },
+    "reporter": {
+      "accountId": "712020:df0d5bd0-c115-4c10-a15f-08f5b64383bb",
+      "emailAddress": "chantikumar.jakkula@abcfitness.com",
+      "displayName": "Chanti Kumar Jakkula",
+      "active": true,
+      "timeZone": "America/Chicago",
+      "_links": {
+        "jiraRest": "https://abcfinancial.atlassian.net/rest/api/2/user?accountId=712020%3Adf0d5bd0-c115-4c10-a15f-08f5b64383bb",
+        "avatarUrls": {
+          "48x48": "https://secure.gravatar.com/avatar/c21870b7cf83b64dd4da5d62557f24c1?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FCJ-3.png",
+          "24x24": "https://secure.gravatar.com/avatar/c21870b7cf83b64dd4da5d62557f24c1?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FCJ-3.png",
+          "16x16": "https://secure.gravatar.com/avatar/c21870b7cf83b64dd4da5d62557f24c1?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FCJ-3.png",
+          "32x32": "https://secure.gravatar.com/avatar/c21870b7cf83b64dd4da5d62557f24c1?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FCJ-3.png"
+        },
+        "self": "https://abcfinancial.atlassian.net/rest/api/2/user?accountId=712020%3Adf0d5bd0-c115-4c10-a15f-08f5b64383bb"
+      }
+    },
+    "requestFieldValues": [
+      {
+        "fieldId": "summary",
+        "label": "Summary",
+        "value": "A test ticket "
+      }
+    ],
+    "currentStatus": {
+      "status": "Canceled",
+      "statusCategory": "DONE",
+      "statusDate": {
+        "iso8601": "2026-09-02T00:32:38-0500",
+        "jira": "2026-09-02T00:32:38.739-0500",
+        "friendly": "Wednesday 12:32 AM",
+        "epochMillis": 1788327158739
+      }
+    },
+    "_links": {
+      "jiraRest": "https://abcfinancial.atlassian.net/rest/api/2/issue/958900",
+      "web": "https://abcfinancial.atlassian.net/servicedesk/customer/portal/2046/SHIPIT-16106",
+      "agent": "https://abcfinancial.atlassian.net/browse/SHIPIT-16106",
+      "self": "https://abcfinancial.atlassian.net/rest/servicedeskapi/request/958900"
+    }
+  },
+  "project": {
+    "expand": "description,lead,issueTypes,url,projectKeys,permissions,insight",
+    "self": "https://abcfinancial.atlassian.net/rest/api/3/project/16108",
+    "id": "16108",
+    "key": "SHIPIT",
+    "description": "",
+    "lead": {
+      "self": "https://abcfinancial.atlassian.net/rest/api/3/user?accountId=641a1bef9796ea0a87182918",
+      "accountId": "641a1bef9796ea0a87182918",
+      "avatarUrls": {
+        "48x48": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/641a1bef9796ea0a87182918/db85f524-1079-40c7-9b21-fe3b897b881f/48",
+        "24x24": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/641a1bef9796ea0a87182918/db85f524-1079-40c7-9b21-fe3b897b881f/24",
+        "16x16": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/641a1bef9796ea0a87182918/db85f524-1079-40c7-9b21-fe3b897b881f/16",
+        "32x32": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/641a1bef9796ea0a87182918/db85f524-1079-40c7-9b21-fe3b897b881f/32"
+      },
+      "displayName": "ABC DevOps Automation",
+      "active": true
+    },
+    "components": [],
+    "issueTypes": [
+      {
+        "self": "https://abcfinancial.atlassian.net/rest/api/3/issuetype/11738",
+        "id": "11738",
+        "description": "",
+        "iconUrl": "https://abcfinancial.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10300?size=medium",
+        "name": "Service Deployment",
+        "subtask": false,
+        "avatarId": 10300,
+        "hierarchyLevel": 0
+      },
+      {
+        "self": "https://abcfinancial.atlassian.net/rest/api/3/issuetype/10401",
+        "id": "10401",
+        "description": "",
+        "iconUrl": "https://abcfinancial.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10300?size=medium",
+        "name": "Change Request",
+        "subtask": false,
+        "avatarId": 10300,
+        "hierarchyLevel": 0
+      }
+    ],
+    "assigneeType": "UNASSIGNED",
+    "versions": [],
+    "name": "Software Delivery",
+    "roles": {
+      "Administrators (migrated)": "https://abcfinancial.atlassian.net/rest/api/3/project/16108/role/13797",
+      "atlassian-addons-project-access (migrated)": "https://abcfinancial.atlassian.net/rest/api/3/project/16108/role/13795",
+      "Release Administrator": "https://abcfinancial.atlassian.net/rest/api/3/project/16108/role/10500",
+      "Network Engineering": "https://abcfinancial.atlassian.net/rest/api/3/project/16108/role/10596",
+      "Service Desk Team": "https://abcfinancial.atlassian.net/rest/api/3/project/16108/role/10590",
+      "Business Analyst": "https://abcfinancial.atlassian.net/rest/api/3/project/16108/role/10400",
+      "jira-guest-member": "https://abcfinancial.atlassian.net/rest/api/3/project/16108/role/16934",
+      "Service Desk Customers": "https://abcfinancial.atlassian.net/rest/api/3/project/16108/role/10589",
+      "CAB": "https://abcfinancial.atlassian.net/rest/api/3/project/16108/role/10591",
+      "Technical SME": "https://abcfinancial.atlassian.net/rest/api/3/project/16108/role/10300",
+      "POS PO": "https://abcfinancial.atlassian.net/rest/api/3/project/16108/role/10797",
+      "EON PO Interim": "https://abcfinancial.atlassian.net/rest/api/3/project/16108/role/10796",
+      "Solution Architect": "https://abcfinancial.atlassian.net/rest/api/3/project/16108/role/10798",
+      "Business SME": "https://abcfinancial.atlassian.net/rest/api/3/project/16108/role/10301",
+      "atlassian-addons-project-access": "https://abcfinancial.atlassian.net/rest/api/3/project/16108/role/10201",
+      "Collaborator": "https://abcfinancial.atlassian.net/rest/api/3/project/16108/role/17388",
+      "Developers": "https://abcfinancial.atlassian.net/rest/api/3/project/16108/role/10200",
+      "Tempo Project Managers (migrated)": "https://abcfinancial.atlassian.net/rest/api/3/project/16108/role/13796",
+      "Application Developer": "https://abcfinancial.atlassian.net/rest/api/3/project/16108/role/10302",
+      "Administrators": "https://abcfinancial.atlassian.net/rest/api/3/project/16108/role/10002",
+      "Customer Service Team": "https://abcfinancial.atlassian.net/rest/api/3/project/16108/role/17387",
+      "Tempo Project Managers": "https://abcfinancial.atlassian.net/rest/api/3/project/16108/role/10100"
+    },
+    "avatarUrls": {
+      "48x48": "https://abcfinancial.atlassian.net/rest/api/3/universal_avatar/view/type/project/avatar/17865",
+      "24x24": "https://abcfinancial.atlassian.net/rest/api/3/universal_avatar/view/type/project/avatar/17865?size=small",
+      "16x16": "https://abcfinancial.atlassian.net/rest/api/3/universal_avatar/view/type/project/avatar/17865?size=xsmall",
+      "32x32": "https://abcfinancial.atlassian.net/rest/api/3/universal_avatar/view/type/project/avatar/17865?size=medium"
+    },
+    "projectTypeKey": "service_desk",
+    "simplified": false,
+    "style": "classic",
+    "isPrivate": false,
+    "properties": {},
+    "isLiveTemplate": false
+  },
+  "issuetypes": {
+    "startAt": 0,
+    "maxResults": 50,
+    "total": 2,
+    "issueTypes": [
+      {
+        "self": "https://abcfinancial.atlassian.net/rest/api/3/issuetype/10401",
+        "id": "10401",
+        "description": "",
+        "iconUrl": "https://abcfinancial.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10300?size=medium",
+        "name": "Change Request",
+        "untranslatedName": "Change Request",
+        "subtask": false,
+        "hierarchyLevel": 0
+      },
+      {
+        "self": "https://abcfinancial.atlassian.net/rest/api/3/issuetype/11738",
+        "id": "11738",
+        "description": "",
+        "iconUrl": "https://abcfinancial.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10300?size=medium",
+        "name": "Service Deployment",
+        "untranslatedName": "Service Deployment",
+        "subtask": false,
+        "hierarchyLevel": 0
+      }
+    ]
+  }
+}

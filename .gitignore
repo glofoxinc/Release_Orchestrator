@@ -1,17 +1,33 @@
-﻿# â”€â”€ Secrets â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# --- Secrets (NEVER commit) ---
 .env
+.env.*
+!orchestrator/zones/runtime/local/.env.example
+*.pem
+*.key
+credentials.json
+**/secrets.toml
+.cursor/mcp.json
+**/.cursor/mcp.json
 
-# â”€â”€ Personal data â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-.deployment_history.json
-workspaces/*/.deployment_history.json
-.deploy_draft.json
-workspaces/*/.deploy_draft.json
+# â”€â”€ Personal data / runtime state â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+.state/
+.launch/
+orchestrator/zones/runtime/*
+!orchestrator/zones/runtime/local/
+orchestrator/zones/runtime/local/*
+!orchestrator/zones/runtime/local/.env.example
+!.gitkeep
 workspaces/*/.env
+# Legacy state paths (pre .state/ migration)
+.deployment_history.json
+.deploy_draft.json
 .mcp_wizard_sessions/
 .mcp_onboarding_state.json
-workspaces/*/.mcp_wizard_sessions/
-workspaces/*/.mcp_onboarding_state.json
-.launch/
+.operator_signoff.json
+orchestrator/.mcp_wizard_sessions/
+orchestrator/core/.deploy_draft.json
+orchestrator/core/.operator_signoff.json
+orchestrator/core/.deployment_history.json
 
 # â”€â”€ Python â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 __pycache__/
@@ -32,6 +48,8 @@ env/
 .ruff_cache/
 .pytest_cache/
 .mypy_cache/
+.coverage
+.coverage.*
 
 # â”€â”€ Coverage â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 coverage/
@@ -65,7 +83,7 @@ ehthumbs.db
 
 # â”€â”€ Generated documents â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 *.docx
-!examples/*.docx
+!docs/examples/**/*.docx
 output/
 
 # â”€â”€ Logs â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
@@ -92,12 +110,11 @@ test-results/
 orchestrator/agents/review/.state/playwright-outlook-profile/
 orchestrator/agents/review/.state/*.json
 !orchestrator/agents/review/.state/.gitkeep
-orchestrator/ops/daily_review/node_modules/
+orchestrator/zones/platform/ops/daily_review/node_modules/
 
 # Release Orchestrator debug / operator artifacts (never commit)
-.operator_signoff.json
+scratch/
 _pytest_happy_debug*/
 _ref_SHIPIT-*
 _shipit*
-.mcp_wizard_sessions/
 _github_push_batches/

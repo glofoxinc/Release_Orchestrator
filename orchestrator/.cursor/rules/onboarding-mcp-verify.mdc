@@ -1,0 +1,23 @@
+---
+description: Verify all MCPs after clone before first release or daily review
+globs:
+alwaysApply: true
+---
+
+# Onboarding — MCP verification (Release Orchestrator)
+
+When the user clones this repo, says **welcome onboard**, **onboarding**, **setup status**, or asks how to set up MCPs:
+
+1. Read **`skills/release-orchestrator-onboarding/SKILL.md`** and follow its protocol.
+2. Point humans to **`orchestrator/zones/knowledge/guides/GUIDE.md`** — one doc for install, setup, and daily release.
+3. **Verify every MCP** — do not assume they exist:
+   - `release-orchestrator` (stdio in mcp.json)
+   - `playwright` (required for Glofox SharePoint + Slack Step 6)
+   - `teams` (Daily Review track)
+   - Jira `.env` credentials
+   - Slack / Atlassian plugins are **optional** for Glofox
+4. Run automated checks: `setup status`, `daily_review_mcp_config`, `production_readiness(surface="mcp")`.
+5. For missing servers, show **copy-paste JSON** from `daily_review_mcp_config` — user saves `~/.cursor/mcp.json` and reloads Cursor.
+6. **Ask the user only for auth** they must provide (Jira API token in `.env`, browser login, `teams_login`). Never request tokens in chat.
+7. Record confirmations: **mcp configured**, **playwright confirmed**, **crew done**, **teams done**.
+8. After onboarding, use **`skills/release-orchestrator-mcp/SKILL.md`** for daily releases.

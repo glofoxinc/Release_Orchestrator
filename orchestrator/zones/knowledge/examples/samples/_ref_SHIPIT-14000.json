@@ -1,0 +1,1301 @@
+{
+  "key": "SHIPIT-14000",
+  "requestTypeId": null,
+  "requestType": null,
+  "fields": {
+    "issuetype": {
+      "self": "https://abcfinancial.atlassian.net/rest/api/3/issuetype/10401",
+      "id": "10401",
+      "description": "",
+      "iconUrl": "https://abcfinancial.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10300?size=medium",
+      "name": "Change Request",
+      "subtask": false,
+      "avatarId": 10300,
+      "hierarchyLevel": 0
+    },
+    "description": {
+      "type": "doc",
+      "version": 1,
+      "content": [
+        {
+          "type": "heading",
+          "attrs": {
+            "level": 3,
+            "localId": "f96a651ec232"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Summary"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Fix duplicate ABC processing fee processing in "
+            },
+            {
+              "type": "text",
+              "text": "[dw].[Get_Drdr_Dmb]",
+              "marks": [
+                {
+                  "type": "code"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": " so Insights DRDR no longer overstates Club Account Deductions."
+            }
+          ],
+          "attrs": {
+            "localId": "221fdf27009f"
+          }
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "for ticket: "
+            },
+            {
+              "type": "inlineCard",
+              "attrs": {
+                "url": "https://abcfinancial.atlassian.net/browse/IGS-17207",
+                "localId": "09ffd25701ae"
+              }
+            },
+            {
+              "type": "text",
+              "text": " "
+            }
+          ],
+          "attrs": {
+            "localId": "f9e5bfeb7ba0"
+          }
+        },
+        {
+          "type": "heading",
+          "attrs": {
+            "level": 3,
+            "localId": "d8086fe6156c"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Context"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "[dw].[Get_Drdr_Dmb]",
+              "marks": [
+                {
+                  "type": "code"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": " writes the ABC processing fee twice per club/day."
+            }
+          ],
+          "attrs": {
+            "localId": "0b426259158b"
+          }
+        },
+        {
+          "type": "bulletList",
+          "content": [
+            {
+              "type": "listItem",
+              "attrs": {
+                "localId": "65acad3bf33c"
+              },
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Once from the canonical DMB path, which CRS reads."
+                    }
+                  ],
+                  "attrs": {
+                    "localId": "2ba2112b9021"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "listItem",
+              "attrs": {
+                "localId": "e6441cc28c76"
+              },
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Once from the DCA billing path as a "
+                    },
+                    {
+                      "type": "text",
+                      "text": "Less ABC Fees",
+                      "marks": [
+                        {
+                          "type": "code"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "text": " row."
+                    }
+                  ],
+                  "attrs": {
+                    "localId": "f34e6d3212e1"
+                  }
+                }
+              ]
+            }
+          ],
+          "attrs": {
+            "localId": "1bd0c65cd3c3"
+          }
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "This causes Insights and CRS to not reconcile."
+            }
+          ],
+          "attrs": {
+            "localId": "f3ee5ee1327d"
+          }
+        },
+        {
+          "type": "heading",
+          "attrs": {
+            "level": 3,
+            "localId": "1626cc666230"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Acceptance criteria"
+            }
+          ]
+        },
+        {
+          "type": "bulletList",
+          "content": [
+            {
+              "type": "listItem",
+              "attrs": {
+                "localId": "cd75cb182480"
+              },
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Alter stored procedure "
+                    },
+                    {
+                      "type": "text",
+                      "text": "[dw].[Get_Drdr_Dmb]",
+                      "marks": [
+                        {
+                          "type": "code"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "text": " in database "
+                    },
+                    {
+                      "type": "text",
+                      "text": "FitnessBI_Synapse",
+                      "marks": [
+                        {
+                          "type": "code"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "text": " (production)."
+                    }
+                  ],
+                  "attrs": {
+                    "localId": "b38829c5d214"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "listItem",
+              "attrs": {
+                "localId": "827800a1d61f"
+              },
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Make a single change in the DCA Billing "
+                    },
+                    {
+                      "type": "text",
+                      "text": "UNION ALL",
+                      "marks": [
+                        {
+                          "type": "code"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "text": " block ("
+                    },
+                    {
+                      "type": "text",
+                      "text": "--gets deposited club account data iseries",
+                      "marks": [
+                        {
+                          "type": "code"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "text": " block)."
+                    }
+                  ],
+                  "attrs": {
+                    "localId": "38c1c922a441"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "listItem",
+              "attrs": {
+                "localId": "9965d166b8ff"
+              },
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Add a conditional predicate on the "
+                    },
+                    {
+                      "type": "text",
+                      "text": "LEFT JOIN",
+                      "marks": [
+                        {
+                          "type": "code"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "text": " of "
+                    },
+                    {
+                      "type": "text",
+                      "text": "#tmpmtd",
+                      "marks": [
+                        {
+                          "type": "code"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "text": " so the "
+                    },
+                    {
+                      "type": "text",
+                      "text": "Less ABC Fees",
+                      "marks": [
+                        {
+                          "type": "code"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "text": " row is suppressed when the DMB canonical Club Account Processing Fees entry exists for the same club and date."
+                    }
+                  ],
+                  "attrs": {
+                    "localId": "99d4b3f7f8c4"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "listItem",
+              "attrs": {
+                "localId": "809c4173a76a"
+              },
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Preserve sole-source clubs that do not have a DMB counterpart by using a "
+                    },
+                    {
+                      "type": "text",
+                      "text": "NOT EXISTS",
+                      "marks": [
+                        {
+                          "type": "code"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "text": " branch."
+                    }
+                  ],
+                  "attrs": {
+                    "localId": "45d37cda7feb"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "listItem",
+              "attrs": {
+                "localId": "40967f17e8d0"
+              },
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Only the DCA "
+                    },
+                    {
+                      "type": "text",
+                      "text": "Less ABC Fees",
+                      "marks": [
+                        {
+                          "type": "code"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "text": " row category should be affected."
+                    }
+                  ],
+                  "attrs": {
+                    "localId": "e3179ca3e906"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "listItem",
+              "attrs": {
+                "localId": "509f3169e233"
+              },
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "All other row categories must remain unchanged:"
+                    }
+                  ],
+                  "attrs": {
+                    "localId": "8c9d09200d2c"
+                  }
+                },
+                {
+                  "type": "bulletList",
+                  "content": [
+                    {
+                      "type": "listItem",
+                      "attrs": {
+                        "localId": "1ab5594f9eea"
+                      },
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "content": [
+                            {
+                              "type": "text",
+                              "text": "DCA A/B/C = Invoice Amount / Less Returns / Net Collected"
+                            }
+                          ],
+                          "attrs": {
+                            "localId": "0506eb54bc6a"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "listItem",
+                      "attrs": {
+                        "localId": "0c77f028929d"
+                      },
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "content": [
+                            {
+                              "type": "text",
+                              "text": "all DMB rows"
+                            }
+                          ],
+                          "attrs": {
+                            "localId": "e2001f142a83"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "listItem",
+                      "attrs": {
+                        "localId": "aa04a6e71a2f"
+                      },
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "content": [
+                            {
+                              "type": "text",
+                              "text": "CACHKS deposits"
+                            }
+                          ],
+                          "attrs": {
+                            "localId": "d1c8dd7afd01"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "listItem",
+                      "attrs": {
+                        "localId": "31d88d22d889"
+                      },
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "content": [
+                            {
+                              "type": "text",
+                              "text": "RCM rows"
+                            }
+                          ],
+                          "attrs": {
+                            "localId": "bd8893a15d3b"
+                          }
+                        }
+                      ]
+                    }
+                  ],
+                  "attrs": {
+                    "localId": "982860689d5f"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "listItem",
+              "attrs": {
+                "localId": "4b1e5c02be96"
+              },
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "After deployment, backfill February 2026 by running:"
+                    }
+                  ],
+                  "attrs": {
+                    "localId": "8c09ecef45f1"
+                  }
+                },
+                {
+                  "type": "codeBlock",
+                  "attrs": {
+                    "language": "sql",
+                    "localId": "7f382027e53e"
+                  },
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "EXEC [dw].[Get_Drdr_Dmb] '2026-03-01';"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "listItem",
+              "attrs": {
+                "localId": "e0c86029a549"
+              },
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Post-deployment validation for club "
+                    },
+                    {
+                      "type": "text",
+                      "text": "32161",
+                      "marks": [
+                        {
+                          "type": "code"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "text": " / Feb 2026:"
+                    }
+                  ],
+                  "attrs": {
+                    "localId": "f3daad36f852"
+                  }
+                },
+                {
+                  "type": "bulletList",
+                  "content": [
+                    {
+                      "type": "listItem",
+                      "attrs": {
+                        "localId": "0351363433ee"
+                      },
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "content": [
+                            {
+                              "type": "text",
+                              "text": "SELECT * FROM dw.drdr_dmb WHERE CLUB_NUMBER_I=32161 AND year_month=202602 AND DB_SOURCE='DCA' AND DB_DESCRIPTION='Less ABC Fees';",
+                              "marks": [
+                                {
+                                  "type": "code"
+                                }
+                              ]
+                            }
+                          ],
+                          "attrs": {
+                            "localId": "6310ec87897a"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "listItem",
+                      "attrs": {
+                        "localId": "f01746eb1fe1"
+                      },
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "content": [
+                            {
+                              "type": "text",
+                              "text": "Expected result: "
+                            },
+                            {
+                              "type": "text",
+                              "text": "0 rows",
+                              "marks": [
+                                {
+                                  "type": "code"
+                                }
+                              ]
+                            }
+                          ],
+                          "attrs": {
+                            "localId": "4a95d1091027"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "listItem",
+                      "attrs": {
+                        "localId": "5594ab2a4272"
+                      },
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "content": [
+                            {
+                              "type": "text",
+                              "text": "DCA A/B/C rows on "
+                            },
+                            {
+                              "type": "text",
+                              "text": "20260228",
+                              "marks": [
+                                {
+                                  "type": "code"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "text",
+                              "text": " remain "
+                            },
+                            {
+                              "type": "text",
+                              "text": "+1918.70 / -480.00 / +1438.70",
+                              "marks": [
+                                {
+                                  "type": "code"
+                                }
+                              ]
+                            }
+                          ],
+                          "attrs": {
+                            "localId": "348290eb2784"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "listItem",
+                      "attrs": {
+                        "localId": "9057f7045de7"
+                      },
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "content": [
+                            {
+                              "type": "text",
+                              "text": "DMB Club Account Processing Fees remain "
+                            },
+                            {
+                              "type": "text",
+                              "text": "20260224 = -53.36",
+                              "marks": [
+                                {
+                                  "type": "code"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "text",
+                              "text": ", "
+                            },
+                            {
+                              "type": "text",
+                              "text": "20260228 = -55.64",
+                              "marks": [
+                                {
+                                  "type": "code"
+                                }
+                              ]
+                            }
+                          ],
+                          "attrs": {
+                            "localId": "5066b07a9e27"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "listItem",
+                      "attrs": {
+                        "localId": "0ffcef06d755"
+                      },
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "content": [
+                            {
+                              "type": "text",
+                              "text": "SUM(DMB Club Account Processing Fees) MTD Feb 2026 = -109.00",
+                              "marks": [
+                                {
+                                  "type": "code"
+                                }
+                              ]
+                            }
+                          ],
+                          "attrs": {
+                            "localId": "3f2b6b5db8ed"
+                          }
+                        }
+                      ]
+                    }
+                  ],
+                  "attrs": {
+                    "localId": "d80c3b64c253"
+                  }
+                }
+              ]
+            }
+          ],
+          "attrs": {
+            "localId": "2888ef218380"
+          }
+        },
+        {
+          "type": "heading",
+          "attrs": {
+            "level": 3,
+            "localId": "737b69eb500d"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Other information"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Before/after change:"
+            }
+          ],
+          "attrs": {
+            "localId": "ba4025b6680a"
+          }
+        },
+        {
+          "type": "codeBlock",
+          "attrs": {
+            "language": "sql",
+            "localId": "2f7465311137"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "BEFORE:  \n    left join #tmpmtd b  \n        on a.club_number_i = b.club_number_i  \n       and d.the_date       = b.db_date  \n\nAFTER:  \n    left join #tmpmtd b  \n        on a.club_number_i = b.club_number_i  \n       and d.the_date       = b.db_date  \n       and (  \n            b.db_description <> 'Less ABC Fees'  \n            or not exists (  \n                select 1  \n                from DW.daily_deduction_reimbrsmnt_vw ddrv  \n                where ddrv.club_number_i = a.club_number_i  \n                  and ddrv.ctndte_date   = d.the_date  \n                  and ddrv.amount_type   = 'Club Account'  \n                  and trim(lower(ddrv.amount_description)) in ('processing fee','processing fees')  \n            )  \n       )"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Blast radius from shadow test, Jan–Jul 2026:"
+            }
+          ],
+          "attrs": {
+            "localId": "cd92f0c93035"
+          }
+        },
+        {
+          "type": "bulletList",
+          "content": [
+            {
+              "type": "listItem",
+              "attrs": {
+                "localId": "419c38562924"
+              },
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Structural duplicates: ~1,500+ clubs/month, ~$1.2–1.4M/month absolute value corrected to canonical DMB."
+                    }
+                  ],
+                  "attrs": {
+                    "localId": "5de885318242"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "listItem",
+              "attrs": {
+                "localId": "96553dfb9e5d"
+              },
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Unequal magnitudes: ~13–110 clubs/month, converges to DMB canonical."
+                    }
+                  ],
+                  "attrs": {
+                    "localId": "102c7fc40899"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "listItem",
+              "attrs": {
+                "localId": "59d9bde6479c"
+              },
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Sole-source clubs preserved: 35 club-months total, aggregate $428.47, max $132.77 for a single club-month."
+                    }
+                  ],
+                  "attrs": {
+                    "localId": "c1025a9e72e7"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "listItem",
+              "attrs": {
+                "localId": "72bb0a84f611"
+              },
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "All other slices ("
+                    },
+                    {
+                      "type": "text",
+                      "text": "DCA A/B/C",
+                      "marks": [
+                        {
+                          "type": "code"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "text": ", "
+                    },
+                    {
+                      "type": "text",
+                      "text": "DMB",
+                      "marks": [
+                        {
+                          "type": "code"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "text": ", "
+                    },
+                    {
+                      "type": "text",
+                      "text": "CACHKS",
+                      "marks": [
+                        {
+                          "type": "code"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "text": ", "
+                    },
+                    {
+                      "type": "text",
+                      "text": "RCM",
+                      "marks": [
+                        {
+                          "type": "code"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "text": "): zero delta."
+                    }
+                  ],
+                  "attrs": {
+                    "localId": "15e9c36cd66f"
+                  }
+                }
+              ]
+            }
+          ],
+          "attrs": {
+            "localId": "04b5e19c1971"
+          }
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Rollback:"
+            }
+          ],
+          "attrs": {
+            "localId": "cd9ddf436597"
+          }
+        },
+        {
+          "type": "bulletList",
+          "content": [
+            {
+              "type": "listItem",
+              "attrs": {
+                "localId": "5c1b7d6d680a"
+              },
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Revert the ALTER and run:"
+                    }
+                  ],
+                  "attrs": {
+                    "localId": "7ffbf613b0ad"
+                  }
+                },
+                {
+                  "type": "codeBlock",
+                  "attrs": {
+                    "language": "sql",
+                    "localId": "0b40835f973b"
+                  },
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "EXEC [dw].[Get_Drdr_Dmb] '2026-03-01';"
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "attrs": {
+            "localId": "ac1c965872ce"
+          }
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Risk:"
+            }
+          ],
+          "attrs": {
+            "localId": "d8174d488a37"
+          }
+        },
+        {
+          "type": "bulletList",
+          "content": [
+            {
+              "type": "listItem",
+              "attrs": {
+                "localId": "f7c9ca0c3185"
+              },
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Very low."
+                    }
+                  ],
+                  "attrs": {
+                    "localId": "e193b8a6218c"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "listItem",
+              "attrs": {
+                "localId": "a629a816ed1f"
+              },
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Predicate is scoped to a single row category."
+                    }
+                  ],
+                  "attrs": {
+                    "localId": "7b22b51ef070"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "listItem",
+              "attrs": {
+                "localId": "8cda0712285a"
+              },
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Sole-source protection preserves the 35 club-months where DCA is the only data source."
+                    }
+                  ],
+                  "attrs": {
+                    "localId": "3a2536c86ed2"
+                  }
+                }
+              ]
+            }
+          ],
+          "attrs": {
+            "localId": "ea4cd81da2ea"
+          }
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "References:"
+            }
+          ],
+          "attrs": {
+            "localId": "792dca27dea4"
+          }
+        },
+        {
+          "type": "bulletList",
+          "content": [
+            {
+              "type": "listItem",
+              "attrs": {
+                "localId": "f732bd5f2ebc"
+              },
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Parent ticket: IGS-17207"
+                    }
+                  ],
+                  "attrs": {
+                    "localId": "517c20e0653e"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "listItem",
+              "attrs": {
+                "localId": "c5e50edc5fe1"
+              },
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Parent RCA: IGS-17207"
+                    }
+                  ],
+                  "attrs": {
+                    "localId": "fb9483ac7efa"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "listItem",
+              "attrs": {
+                "localId": "eaae4683312d"
+              },
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Shadow test: pre-fix over-count $55.64 for club 32161 on 2/28 (Insights -$111.28 vs CRS -$55.64); post-fix reconciles to CRS."
+                    }
+                  ],
+                  "attrs": {
+                    "localId": "dbcfd57370b3"
+                  }
+                }
+              ]
+            }
+          ],
+          "attrs": {
+            "localId": "94aa5bd46f7a"
+          }
+        }
+      ]
+    },
+    "customfield_17225": null,
+    "customfield_11720": {
+      "type": "doc",
+      "version": 1,
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Deploy the pull request: "
+            },
+            {
+              "type": "inlineCard",
+              "attrs": {
+                "url": "https://dev.azure.com/DataFactoryTeam/PlanetFitness%20Repo/_git/FitnessBIRepoDB/pullrequest/5312",
+                "localId": "a370fbd1cddb"
+              }
+            },
+            {
+              "type": "text",
+              "text": " "
+            }
+          ],
+          "attrs": {
+            "localId": "1cc3c6ca741a"
+          }
+        },
+        {
+          "type": "bulletList",
+          "content": [
+            {
+              "type": "listItem",
+              "attrs": {
+                "localId": "4dd09d50bac5"
+              },
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "After deployment, backfill February 2026 by running:"
+                    }
+                  ],
+                  "attrs": {
+                    "localId": "f600b79d7d28"
+                  }
+                },
+                {
+                  "type": "codeBlock",
+                  "attrs": {
+                    "localId": "885db73d983d",
+                    "wrap": true
+                  },
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "EXEC [dw].[Get_Drdr_Dmb] '2026-03-01';"
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "attrs": {
+            "localId": "48b979846864"
+          }
+        }
+      ]
+    },
+    "customfield_11764": null,
+    "customfield_11763": null,
+    "customfield_11754": null,
+    "customfield_11757": null,
+    "customfield_10700": {
+      "id": "e05234e9-6717-46cf-a398-1d4bb6e19cea",
+      "name": "🔒︎ Insights Data Engineers",
+      "avatarUrl": "https://teams-directory-frontend.prod-east.frontend.public.atl-paas.net/assets/teams/avatars/v4/teal_no-highlight_2.svg",
+      "isVisible": true,
+      "isVerified": true,
+      "title": "🔒︎ Insights Data Engineers",
+      "isShared": true
+    },
+    "customfield_14549": null,
+    "customfield_11715": null,
+    "customfield_11759": null,
+    "customfield_11758": null,
+    "customfield_11717": null,
+    "summary": "IGS-17207 — Fix Insights DRDR duplicate ABC processing fee in [dw].[Get_Drdr_Dmb]",
+    "customfield_16101": {
+      "self": "https://abcfinancial.atlassian.net/rest/api/3/customFieldOption/17077",
+      "value": "No",
+      "id": "17077"
+    },
+    "customfield_11794": [
+      {
+        "name": "WD - Insights Data Engineers",
+        "groupId": "809a0d2d-538d-4846-9aec-0a6c49e6641c",
+        "self": "https://abcfinancial.atlassian.net/rest/api/3/group?groupId=809a0d2d-538d-4846-9aec-0a6c49e6641c"
+      }
+    ],
+    "customfield_12047": null,
+    "customfield_11766": null,
+    "customfield_11722": null,
+    "customfield_11721": null,
+    "customfield_11765": "2026-07-15T23:46:00.000-0500",
+    "environment": null,
+    "customfield_11748": null,
+    "customfield_11747": null,
+    "status": {
+      "self": "https://abcfinancial.atlassian.net/rest/api/3/status/10880",
+      "description": "",
+      "iconUrl": "https://abcfinancial.atlassian.net/images/icons/status_generic.gif",
+      "name": "Completed",
+      "id": "10880",
+      "statusCategory": {
+        "self": "https://abcfinancial.atlassian.net/rest/api/3/statuscategory/3",
+        "id": 3,
+        "key": "done",
+        "colorName": "green",
+        "name": "Done"
+      }
+    }
+  }
+}

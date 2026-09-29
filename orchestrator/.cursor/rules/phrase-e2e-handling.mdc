@@ -1,0 +1,32 @@
+---
+description: User phrase → E2E action map — never mix fetch review, fetch release list, or review call
+globs:
+alwaysApply: true
+---
+
+# Phrase E2E handling (Release Orchestrator)
+
+Canonical map: **`release_mcp/phrase_catalog.py`** · tests: **`orchestrator/zones/quality/tests/test_guided_phrase_e2e.py`**
+
+## Mandatory distinctions
+
+| User says | Agent MUST | MUST NOT |
+|-----------|------------|----------|
+| **fetch review** / **fetch review tickets** | Start Step 1 — review-ready statuses, lock on **yes** | Treat as release-ready list |
+| **fetch release tickets** | `list_release_tickets` — formatted list only, **no lock** | Start wizard or lock snapshot |
+| **schedule review call** / **review call schedule** | Playwright calendar handoff → **calendar done** | Fetch tickets |
+| **create release notes** | DOCX → auto SharePoint upload → **sharepoint done** | Stop after DOCX only |
+| **create shipit** | Create SHIPIT → auto Slack handoff → **slack done** | Stop after ticket only |
+
+## E2E chains (auto — do not skip)
+
+1. **Release notes:** confirm → `_confirm_release_notes` → SharePoint step with `sharepoint_upload=playwright`
+2. **SHIPIT:** confirm → `_confirm_service_ticket` → Slack step with `slack_decision=playwright`
+3. **service_ticket_only mode:** SHIPIT → Slack → **complete** (not deploy)
+
+## Agent checklist on every phrase
+
+1. Call `interpret_message` / `release_orchestrator` — do not reimplement routing
+2. Follow `next_mcp_call` and `user_can_say` in enriched response
+3. After browser handoffs (SharePoint, Slack, calendar), wait for user **done** phrase
+4. Run `pytest orchestrator/zones/quality/tests/test_guided_phrase_e2e.py` after changing phrase routing

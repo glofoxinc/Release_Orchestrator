@@ -1,0 +1,37 @@
+{
+  "key": "SHIPIT-17036",
+  "reference_standard": "Sushma Bhamidipati — evidence-based Customize BI prod deployment",
+  "summary": "Glofox Insights Customize BI - Prod Deployment - Release Version 2026.3.09.14",
+  "reason_for_change": "Production Deployment",
+  "change_type": "Normal",
+  "change_risk": "Medium",
+  "impact": null,
+  "urgency": null,
+  "team": null,
+  "approver_groups": ["Insights Customize Approvers"],
+  "request_type": "Manual Change",
+  "post_create_status": "Review Ready",
+  "reporter_equals_assignee": true,
+  "link_type": "Discovery - Connected",
+  "linked_tickets": ["AN-5516"],
+  "description_sections": [
+    "What is changing, in business terms",
+    "Who is affected",
+    "Not included in this change",
+    "How it is deployed",
+    "Supporting records"
+  ],
+  "plan_fields": {
+    "implementation_steps": "customfield_11720",
+    "verification_steps": "customfield_11721",
+    "rollback_steps": "customfield_11722",
+    "communication_plan": "customfield_11717",
+    "business_impact": "customfield_14549",
+    "risks_management": "customfield_17225",
+    "qa_test_plan": "customfield_11762"
+  },
+  "business_impact_pattern": ["Before:", "After:", "Audience and boundary:", "Measured impact:"],
+  "communication_phases": ["Pre-deployment", "During deployment", "After success", "After rollback"],
+  "verification_style": "numbered_checklist_with_excel_pdf_mandatory",
+  "notes": "Sushma comment: replaced description, business impact, risk, implementation, test, verification, rollback, and communication with evidence from AN-5516."
+}
