@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "jira-release-tool"
-version = "3.4.0"
+version = "3.5.0"
 description = "Release Orchestrator - Streamlit app for Jira release deployment automation, ticket creation, AI triage, release notes, MCP server, and deployment tracking"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -73,7 +73,8 @@ mcp = [
 ]
 
 [project.scripts]
-jira-release-tool = "cli:main"
+jira-release-tool = "orchestrator.entry.cli:main"
+release-orchestrator = "orchestrator.entry.cli:main"
 daily-review-agent = "daily_review_agent.__main__:main"
 
 [project.urls]
@@ -89,67 +90,77 @@ py-modules = [
     "deploy_draft", "deploy_ops", "deploy_prefill", "deployment_history",
     "diff_engine", "exclusion_ops", "gate_message_content", "github_host_repo",
     "github_pr_gate", "integration_archive", "integration_readiness",
-    "jira_client", "jira_teams", "linked_ticket_verifier", "ms_graph",
+    "jira_client", "jira_client_http", "jira_teams", "linked_ticket_verifier", "ms_graph",
     "notifier", "operator_signoff", "production_readiness", "recovery_contract",
     "release_critical", "release_date_confirm", "release_defaults", "release_gates",
     "release_notes_compare", "release_session", "release_stats", "request_type_setter",
     "schedule_time", "service_ticket_plans", "session_persist", "session_restore",
-    "sharepoint_upload", "sharepoint_url", "shipit_post_create", "shipit_preflight",
+    "sharepoint_receipt", "sharepoint_upload", "sharepoint_url", "shipit_post_create", "shipit_preflight",
     "shipit_reference", "shipit_test_mode", "slack_announce", "slack_assignee_notify",
     "slack_mcp_verify", "slack_message_content", "slack_reference", "tckt_reference",
     "team_crew", "team_scope", "teams_meeting_content", "teams_schedule",
     "template_engine", "template_library", "ticket_validator", "workspace_profile",
 ]
-packages = { find = { where = ["."], include = [
-    "orchestrator*",
-    "mcp_server*",
-    "release_mcp*",
-    "release_platform*",
-    "daily_review_agent*",
-    "generators*",
-    "common*",
-    "persistence*",
-    "ui*",
-] } }
+packages = [
+    "orchestrator",
+    "orchestrator.entry",
+    "orchestrator.ops",
+    "orchestrator.ops.daily_review",
+    "orchestrator.ops.legacy",
+    "release_mcp",
+    "mcp_server",
+    "release_platform",
+    "daily_review_agent",
+    "generators",
+    "common",
+    "persistence",
+    "ui",
+    "ui.release_notes",
+    "ui.service_ticket",
+    "ui.ticket_review",
+]
 include-package-data = true
 
 [tool.setuptools.package-dir]
-"" = "orchestrator/core"
-"cli" = "."
-"mcp_server" = "mcp_server"
+"" = "orchestrator/zones/product/engine"
 "orchestrator" = "orchestrator"
-"release_mcp" = "orchestrator/server"
-"release_platform" = "orchestrator/web"
-"daily_review_agent" = "orchestrator/agents/review"
-"generators" = "orchestrator/generators"
-"common" = "orchestrator/shared/common"
-"persistence" = "orchestrator/shared/persistence"
-"ui" = "orchestrator/web/ui"
+"orchestrator.entry" = "orchestrator/entry"
+"orchestrator.ops" = "orchestrator/zones/platform/ops"
+"release_mcp" = "orchestrator/zones/config/aliases/release_mcp"
+"mcp_server" = "orchestrator/zones/config/aliases/mcp_server"
+"release_platform" = "orchestrator/zones/config/aliases/release_platform"
+"daily_review_agent" = "orchestrator/zones/config/aliases/daily_review_agent"
+"generators" = "orchestrator/zones/config/aliases/generators"
+"common" = "orchestrator/zones/config/aliases/common"
+"persistence" = "orchestrator/zones/config/aliases/persistence"
+"ui" = "orchestrator/zones/product/ui/ui"
 
 [tool.setuptools.package-data]
-"*" = [
-    "assets/templates/**/*",
-    "profiles/workspaces/*.yaml",
-    "profiles/workspaces/*.yml",
-    "orchestrator/agents/review/agent.yaml",
+"orchestrator" = [
+    "zones/config/assets/templates/**/*",
+    "zones/config/profiles/workspaces/*.yaml",
+    "zones/config/profiles/workspaces/*.yml",
 ]
 
 [tool.ruff]
 target-version = "py310"
 line-length = 120
+cache-dir = "orchestrator/zones/runtime/cache/ruff"
 extend-exclude = ["build", "dist", "*.egg-info"]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I"]
 
 [tool.pytest.ini_options]
-testpaths = ["tests"]
+testpaths = ["orchestrator/zones/quality/tests"]
+cache_dir = "orchestrator/zones/runtime/cache/pytest"
 markers = [
     "playwright: optional browser E2E (requires RUN_PLAYWRIGHT=1 and local Streamlit)",
     "real_scope: opt out of project-wide team scope bypass fixtures",
 ]
 
 [tool.coverage.run]
+data_file = "orchestrator/zones/runtime/cache/coverage"
 source = [
     "release_mcp",
     "mcp_server",
@@ -161,12 +172,13 @@ source = [
     "confluence_publisher",
 ]
 omit = [
-    "tests/*",
+    "orchestrator/zones/quality/tests/*",
     "venv/*",
     ".venv/*",
     "release_platform/*",
     # Stdio entrypoints are covered by import/tool smoke, not unit fail-under.
-    "release_mcp/server.py",
+    "release_mcp/server/implementation.py",
+    "release_mcp/server/tools/*",
     "release_mcp/__main__.py",
     "mcp_server/*",
 ]

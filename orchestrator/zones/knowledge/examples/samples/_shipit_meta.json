@@ -1,0 +1,1533 @@
+{
+  "project": {
+    "expand": "description,lead,issueTypes,url,projectKeys,permissions,insight",
+    "self": "https://abcfinancial.atlassian.net/rest/api/3/project/16108",
+    "id": "16108",
+    "key": "SHIPIT",
+    "description": "",
+    "lead": {
+      "self": "https://abcfinancial.atlassian.net/rest/api/3/user?accountId=641a1bef9796ea0a87182918",
+      "accountId": "641a1bef9796ea0a87182918",
+      "avatarUrls": {
+        "48x48": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/641a1bef9796ea0a87182918/db85f524-1079-40c7-9b21-fe3b897b881f/48",
+        "24x24": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/641a1bef9796ea0a87182918/db85f524-1079-40c7-9b21-fe3b897b881f/24",
+        "16x16": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/641a1bef9796ea0a87182918/db85f524-1079-40c7-9b21-fe3b897b881f/16",
+        "32x32": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/641a1bef9796ea0a87182918/db85f524-1079-40c7-9b21-fe3b897b881f/32"
+      },
+      "displayName": "ABC DevOps Automation",
+      "active": true
+    },
+    "components": [],
+    "issueTypes": [
+      {
+        "self": "https://abcfinancial.atlassian.net/rest/api/3/issuetype/11738",
+        "id": "11738",
+        "description": "",
+        "iconUrl": "https://abcfinancial.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10300?size=medium",
+        "name": "Service Deployment",
+        "subtask": false,
+        "avatarId": 10300,
+        "hierarchyLevel": 0
+      },
+      {
+        "self": "https://abcfinancial.atlassian.net/rest/api/3/issuetype/10401",
+        "id": "10401",
+        "description": "",
+        "iconUrl": "https://abcfinancial.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10300?size=medium",
+        "name": "Change Request",
+        "subtask": false,
+        "avatarId": 10300,
+        "hierarchyLevel": 0
+      }
+    ],
+    "assigneeType": "UNASSIGNED",
+    "versions": [],
+    "name": "Software Delivery",
+    "roles": {
+      "Administrators (migrated)": "https://abcfinancial.atlassian.net/rest/api/3/project/16108/role/13797",
+      "atlassian-addons-project-access (migrated)": "https://abcfinancial.atlassian.net/rest/api/3/project/16108/role/13795",
+      "Release Administrator": "https://abcfinancial.atlassian.net/rest/api/3/project/16108/role/10500",
+      "Network Engineering": "https://abcfinancial.atlassian.net/rest/api/3/project/16108/role/10596",
+      "Service Desk Team": "https://abcfinancial.atlassian.net/rest/api/3/project/16108/role/10590",
+      "Business Analyst": "https://abcfinancial.atlassian.net/rest/api/3/project/16108/role/10400",
+      "jira-guest-member": "https://abcfinancial.atlassian.net/rest/api/3/project/16108/role/16934",
+      "Service Desk Customers": "https://abcfinancial.atlassian.net/rest/api/3/project/16108/role/10589",
+      "CAB": "https://abcfinancial.atlassian.net/rest/api/3/project/16108/role/10591",
+      "Technical SME": "https://abcfinancial.atlassian.net/rest/api/3/project/16108/role/10300",
+      "POS PO": "https://abcfinancial.atlassian.net/rest/api/3/project/16108/role/10797",
+      "EON PO Interim": "https://abcfinancial.atlassian.net/rest/api/3/project/16108/role/10796",
+      "Solution Architect": "https://abcfinancial.atlassian.net/rest/api/3/project/16108/role/10798",
+      "Business SME": "https://abcfinancial.atlassian.net/rest/api/3/project/16108/role/10301",
+      "atlassian-addons-project-access": "https://abcfinancial.atlassian.net/rest/api/3/project/16108/role/10201",
+      "Collaborator": "https://abcfinancial.atlassian.net/rest/api/3/project/16108/role/17388",
+      "Developers": "https://abcfinancial.atlassian.net/rest/api/3/project/16108/role/10200",
+      "Tempo Project Managers (migrated)": "https://abcfinancial.atlassian.net/rest/api/3/project/16108/role/13796",
+      "Application Developer": "https://abcfinancial.atlassian.net/rest/api/3/project/16108/role/10302",
+      "Administrators": "https://abcfinancial.atlassian.net/rest/api/3/project/16108/role/10002",
+      "Customer Service Team": "https://abcfinancial.atlassian.net/rest/api/3/project/16108/role/17387",
+      "Tempo Project Managers": "https://abcfinancial.atlassian.net/rest/api/3/project/16108/role/10100"
+    },
+    "avatarUrls": {
+      "48x48": "https://abcfinancial.atlassian.net/rest/api/3/universal_avatar/view/type/project/avatar/17865",
+      "24x24": "https://abcfinancial.atlassian.net/rest/api/3/universal_avatar/view/type/project/avatar/17865?size=small",
+      "16x16": "https://abcfinancial.atlassian.net/rest/api/3/universal_avatar/view/type/project/avatar/17865?size=xsmall",
+      "32x32": "https://abcfinancial.atlassian.net/rest/api/3/universal_avatar/view/type/project/avatar/17865?size=medium"
+    },
+    "projectTypeKey": "service_desk",
+    "simplified": false,
+    "style": "classic",
+    "isPrivate": false,
+    "properties": {},
+    "isLiveTemplate": false
+  },
+  "request_16106": {
+    "_expands": [
+      "participant",
+      "status",
+      "sla",
+      "requestType",
+      "serviceDesk",
+      "attachment",
+      "action",
+      "comment"
+    ],
+    "issueId": "958900",
+    "issueKey": "SHIPIT-16106",
+    "summary": "A test ticket ",
+    "requestTypeId": "2969",
+    "serviceDeskId": "2046",
+    "createdDate": {
+      "iso8601": "2026-08-25T06:50:45-0500",
+      "jira": "2026-08-25T06:50:45.933-0500",
+      "friendly": "25/Aug/26 6:50 AM",
+      "epochMillis": 1787658645933
+    },
+    "reporter": {
+      "accountId": "712020:df0d5bd0-c115-4c10-a15f-08f5b64383bb",
+      "emailAddress": "chantikumar.jakkula@abcfitness.com",
+      "displayName": "Chanti Kumar Jakkula",
+      "active": true,
+      "timeZone": "America/Chicago",
+      "_links": {
+        "jiraRest": "https://abcfinancial.atlassian.net/rest/api/2/user?accountId=712020%3Adf0d5bd0-c115-4c10-a15f-08f5b64383bb",
+        "avatarUrls": {
+          "48x48": "https://secure.gravatar.com/avatar/c21870b7cf83b64dd4da5d62557f24c1?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FCJ-3.png",
+          "24x24": "https://secure.gravatar.com/avatar/c21870b7cf83b64dd4da5d62557f24c1?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FCJ-3.png",
+          "16x16": "https://secure.gravatar.com/avatar/c21870b7cf83b64dd4da5d62557f24c1?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FCJ-3.png",
+          "32x32": "https://secure.gravatar.com/avatar/c21870b7cf83b64dd4da5d62557f24c1?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FCJ-3.png"
+        },
+        "self": "https://abcfinancial.atlassian.net/rest/api/2/user?accountId=712020%3Adf0d5bd0-c115-4c10-a15f-08f5b64383bb"
+      }
+    },
+    "requestFieldValues": [
+      {
+        "fieldId": "summary",
+        "label": "Summary",
+        "value": "A test ticket "
+      }
+    ],
+    "currentStatus": {
+      "status": "Canceled",
+      "statusCategory": "DONE",
+      "statusDate": {
+        "iso8601": "2026-09-02T00:32:38-0500",
+        "jira": "2026-09-02T00:32:38.739-0500",
+        "friendly": "Wednesday 12:32 AM",
+        "epochMillis": 1788327158739
+      }
+    },
+    "_links": {
+      "jiraRest": "https://abcfinancial.atlassian.net/rest/api/2/issue/958900",
+      "web": "https://abcfinancial.atlassian.net/servicedesk/customer/portal/2046/SHIPIT-16106",
+      "agent": "https://abcfinancial.atlassian.net/browse/SHIPIT-16106",
+      "self": "https://abcfinancial.atlassian.net/rest/servicedeskapi/request/958900"
+    }
+  },
+  "issue_16106_editmeta": {
+    "fields": {
+      "issuetype": {
+        "required": true,
+        "schema": {
+          "type": "issuetype",
+          "system": "issuetype"
+        },
+        "name": "Issue Type",
+        "key": "issuetype",
+        "operations": [],
+        "allowedValues": [
+          {
+            "self": "https://abcfinancial.atlassian.net/rest/api/3/issuetype/10401",
+            "id": "10401",
+            "description": "",
+            "iconUrl": "https://abcfinancial.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10300?size=medium",
+            "name": "Change Request",
+            "subtask": false,
+            "avatarId": 10300,
+            "hierarchyLevel": 0
+          }
+        ]
+      },
+      "description": {
+        "required": false,
+        "schema": {
+          "type": "string",
+          "system": "description"
+        },
+        "name": "Description",
+        "key": "description",
+        "operations": [
+          "set"
+        ]
+      },
+      "customfield_17225": {
+        "required": false,
+        "schema": {
+          "type": "string",
+          "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textarea",
+          "customId": 17225
+        },
+        "name": "Risks Management",
+        "key": "customfield_17225",
+        "operations": [
+          "set"
+        ]
+      },
+      "customfield_11764": {
+        "required": false,
+        "schema": {
+          "type": "datetime",
+          "custom": "com.atlassian.jira.plugin.system.customfieldtypes:datetime",
+          "customId": 11764
+        },
+        "name": "Planned end date",
+        "key": "customfield_11764",
+        "operations": [
+          "set"
+        ]
+      },
+      "customfield_11720": {
+        "required": false,
+        "schema": {
+          "type": "string",
+          "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textarea",
+          "customId": 11720
+        },
+        "name": "Implementation Steps",
+        "key": "customfield_11720",
+        "operations": [
+          "set"
+        ]
+      },
+      "customfield_11763": {
+        "required": false,
+        "schema": {
+          "type": "datetime",
+          "custom": "com.atlassian.jira.plugin.system.customfieldtypes:datetime",
+          "customId": 11763
+        },
+        "name": "Planned start date",
+        "key": "customfield_11763",
+        "operations": [
+          "set"
+        ]
+      },
+      "customfield_11754": {
+        "required": false,
+        "schema": {
+          "type": "array",
+          "items": "service-entity-field",
+          "custom": "com.atlassian.jira.plugins.service-entity:service-entity-field-cftype",
+          "customId": 11754
+        },
+        "name": "Affected services",
+        "key": "customfield_11754",
+        "autoCompleteUrl": "https://abcfinancial.atlassian.net/rest/service-registry-api/service?query=",
+        "operations": [
+          "set"
+        ]
+      },
+      "customfield_11757": {
+        "required": false,
+        "schema": {
+          "type": "option",
+          "custom": "com.atlassian.jira.plugin.system.customfieldtypes:select",
+          "customId": 11757
+        },
+        "name": "Change type",
+        "key": "customfield_11757",
+        "operations": [
+          "set"
+        ],
+        "allowedValues": [
+          {
+            "self": "https://abcfinancial.atlassian.net/rest/api/3/customFieldOption/21531",
+            "value": "Emergency",
+            "id": "21531"
+          },
+          {
+            "self": "https://abcfinancial.atlassian.net/rest/api/3/customFieldOption/21532",
+            "value": "Normal",
+            "id": "21532"
+          },
+          {
+            "self": "https://abcfinancial.atlassian.net/rest/api/3/customFieldOption/21533",
+            "value": "Standard",
+            "id": "21533"
+          },
+          {
+            "self": "https://abcfinancial.atlassian.net/rest/api/3/customFieldOption/21534",
+            "value": "Feature Flag",
+            "id": "21534"
+          },
+          {
+            "self": "https://abcfinancial.atlassian.net/rest/api/3/customFieldOption/21535",
+            "value": "Configuration change",
+            "id": "21535"
+          }
+        ]
+      },
+      "customfield_10700": {
+        "required": false,
+        "schema": {
+          "type": "team",
+          "custom": "com.atlassian.jira.plugin.system.customfieldtypes:atlassian-team",
+          "customId": 10700,
+          "configuration": {
+            "com.atlassian.jira.plugin.system.customfieldtypes:atlassian-team": true
+          }
+        },
+        "name": "Team",
+        "key": "customfield_10700",
+        "autoCompleteUrl": "https://abcfinancial.atlassian.net/gateway/api/v1/recommendations",
+        "operations": [
+          "set"
+        ]
+      },
+      "customfield_14549": {
+        "required": false,
+        "schema": {
+          "type": "string",
+          "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textarea",
+          "customId": 14549
+        },
+        "name": "Business Impact",
+        "key": "customfield_14549",
+        "operations": [
+          "set"
+        ]
+      },
+      "attachment": {
+        "required": false,
+        "schema": {
+          "type": "array",
+          "items": "attachment",
+          "system": "attachment"
+        },
+        "name": "Attachment",
+        "key": "attachment",
+        "operations": [
+          "set",
+          "copy"
+        ]
+      },
+      "customfield_11759": {
+        "required": false,
+        "schema": {
+          "type": "option",
+          "custom": "com.atlassian.jira.plugin.system.customfieldtypes:select",
+          "customId": 11759
+        },
+        "name": "Change reason",
+        "key": "customfield_11759",
+        "operations": [
+          "set"
+        ],
+        "allowedValues": [
+          {
+            "self": "https://abcfinancial.atlassian.net/rest/api/3/customFieldOption/10911",
+            "value": "Repair",
+            "id": "10911"
+          },
+          {
+            "self": "https://abcfinancial.atlassian.net/rest/api/3/customFieldOption/10912",
+            "value": "Upgrade",
+            "id": "10912"
+          },
+          {
+            "self": "https://abcfinancial.atlassian.net/rest/api/3/customFieldOption/10913",
+            "value": "Maintenance",
+            "id": "10913"
+          },
+          {
+            "self": "https://abcfinancial.atlassian.net/rest/api/3/customFieldOption/10914",
+            "value": "New functionality",
+            "id": "10914"
+          },
+          {
+            "self": "https://abcfinancial.atlassian.net/rest/api/3/customFieldOption/10915",
+            "value": "Other",
+            "id": "10915"
+          }
+        ]
+      },
+      "customfield_11715": {
+        "required": false,
+        "schema": {
+          "type": "string",
+          "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textfield",
+          "customId": 11715
+        },
+        "name": "Reason for the Change",
+        "key": "customfield_11715",
+        "operations": [
+          "set"
+        ]
+      },
+      "customfield_11758": {
+        "required": false,
+        "schema": {
+          "type": "option",
+          "custom": "com.atlassian.jira.plugin.system.customfieldtypes:select",
+          "customId": 11758
+        },
+        "name": "Change risk",
+        "key": "customfield_11758",
+        "operations": [
+          "set"
+        ],
+        "allowedValues": [
+          {
+            "self": "https://abcfinancial.atlassian.net/rest/api/3/customFieldOption/10907",
+            "value": "Critical",
+            "id": "10907"
+          },
+          {
+            "self": "https://abcfinancial.atlassian.net/rest/api/3/customFieldOption/10908",
+            "value": "High",
+            "id": "10908"
+          },
+          {
+            "self": "https://abcfinancial.atlassian.net/rest/api/3/customFieldOption/10909",
+            "value": "Medium",
+            "id": "10909"
+          },
+          {
+            "self": "https://abcfinancial.atlassian.net/rest/api/3/customFieldOption/10910",
+            "value": "Low",
+            "id": "10910"
+          }
+        ]
+      },
+      "customfield_11717": {
+        "required": false,
+        "schema": {
+          "type": "string",
+          "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textarea",
+          "customId": 11717
+        },
+        "name": "Communication Plan",
+        "key": "customfield_11717",
+        "operations": [
+          "set"
+        ]
+      },
+      "summary": {
+        "required": true,
+        "schema": {
+          "type": "string",
+          "system": "summary"
+        },
+        "name": "Summary",
+        "key": "summary",
+        "operations": [
+          "set"
+        ]
+      },
+      "customfield_16101": {
+        "required": false,
+        "schema": {
+          "type": "option",
+          "custom": "com.atlassian.jira.plugin.system.customfieldtypes:radiobuttons",
+          "customId": 16101
+        },
+        "name": "Unplanned",
+        "key": "customfield_16101",
+        "operations": [
+          "set"
+        ],
+        "allowedValues": [
+          {
+            "self": "https://abcfinancial.atlassian.net/rest/api/3/customFieldOption/17076",
+            "value": "Yes",
+            "id": "17076"
+          },
+          {
+            "self": "https://abcfinancial.atlassian.net/rest/api/3/customFieldOption/17077",
+            "value": "No",
+            "id": "17077"
+          }
+        ]
+      },
+      "reporter": {
+        "required": false,
+        "schema": {
+          "type": "user",
+          "system": "reporter"
+        },
+        "name": "Reporter",
+        "key": "reporter",
+        "autoCompleteUrl": "https://abcfinancial.atlassian.net/rest/api/3/user/recommend?context=Reporter&issueKey=SHIPIT-16106",
+        "operations": [
+          "set"
+        ]
+      },
+      "priority": {
+        "required": false,
+        "schema": {
+          "type": "priority",
+          "system": "priority"
+        },
+        "name": "Priority",
+        "key": "priority",
+        "operations": [
+          "set"
+        ],
+        "allowedValues": [
+          {
+            "self": "https://abcfinancial.atlassian.net/rest/api/3/priority/1",
+            "iconUrl": "https://abcfinancial.atlassian.net/rest/api/3/universal_avatar/view/type/priority/avatar/17677?size=medium",
+            "avatarId": 17677,
+            "name": "Critical",
+            "id": "1"
+          },
+          {
+            "self": "https://abcfinancial.atlassian.net/rest/api/3/priority/2",
+            "iconUrl": "https://abcfinancial.atlassian.net/rest/api/3/universal_avatar/view/type/priority/avatar/17681?size=medium",
+            "avatarId": 17681,
+            "name": "High",
+            "id": "2"
+          },
+          {
+            "self": "https://abcfinancial.atlassian.net/rest/api/3/priority/3",
+            "iconUrl": "https://abcfinancial.atlassian.net/rest/api/3/universal_avatar/view/type/priority/avatar/17679?size=medium",
+            "avatarId": 17679,
+            "name": "Medium",
+            "id": "3"
+          },
+          {
+            "self": "https://abcfinancial.atlassian.net/rest/api/3/priority/4",
+            "iconUrl": "https://abcfinancial.atlassian.net/rest/api/3/universal_avatar/view/type/priority/avatar/17680?size=medium",
+            "avatarId": 17680,
+            "name": "Low",
+            "id": "4"
+          }
+        ]
+      },
+      "customfield_12047": {
+        "required": false,
+        "schema": {
+          "type": "group",
+          "custom": "com.atlassian.jira.plugin.system.customfieldtypes:grouppicker",
+          "customId": 12047
+        },
+        "name": "Assignment Group",
+        "key": "customfield_12047",
+        "operations": [
+          "set"
+        ]
+      },
+      "customfield_11794": {
+        "required": false,
+        "schema": {
+          "type": "array",
+          "items": "group",
+          "custom": "com.atlassian.jira.plugin.system.customfieldtypes:multigrouppicker",
+          "customId": 11794
+        },
+        "name": "Approver groups",
+        "key": "customfield_11794",
+        "operations": [
+          "add",
+          "set",
+          "remove"
+        ]
+      },
+      "labels": {
+        "required": false,
+        "schema": {
+          "type": "array",
+          "items": "string",
+          "system": "labels"
+        },
+        "name": "Labels",
+        "key": "labels",
+        "autoCompleteUrl": "https://abcfinancial.atlassian.net/rest/api/1.0/labels/958900/suggest?query=",
+        "operations": [
+          "add",
+          "set",
+          "remove"
+        ]
+      },
+      "customfield_11722": {
+        "required": false,
+        "schema": {
+          "type": "string",
+          "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textarea",
+          "customId": 11722
+        },
+        "name": "Rollback Steps",
+        "key": "customfield_11722",
+        "operations": [
+          "set"
+        ]
+      },
+      "customfield_11766": {
+        "required": false,
+        "schema": {
+          "type": "datetime",
+          "custom": "com.atlassian.jira.plugin.system.customfieldtypes:datetime",
+          "customId": 11766
+        },
+        "name": "Change completion date",
+        "key": "customfield_11766",
+        "operations": [
+          "set"
+        ]
+      },
+      "customfield_11721": {
+        "required": false,
+        "schema": {
+          "type": "string",
+          "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textarea",
+          "customId": 11721
+        },
+        "name": "Verification Steps",
+        "key": "customfield_11721",
+        "operations": [
+          "set"
+        ]
+      },
+      "customfield_11765": {
+        "required": false,
+        "schema": {
+          "type": "datetime",
+          "custom": "com.atlassian.jira.plugin.system.customfieldtypes:datetime",
+          "customId": 11765
+        },
+        "name": "Change start date",
+        "key": "customfield_11765",
+        "operations": [
+          "set"
+        ]
+      },
+      "customfield_11746": {
+        "required": false,
+        "schema": {
+          "type": "sd-request-lang",
+          "custom": "com.atlassian.servicedesk.servicedesk-lingo-integration-plugin:sd-request-language",
+          "customId": 11746
+        },
+        "name": "Request language",
+        "key": "customfield_11746",
+        "operations": [],
+        "allowedValues": [
+          {
+            "languageCode": "en",
+            "displayName": "English"
+          }
+        ]
+      },
+      "environment": {
+        "required": false,
+        "schema": {
+          "type": "string",
+          "system": "environment"
+        },
+        "name": "Environment",
+        "key": "environment",
+        "operations": [
+          "set"
+        ]
+      },
+      "customfield_11748": {
+        "required": false,
+        "schema": {
+          "type": "option",
+          "custom": "com.atlassian.jira.plugin.system.customfieldtypes:select",
+          "customId": 11748
+        },
+        "name": "Impact",
+        "key": "customfield_11748",
+        "operations": [
+          "set"
+        ],
+        "allowedValues": [
+          {
+            "self": "https://abcfinancial.atlassian.net/rest/api/3/customFieldOption/10818",
+            "value": "Extensive / Widespread",
+            "id": "10818"
+          },
+          {
+            "self": "https://abcfinancial.atlassian.net/rest/api/3/customFieldOption/10819",
+            "value": "Significant / Large",
+            "id": "10819"
+          },
+          {
+            "self": "https://abcfinancial.atlassian.net/rest/api/3/customFieldOption/10820",
+            "value": "Moderate / Limited",
+            "id": "10820"
+          },
+          {
+            "self": "https://abcfinancial.atlassian.net/rest/api/3/customFieldOption/10821",
+            "value": "Minor / Localized",
+            "id": "10821"
+          }
+        ]
+      },
+      "customfield_11747": {
+        "required": false,
+        "schema": {
+          "type": "option",
+          "custom": "com.atlassian.jira.plugin.system.customfieldtypes:select",
+          "customId": 11747
+        },
+        "name": "Urgency",
+        "key": "customfield_11747",
+        "operations": [
+          "set"
+        ],
+        "allowedValues": [
+          {
+            "self": "https://abcfinancial.atlassian.net/rest/api/3/customFieldOption/10814",
+            "value": "Critical",
+            "id": "10814"
+          },
+          {
+            "self": "https://abcfinancial.atlassian.net/rest/api/3/customFieldOption/10815",
+            "value": "High",
+            "id": "10815"
+          },
+          {
+            "self": "https://abcfinancial.atlassian.net/rest/api/3/customFieldOption/10816",
+            "value": "Medium",
+            "id": "10816"
+          },
+          {
+            "self": "https://abcfinancial.atlassian.net/rest/api/3/customFieldOption/10817",
+            "value": "Low",
+            "id": "10817"
+          }
+        ]
+      },
+      "duedate": {
+        "required": false,
+        "schema": {
+          "type": "date",
+          "system": "duedate"
+        },
+        "name": "Due date",
+        "key": "duedate",
+        "operations": [
+          "set"
+        ]
+      },
+      "comment": {
+        "required": false,
+        "schema": {
+          "type": "comments-page",
+          "system": "comment"
+        },
+        "name": "Comment",
+        "key": "comment",
+        "operations": [
+          "add",
+          "edit",
+          "remove"
+        ]
+      },
+      "issuelinks": {
+        "required": false,
+        "schema": {
+          "type": "array",
+          "items": "issuelinks",
+          "system": "issuelinks"
+        },
+        "name": "Linked Issues",
+        "key": "issuelinks",
+        "autoCompleteUrl": "https://abcfinancial.atlassian.net/rest/api/3/issue/picker?currentProjectId=&showSubTaskParent=true&showSubTasks=true&currentIssueKey=SHIPIT-16106&query=",
+        "operations": [
+          "add",
+          "copy"
+        ]
+      },
+      "assignee": {
+        "required": false,
+        "schema": {
+          "type": "user",
+          "system": "assignee"
+        },
+        "name": "Assignee",
+        "key": "assignee",
+        "autoCompleteUrl": "https://abcfinancial.atlassian.net/rest/api/3/user/assignable/search?issueKey=SHIPIT-16106&query=",
+        "operations": [
+          "set"
+        ]
+      }
+    }
+  },
+  "shipit_desk": {
+    "id": "2046",
+    "projectId": "16108",
+    "projectName": "Software Delivery",
+    "projectKey": "SHIPIT",
+    "projectTypeKey": "service_desk",
+    "_links": {
+      "self": "https://abcfinancial.atlassian.net/rest/servicedeskapi/servicedesk/2046"
+    }
+  },
+  "request_types": {
+    "_expands": [
+      "field"
+    ],
+    "size": 2,
+    "start": 0,
+    "limit": 50,
+    "isLastPage": true,
+    "_links": {
+      "self": "https://abcfinancial.atlassian.net/rest/servicedeskapi/servicedesk/2046/requesttype",
+      "base": "https://abcfinancial.atlassian.net",
+      "context": ""
+    },
+    "values": [
+      {
+        "_expands": [
+          "field"
+        ],
+        "id": "2969",
+        "_links": {
+          "self": "https://abcfinancial.atlassian.net/rest/servicedeskapi/servicedesk/2046/requesttype/2969"
+        },
+        "name": "Manual Change",
+        "description": "Changes that are processed by a person, and not through automation.",
+        "helpText": "",
+        "defaultName": "Manual Change",
+        "issueTypeId": "10401",
+        "serviceDeskId": "2046",
+        "portalId": "2046",
+        "groupIds": [
+          "2139"
+        ],
+        "icon": {
+          "id": "17866",
+          "_links": {
+            "iconUrls": {
+              "48x48": "https://abcfinancial.atlassian.net/rest/api/2/universal_avatar/view/type/SD_REQTYPE/avatar/17866?size=large",
+              "24x24": "https://abcfinancial.atlassian.net/rest/api/2/universal_avatar/view/type/SD_REQTYPE/avatar/17866?size=small",
+              "16x16": "https://abcfinancial.atlassian.net/rest/api/2/universal_avatar/view/type/SD_REQTYPE/avatar/17866?size=xsmall",
+              "32x32": "https://abcfinancial.atlassian.net/rest/api/2/universal_avatar/view/type/SD_REQTYPE/avatar/17866?size=medium"
+            }
+          }
+        },
+        "restrictionStatus": "OPEN",
+        "canCreateRequest": true
+      },
+      {
+        "_expands": [
+          "field"
+        ],
+        "id": "2705",
+        "_links": {
+          "self": "https://abcfinancial.atlassian.net/rest/servicedeskapi/servicedesk/2046/requesttype/2705"
+        },
+        "name": "Software Deployment",
+        "description": "",
+        "helpText": "",
+        "defaultName": "Software Deployment",
+        "issueTypeId": "11738",
+        "serviceDeskId": "2046",
+        "portalId": "2046",
+        "groupIds": [],
+        "icon": {
+          "id": "15445",
+          "_links": {
+            "iconUrls": {
+              "48x48": "https://abcfinancial.atlassian.net/rest/api/2/universal_avatar/view/type/SD_REQTYPE/avatar/15445?size=large",
+              "24x24": "https://abcfinancial.atlassian.net/rest/api/2/universal_avatar/view/type/SD_REQTYPE/avatar/15445?size=small",
+              "16x16": "https://abcfinancial.atlassian.net/rest/api/2/universal_avatar/view/type/SD_REQTYPE/avatar/15445?size=xsmall",
+              "32x32": "https://abcfinancial.atlassian.net/rest/api/2/universal_avatar/view/type/SD_REQTYPE/avatar/15445?size=medium"
+            }
+          }
+        },
+        "restrictionStatus": "OPEN",
+        "canCreateRequest": true
+      }
+    ]
+  },
+  "request_type_fields": {
+    "2969": {
+      "name": "Manual Change",
+      "fields": {
+        "requestTypeFields": [
+          {
+            "fieldId": "summary",
+            "name": "Summary",
+            "description": "",
+            "required": true,
+            "defaultValues": [],
+            "validValues": [],
+            "jiraSchema": {
+              "type": "string",
+              "system": "summary"
+            },
+            "visible": true
+          }
+        ],
+        "canRaiseOnBehalfOf": true,
+        "canAddRequestParticipants": true
+      }
+    },
+    "2705": {
+      "name": "Software Deployment",
+      "fields": {
+        "requestTypeFields": [
+          {
+            "fieldId": "summary",
+            "name": "Summary",
+            "description": "",
+            "required": true,
+            "defaultValues": [],
+            "validValues": [],
+            "jiraSchema": {
+              "type": "string",
+              "system": "summary"
+            },
+            "visible": true
+          },
+          {
+            "fieldId": "customfield_10700",
+            "name": "Team",
+            "description": "",
+            "required": false,
+            "defaultValues": [],
+            "validValues": [],
+            "jiraSchema": {
+              "type": "team",
+              "custom": "com.atlassian.jira.plugin.system.customfieldtypes:atlassian-team",
+              "customId": 10700,
+              "configuration": {
+                "com.atlassian.jira.plugin.system.customfieldtypes:atlassian-team": true
+              }
+            },
+            "visible": true
+          },
+          {
+            "fieldId": "customfield_11763",
+            "name": "Planned start date",
+            "description": "",
+            "required": false,
+            "defaultValues": [],
+            "validValues": [],
+            "jiraSchema": {
+              "type": "datetime",
+              "custom": "com.atlassian.jira.plugin.system.customfieldtypes:datetime",
+              "customId": 11763
+            },
+            "visible": true
+          },
+          {
+            "fieldId": "customfield_11764",
+            "name": "Planned end date",
+            "description": "",
+            "required": false,
+            "defaultValues": [],
+            "validValues": [],
+            "jiraSchema": {
+              "type": "datetime",
+              "custom": "com.atlassian.jira.plugin.system.customfieldtypes:datetime",
+              "customId": 11764
+            },
+            "visible": true
+          },
+          {
+            "fieldId": "customfield_11754",
+            "name": "Affected services",
+            "description": "",
+            "required": false,
+            "defaultValues": [],
+            "validValues": [],
+            "jiraSchema": {
+              "type": "array",
+              "items": "service-entity-field",
+              "custom": "com.atlassian.jira.plugins.service-entity:service-entity-field-cftype",
+              "customId": 11754
+            },
+            "visible": true
+          },
+          {
+            "fieldId": "customfield_11765",
+            "name": "Change start date",
+            "description": "",
+            "required": false,
+            "defaultValues": [],
+            "validValues": [],
+            "jiraSchema": {
+              "type": "datetime",
+              "custom": "com.atlassian.jira.plugin.system.customfieldtypes:datetime",
+              "customId": 11765
+            },
+            "visible": true
+          },
+          {
+            "fieldId": "customfield_11766",
+            "name": "Change completion date",
+            "description": "",
+            "required": false,
+            "defaultValues": [],
+            "validValues": [],
+            "jiraSchema": {
+              "type": "datetime",
+              "custom": "com.atlassian.jira.plugin.system.customfieldtypes:datetime",
+              "customId": 11766
+            },
+            "visible": true
+          }
+        ],
+        "canRaiseOnBehalfOf": true,
+        "canAddRequestParticipants": true
+      }
+    }
+  },
+  "search_prod": {
+    "issues": [
+      {
+        "expand": "renderedFields,names,schema,operations,editmeta,changelog,versionedRepresentations",
+        "id": "964473",
+        "self": "https://abcfinancial.atlassian.net/rest/api/3/issue/964473",
+        "key": "SHIPIT-16447",
+        "fields": {
+          "summary": "PIC-4705 — Deploy Valley Fitness DPR Stats Report updates to production",
+          "created": "2026-09-01T08:30:51.980-0500",
+          "status": {
+            "self": "https://abcfinancial.atlassian.net/rest/api/3/status/13724",
+            "description": "",
+            "iconUrl": "https://abcfinancial.atlassian.net/images/icons/statuses/generic.png",
+            "name": "Change Approved",
+            "id": "13724",
+            "statusCategory": {
+              "self": "https://abcfinancial.atlassian.net/rest/api/3/statuscategory/2",
+              "id": 2,
+              "key": "new",
+              "colorName": "blue-gray",
+              "name": "To Do"
+            }
+          }
+        }
+      },
+      {
+        "expand": "renderedFields,names,schema,operations,editmeta,changelog,versionedRepresentations",
+        "id": "896813",
+        "self": "https://abcfinancial.atlassian.net/rest/api/3/issue/896813",
+        "key": "SHIPIT-12193",
+        "fields": {
+          "summary": "Hot fix — single SQL/report change for MTD Production, no app deploy required",
+          "created": "2026-06-02T12:58:51.234-0500",
+          "status": {
+            "self": "https://abcfinancial.atlassian.net/rest/api/3/status/10880",
+            "description": "",
+            "iconUrl": "https://abcfinancial.atlassian.net/images/icons/status_generic.gif",
+            "name": "Completed",
+            "id": "10880",
+            "statusCategory": {
+              "self": "https://abcfinancial.atlassian.net/rest/api/3/statuscategory/3",
+              "id": 3,
+              "key": "done",
+              "colorName": "green",
+              "name": "Done"
+            }
+          }
+        }
+      },
+      {
+        "expand": "renderedFields,names,schema,operations,editmeta,changelog,versionedRepresentations",
+        "id": "855431",
+        "self": "https://abcfinancial.atlassian.net/rest/api/3/issue/855431",
+        "key": "SHIPIT-9374",
+        "fields": {
+          "summary": "Deploy PF/GENPOP model optimizations to production",
+          "created": "2026-03-19T17:30:06.761-0500",
+          "status": {
+            "self": "https://abcfinancial.atlassian.net/rest/api/3/status/10880",
+            "description": "",
+            "iconUrl": "https://abcfinancial.atlassian.net/images/icons/status_generic.gif",
+            "name": "Completed",
+            "id": "10880",
+            "statusCategory": {
+              "self": "https://abcfinancial.atlassian.net/rest/api/3/statuscategory/3",
+              "id": 3,
+              "key": "done",
+              "colorName": "green",
+              "name": "Done"
+            }
+          }
+        }
+      },
+      {
+        "expand": "renderedFields,names,schema,operations,editmeta,changelog,versionedRepresentations",
+        "id": "758927",
+        "self": "https://abcfinancial.atlassian.net/rest/api/3/issue/758927",
+        "key": "SHIPIT-4850",
+        "fields": {
+          "summary": "Approve deployment of DRDR+ report for BETA customers on PRODUCTION",
+          "created": "2025-10-15T12:16:13.811-0500",
+          "status": {
+            "self": "https://abcfinancial.atlassian.net/rest/api/3/status/10876",
+            "description": "",
+            "iconUrl": "https://abcfinancial.atlassian.net/images/icons/status_generic.gif",
+            "name": "Implementing",
+            "id": "10876",
+            "statusCategory": {
+              "self": "https://abcfinancial.atlassian.net/rest/api/3/statuscategory/4",
+              "id": 4,
+              "key": "indeterminate",
+              "colorName": "yellow",
+              "name": "In Progress"
+            }
+          }
+        }
+      }
+    ],
+    "isLast": true
+  },
+  "tckt_request_type_fields": {
+    "requestTypeFields": [
+      {
+        "fieldId": "summary",
+        "name": "Change Summary",
+        "description": "",
+        "required": true,
+        "defaultValues": [],
+        "validValues": [],
+        "jiraSchema": {
+          "type": "string",
+          "system": "summary"
+        },
+        "visible": true
+      },
+      {
+        "fieldId": "description",
+        "name": "Full change description",
+        "description": "",
+        "required": true,
+        "defaultValues": [],
+        "validValues": [],
+        "jiraSchema": {
+          "type": "string",
+          "system": "description"
+        },
+        "visible": true
+      },
+      {
+        "fieldId": "customfield_13073",
+        "name": "Assignment Group",
+        "description": "",
+        "required": true,
+        "defaultValues": [],
+        "validValues": [
+          {
+            "value": "12643",
+            "label": "ABCPES",
+            "children": []
+          },
+          {
+            "value": "12644",
+            "label": "Command Center",
+            "children": []
+          },
+          {
+            "value": "12645",
+            "label": "Corporate Apps",
+            "children": []
+          },
+          {
+            "value": "12646",
+            "label": "DBA",
+            "children": []
+          },
+          {
+            "value": "12647",
+            "label": "Desktop Support",
+            "children": []
+          },
+          {
+            "value": "12648",
+            "label": "DevOps",
+            "children": []
+          },
+          {
+            "value": "12650",
+            "label": "Information Security",
+            "children": []
+          },
+          {
+            "value": "12651",
+            "label": "iSeries Billing",
+            "children": []
+          },
+          {
+            "value": "12652",
+            "label": "iSeries Engineering",
+            "children": []
+          },
+          {
+            "value": "12653",
+            "label": "Network Engineering",
+            "children": []
+          },
+          {
+            "value": "12654",
+            "label": "Server Engineering",
+            "children": []
+          },
+          {
+            "value": "12655",
+            "label": "Service Desk",
+            "children": []
+          },
+          {
+            "value": "12656",
+            "label": "Telecom Engineering",
+            "children": []
+          },
+          {
+            "value": "12661",
+            "label": "Trainerize",
+            "children": []
+          },
+          {
+            "value": "12662",
+            "label": "Software Development Support",
+            "children": []
+          },
+          {
+            "value": "12663",
+            "label": "Ignite Engagement",
+            "children": []
+          },
+          {
+            "value": "12668",
+            "label": "ABC ETL Development",
+            "children": []
+          },
+          {
+            "value": "12712",
+            "label": "Insights Analyze/Customize",
+            "children": []
+          },
+          {
+            "value": "13026",
+            "label": "Microsoft Apps",
+            "children": []
+          },
+          {
+            "value": "14050",
+            "label": "BI and Excel Reporting",
+            "children": []
+          }
+        ],
+        "jiraSchema": {
+          "type": "option",
+          "custom": "com.atlassian.jira.plugin.system.customfieldtypes:select",
+          "customId": 13073
+        },
+        "visible": true
+      },
+      {
+        "fieldId": "customfield_11754",
+        "name": "Affected services",
+        "description": "",
+        "required": true,
+        "defaultValues": [],
+        "validValues": [],
+        "jiraSchema": {
+          "type": "array",
+          "items": "service-entity-field",
+          "custom": "com.atlassian.jira.plugins.service-entity:service-entity-field-cftype",
+          "customId": 11754
+        },
+        "visible": true
+      },
+      {
+        "fieldId": "customfield_11952",
+        "name": "Affected Object",
+        "description": "",
+        "required": false,
+        "defaultValues": [],
+        "validValues": [],
+        "jiraSchema": {
+          "type": "array",
+          "items": "cmdb-object-field",
+          "custom": "com.atlassian.jira.plugins.cmdb:cmdb-object-cftype",
+          "customId": 11952
+        },
+        "visible": true
+      },
+      {
+        "fieldId": "customfield_11763",
+        "name": "Planned start date",
+        "description": "",
+        "required": true,
+        "defaultValues": [],
+        "validValues": [],
+        "jiraSchema": {
+          "type": "datetime",
+          "custom": "com.atlassian.jira.plugin.system.customfieldtypes:datetime",
+          "customId": 11763
+        },
+        "visible": true
+      },
+      {
+        "fieldId": "customfield_11764",
+        "name": "Planned end date",
+        "description": "",
+        "required": true,
+        "defaultValues": [],
+        "validValues": [],
+        "jiraSchema": {
+          "type": "datetime",
+          "custom": "com.atlassian.jira.plugin.system.customfieldtypes:datetime",
+          "customId": 11764
+        },
+        "visible": true
+      },
+      {
+        "fieldId": "customfield_11758",
+        "name": "Change risk",
+        "description": "",
+        "required": true,
+        "defaultValues": [],
+        "validValues": [
+          {
+            "value": "10907",
+            "label": "Critical",
+            "children": []
+          },
+          {
+            "value": "10908",
+            "label": "High",
+            "children": []
+          },
+          {
+            "value": "10909",
+            "label": "Medium",
+            "children": []
+          },
+          {
+            "value": "10910",
+            "label": "Low",
+            "children": []
+          }
+        ],
+        "jiraSchema": {
+          "type": "option",
+          "custom": "com.atlassian.jira.plugin.system.customfieldtypes:select",
+          "customId": 11758
+        },
+        "visible": true
+      },
+      {
+        "fieldId": "customfield_11747",
+        "name": "Urgency",
+        "description": "",
+        "required": true,
+        "defaultValues": [],
+        "validValues": [
+          {
+            "value": "10814",
+            "label": "Critical",
+            "children": []
+          },
+          {
+            "value": "10815",
+            "label": "High",
+            "children": []
+          },
+          {
+            "value": "10816",
+            "label": "Medium",
+            "children": []
+          },
+          {
+            "value": "10817",
+            "label": "Low",
+            "children": []
+          }
+        ],
+        "jiraSchema": {
+          "type": "option",
+          "custom": "com.atlassian.jira.plugin.system.customfieldtypes:select",
+          "customId": 11747
+        },
+        "visible": true
+      },
+      {
+        "fieldId": "customfield_11748",
+        "name": "Impact",
+        "description": "",
+        "required": true,
+        "defaultValues": [],
+        "validValues": [
+          {
+            "value": "10818",
+            "label": "Extensive / Widespread",
+            "children": []
+          },
+          {
+            "value": "10819",
+            "label": "Significant / Large",
+            "children": []
+          },
+          {
+            "value": "10820",
+            "label": "Moderate / Limited",
+            "children": []
+          },
+          {
+            "value": "10821",
+            "label": "Minor / Localized",
+            "children": []
+          }
+        ],
+        "jiraSchema": {
+          "type": "option",
+          "custom": "com.atlassian.jira.plugin.system.customfieldtypes:select",
+          "customId": 11748
+        },
+        "visible": true
+      },
+      {
+        "fieldId": "customfield_13074",
+        "name": "Affects PF",
+        "description": "",
+        "required": true,
+        "defaultValues": [],
+        "validValues": [
+          {
+            "value": "12657",
+            "label": "Yes",
+            "children": []
+          },
+          {
+            "value": "12660",
+            "label": "No",
+            "children": []
+          }
+        ],
+        "jiraSchema": {
+          "type": "array",
+          "items": "option",
+          "custom": "com.atlassian.jira.plugin.system.customfieldtypes:multicheckboxes",
+          "customId": 13074
+        },
+        "visible": true
+      },
+      {
+        "fieldId": "customfield_13075",
+        "name": "Outage Required",
+        "description": "",
+        "required": true,
+        "defaultValues": [],
+        "validValues": [
+          {
+            "value": "12658",
+            "label": "Yes",
+            "children": []
+          },
+          {
+            "value": "12659",
+            "label": "No",
+            "children": []
+          }
+        ],
+        "jiraSchema": {
+          "type": "array",
+          "items": "option",
+          "custom": "com.atlassian.jira.plugin.system.customfieldtypes:multicheckboxes",
+          "customId": 13075
+        },
+        "visible": true
+      },
+      {
+        "fieldId": "customfield_11760",
+        "name": "Implementation plan",
+        "description": "",
+        "required": true,
+        "defaultValues": [],
+        "validValues": [],
+        "jiraSchema": {
+          "type": "string",
+          "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textarea",
+          "customId": 11760
+        },
+        "visible": true
+      },
+      {
+        "fieldId": "customfield_14549",
+        "name": "Business Impact",
+        "description": "",
+        "required": true,
+        "defaultValues": [],
+        "validValues": [],
+        "jiraSchema": {
+          "type": "string",
+          "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textarea",
+          "customId": 14549
+        },
+        "visible": true
+      },
+      {
+        "fieldId": "customfield_11761",
+        "name": "Backout plan",
+        "description": "",
+        "required": true,
+        "defaultValues": [],
+        "validValues": [],
+        "jiraSchema": {
+          "type": "string",
+          "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textarea",
+          "customId": 11761
+        },
+        "visible": true
+      },
+      {
+        "fieldId": "customfield_11762",
+        "name": "Test plan",
+        "description": "",
+        "required": true,
+        "defaultValues": [],
+        "validValues": [],
+        "jiraSchema": {
+          "type": "string",
+          "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textarea",
+          "customId": 11762
+        },
+        "visible": true
+      },
+      {
+        "fieldId": "attachment",
+        "name": "Attachment",
+        "description": "",
+        "required": false,
+        "defaultValues": [],
+        "validValues": [],
+        "jiraSchema": {
+          "type": "array",
+          "items": "attachment",
+          "system": "attachment"
+        },
+        "visible": true
+      }
+    ],
+    "canRaiseOnBehalfOf": true,
+    "canAddRequestParticipants": true
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "key": "SHIPIT-17191",
+  "reference_standard": "Sushma Bhamidipati — multi-custom Customize BI prod deployment",
+  "summary": "Glofox Insights Customize BI - Prod Deployment - Release Version 2026.3.09.16",
+  "reason_for_change": "Production Deployment",
+  "change_type": "Normal",
+  "change_risk": "Medium",
+  "impact": null,
+  "urgency": null,
+  "team": null,
+  "approver_groups": ["Insights Customize Approvers"],
+  "request_type": "Manual Change",
+  "linked_tickets": ["PIC-6057", "PIC-5966"],
+  "description_sections": [
+    "What is changing, in business terms",
+    "Who is affected",
+    "Not included in this change",
+    "How it is deployed",
+    "Supporting records"
+  ],
+  "deploy_workspace": "customer-facing V2 Fitness BI workspace",
+  "plan_fields": {
+    "implementation_steps": "customfield_11720",
+    "verification_steps": "customfield_11721",
+    "rollback_steps": "customfield_11722",
+    "communication_plan": "customfield_11717",
+    "business_impact": "customfield_14549",
+    "risks_management": "customfield_17225",
+    "qa_test_plan": "customfield_11762"
+  },
+  "business_impact_pattern": ["Before:", "After:", "Audience and boundary:", "Measured impact:"],
+  "communication_phases": ["Pre-deployment", "During deployment", "After success", "After rollback"],
+  "verification_style": "per_client_numbered_checklist_with_looker_and_tc_cases",
+  "notes": "Dual-custom release: Jazzercise Looker class-filter parity (PIC-6057) + Xtreme Fitness Sales League TC-01–03 filter logic (PIC-5966)."
+}

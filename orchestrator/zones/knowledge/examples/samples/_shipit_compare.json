@@ -1,0 +1,446 @@
+{
+  "search_insights": {
+    "issues": [
+      {
+        "expand": "renderedFields,names,schema,operations,editmeta,changelog,versionedRepresentations",
+        "id": "922530",
+        "self": "https://abcfinancial.atlassian.net/rest/api/3/issue/922530",
+        "key": "SHIPIT-14000",
+        "fields": {
+          "summary": "IGS-17207 — Fix Insights DRDR duplicate ABC processing fee in [dw].[Get_Drdr_Dmb]",
+          "created": "2026-07-10T07:45:33.321-0500",
+          "status": {
+            "self": "https://abcfinancial.atlassian.net/rest/api/3/status/10880",
+            "description": "",
+            "iconUrl": "https://abcfinancial.atlassian.net/images/icons/status_generic.gif",
+            "name": "Completed",
+            "id": "10880",
+            "statusCategory": {
+              "self": "https://abcfinancial.atlassian.net/rest/api/3/statuscategory/3",
+              "id": 3,
+              "key": "done",
+              "colorName": "green",
+              "name": "Done"
+            }
+          }
+        }
+      },
+      {
+        "expand": "renderedFields,names,schema,operations,editmeta,changelog,versionedRepresentations",
+        "id": "862815",
+        "self": "https://abcfinancial.atlassian.net/rest/api/3/issue/862815",
+        "key": "SHIPIT-9851",
+        "fields": {
+          "summary": "Insights Report FDM DRDR (DBX) emergency change - hotfix to restore service to clients and eliminate security risk",
+          "created": "2026-04-02T06:59:45.997-0500",
+          "status": {
+            "self": "https://abcfinancial.atlassian.net/rest/api/3/status/10880",
+            "description": "",
+            "iconUrl": "https://abcfinancial.atlassian.net/images/icons/status_generic.gif",
+            "name": "Completed",
+            "id": "10880",
+            "statusCategory": {
+              "self": "https://abcfinancial.atlassian.net/rest/api/3/statuscategory/3",
+              "id": 3,
+              "key": "done",
+              "colorName": "green",
+              "name": "Done"
+            }
+          }
+        }
+      },
+      {
+        "expand": "renderedFields,names,schema,operations,editmeta,changelog,versionedRepresentations",
+        "id": "842013",
+        "self": "https://abcfinancial.atlassian.net/rest/api/3/issue/842013",
+        "key": "SHIPIT-8503",
+        "fields": {
+          "summary": "Insights EDW - PF - INZADBA.DimMemberUpdate Procedure - Enhance Monthly/Annual Dues Related Fields for Presale Locations",
+          "created": "2026-02-26T13:12:52.630-0600",
+          "status": {
+            "self": "https://abcfinancial.atlassian.net/rest/api/3/status/13724",
+            "description": "",
+            "iconUrl": "https://abcfinancial.atlassian.net/images/icons/statuses/generic.png",
+            "name": "Change Approved",
+            "id": "13724",
+            "statusCategory": {
+              "self": "https://abcfinancial.atlassian.net/rest/api/3/statuscategory/2",
+              "id": 2,
+              "key": "new",
+              "colorName": "blue-gray",
+              "name": "To Do"
+            }
+          }
+        }
+      },
+      {
+        "expand": "renderedFields,names,schema,operations,editmeta,changelog,versionedRepresentations",
+        "id": "838941",
+        "self": "https://abcfinancial.atlassian.net/rest/api/3/issue/838941",
+        "key": "SHIPIT-8346",
+        "fields": {
+          "summary": " Glofox namespace of Organization and Organization in FitnessBi synapse historical Load ",
+          "created": "2026-02-23T10:19:40.112-0600",
+          "status": {
+            "self": "https://abcfinancial.atlassian.net/rest/api/3/status/10880",
+            "description": "",
+            "iconUrl": "https://abcfinancial.atlassian.net/images/icons/status_generic.gif",
+            "name": "Completed",
+            "id": "10880",
+            "statusCategory": {
+              "self": "https://abcfinancial.atlassian.net/rest/api/3/statuscategory/3",
+              "id": 3,
+              "key": "done",
+              "colorName": "green",
+              "name": "Done"
+            }
+          }
+        }
+      },
+      {
+        "expand": "renderedFields,names,schema,operations,editmeta,changelog,versionedRepresentations",
+        "id": "780749",
+        "self": "https://abcfinancial.atlassian.net/rest/api/3/issue/780749",
+        "key": "SHIPIT-5948",
+        "fields": {
+          "summary": "Update to scheduling cycles view in ALL databases to reflect new schedules in ignite Insights App",
+          "created": "2025-11-22T16:03:53.925-0600",
+          "status": {
+            "self": "https://abcfinancial.atlassian.net/rest/api/3/status/10880",
+            "description": "",
+            "iconUrl": "https://abcfinancial.atlassian.net/images/icons/status_generic.gif",
+            "name": "Completed",
+            "id": "10880",
+            "statusCategory": {
+              "self": "https://abcfinancial.atlassian.net/rest/api/3/statuscategory/3",
+              "id": 3,
+              "key": "done",
+              "colorName": "green",
+              "name": "Done"
+            }
+          }
+        }
+      }
+    ],
+    "nextPageToken": "ClFjcmVhdGVkJmNyZWF0ZWQmT1JERVJfREVTQyNMb25nJk1UYzJNemcwT1RBek16a3lOUT09JVN0cmluZyZVMGhKVUVsVSVJbnQmTlRrME9BPT0QBRio7pDYhzQilAFwcm9qZWN0ID0gU0hJUElUIEFORCBpc3N1ZXR5cGUgPSAiQ2hhbmdlIFJlcXVlc3QiIEFORCAoc3VtbWFyeSB-ICJJbnNpZ2h0cyIgT1Igc3VtbWFyeSB-ICJHbG9mb3giIE9SIHN1bW1hcnkgfiAiQ3VzdG9taXplIEJJIikgT1JERVIgQlkgY3JlYXRlZCBERVNDKgJbXQ==",
+    "isLast": false
+  },
+  "shipit_editmeta_fields": [
+    {
+      "fieldId": "customfield_11754",
+      "name": "Affected services",
+      "required": false,
+      "schema_type": "array"
+    },
+    {
+      "fieldId": "customfield_11794",
+      "name": "Approver groups",
+      "required": false,
+      "schema_type": "array"
+    },
+    {
+      "fieldId": "assignee",
+      "name": "Assignee",
+      "required": false,
+      "schema_type": "user"
+    },
+    {
+      "fieldId": "customfield_12047",
+      "name": "Assignment Group",
+      "required": false,
+      "schema_type": "group"
+    },
+    {
+      "fieldId": "attachment",
+      "name": "Attachment",
+      "required": false,
+      "schema_type": "array"
+    },
+    {
+      "fieldId": "customfield_14549",
+      "name": "Business Impact",
+      "required": false,
+      "schema_type": "string"
+    },
+    {
+      "fieldId": "customfield_11766",
+      "name": "Change completion date",
+      "required": false,
+      "schema_type": "datetime"
+    },
+    {
+      "fieldId": "customfield_11759",
+      "name": "Change reason",
+      "required": false,
+      "schema_type": "option"
+    },
+    {
+      "fieldId": "customfield_11758",
+      "name": "Change risk",
+      "required": false,
+      "schema_type": "option"
+    },
+    {
+      "fieldId": "customfield_11765",
+      "name": "Change start date",
+      "required": false,
+      "schema_type": "datetime"
+    },
+    {
+      "fieldId": "customfield_11757",
+      "name": "Change type",
+      "required": false,
+      "schema_type": "option"
+    },
+    {
+      "fieldId": "comment",
+      "name": "Comment",
+      "required": false,
+      "schema_type": "comments-page"
+    },
+    {
+      "fieldId": "customfield_11717",
+      "name": "Communication Plan",
+      "required": false,
+      "schema_type": "string"
+    },
+    {
+      "fieldId": "description",
+      "name": "Description",
+      "required": false,
+      "schema_type": "string"
+    },
+    {
+      "fieldId": "duedate",
+      "name": "Due date",
+      "required": false,
+      "schema_type": "date"
+    },
+    {
+      "fieldId": "environment",
+      "name": "Environment",
+      "required": false,
+      "schema_type": "string"
+    },
+    {
+      "fieldId": "customfield_11748",
+      "name": "Impact",
+      "required": false,
+      "schema_type": "option"
+    },
+    {
+      "fieldId": "customfield_11720",
+      "name": "Implementation Steps",
+      "required": false,
+      "schema_type": "string"
+    },
+    {
+      "fieldId": "issuetype",
+      "name": "Issue Type",
+      "required": true,
+      "schema_type": "issuetype"
+    },
+    {
+      "fieldId": "labels",
+      "name": "Labels",
+      "required": false,
+      "schema_type": "array"
+    },
+    {
+      "fieldId": "issuelinks",
+      "name": "Linked Issues",
+      "required": false,
+      "schema_type": "array"
+    },
+    {
+      "fieldId": "customfield_11764",
+      "name": "Planned end date",
+      "required": false,
+      "schema_type": "datetime"
+    },
+    {
+      "fieldId": "customfield_11763",
+      "name": "Planned start date",
+      "required": false,
+      "schema_type": "datetime"
+    },
+    {
+      "fieldId": "priority",
+      "name": "Priority",
+      "required": false,
+      "schema_type": "priority"
+    },
+    {
+      "fieldId": "customfield_11715",
+      "name": "Reason for the Change",
+      "required": false,
+      "schema_type": "string"
+    },
+    {
+      "fieldId": "reporter",
+      "name": "Reporter",
+      "required": false,
+      "schema_type": "user"
+    },
+    {
+      "fieldId": "customfield_11746",
+      "name": "Request language",
+      "required": false,
+      "schema_type": "sd-request-lang"
+    },
+    {
+      "fieldId": "customfield_17225",
+      "name": "Risks Management",
+      "required": false,
+      "schema_type": "string"
+    },
+    {
+      "fieldId": "customfield_11722",
+      "name": "Rollback Steps",
+      "required": false,
+      "schema_type": "string"
+    },
+    {
+      "fieldId": "summary",
+      "name": "Summary",
+      "required": true,
+      "schema_type": "string"
+    },
+    {
+      "fieldId": "customfield_10700",
+      "name": "Team",
+      "required": false,
+      "schema_type": "team"
+    },
+    {
+      "fieldId": "customfield_16101",
+      "name": "Unplanned",
+      "required": false,
+      "schema_type": "option"
+    },
+    {
+      "fieldId": "customfield_11747",
+      "name": "Urgency",
+      "required": false,
+      "schema_type": "option"
+    },
+    {
+      "fieldId": "customfield_11721",
+      "name": "Verification Steps",
+      "required": false,
+      "schema_type": "string"
+    }
+  ],
+  "tckt_create_form": [
+    {
+      "fieldId": "summary",
+      "name": "Change Summary",
+      "required": true,
+      "type": "string"
+    },
+    {
+      "fieldId": "description",
+      "name": "Full change description",
+      "required": true,
+      "type": "string"
+    },
+    {
+      "fieldId": "customfield_13073",
+      "name": "Assignment Group",
+      "required": true,
+      "type": "option"
+    },
+    {
+      "fieldId": "customfield_11754",
+      "name": "Affected services",
+      "required": true,
+      "type": "array"
+    },
+    {
+      "fieldId": "customfield_11952",
+      "name": "Affected Object",
+      "required": false,
+      "type": "array"
+    },
+    {
+      "fieldId": "customfield_11763",
+      "name": "Planned start date",
+      "required": true,
+      "type": "datetime"
+    },
+    {
+      "fieldId": "customfield_11764",
+      "name": "Planned end date",
+      "required": true,
+      "type": "datetime"
+    },
+    {
+      "fieldId": "customfield_11758",
+      "name": "Change risk",
+      "required": true,
+      "type": "option"
+    },
+    {
+      "fieldId": "customfield_11747",
+      "name": "Urgency",
+      "required": true,
+      "type": "option"
+    },
+    {
+      "fieldId": "customfield_11748",
+      "name": "Impact",
+      "required": true,
+      "type": "option"
+    },
+    {
+      "fieldId": "customfield_13074",
+      "name": "Affects PF",
+      "required": true,
+      "type": "array"
+    },
+    {
+      "fieldId": "customfield_13075",
+      "name": "Outage Required",
+      "required": true,
+      "type": "array"
+    },
+    {
+      "fieldId": "customfield_11760",
+      "name": "Implementation plan",
+      "required": true,
+      "type": "string"
+    },
+    {
+      "fieldId": "customfield_14549",
+      "name": "Business Impact",
+      "required": true,
+      "type": "string"
+    },
+    {
+      "fieldId": "customfield_11761",
+      "name": "Backout plan",
+      "required": true,
+      "type": "string"
+    },
+    {
+      "fieldId": "customfield_11762",
+      "name": "Test plan",
+      "required": true,
+      "type": "string"
+    },
+    {
+      "fieldId": "attachment",
+      "name": "Attachment",
+      "required": false,
+      "type": "array"
+    }
+  ],
+  "shipit_manual_create_form": [
+    {
+      "fieldId": "summary",
+      "name": "Summary",
+      "required": true,
+      "type": "string"
+    }
+  ]
+}

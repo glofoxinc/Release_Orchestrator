@@ -1,0 +1,17 @@
+version: "3.9"
+
+services:
+  jira-toolkit:
+    build:
+      context: ../../../../..
+      dockerfile: orchestrator/zones/platform/automation/docker/Dockerfile
+    ports:
+      - "8501:8501"
+    volumes:
+      - ../../../../orchestrator/zones/runtime/local/.env:/app/orchestrator/zones/runtime/local/.env:ro
+      - ../../../../orchestrator/zones/config/orchestrator/zones/config/profiles/workspace.yaml:/app/orchestrator/zones/config/orchestrator/zones/config/profiles/workspace.yaml
+      - ../../../../orchestrator/zones/config/profiles/workspaces:/app/orchestrator/zones/config/profiles/workspaces
+      - ../../../../orchestrator/zones/config/assets/templates:/app/orchestrator/zones/config/assets/templates
+    environment:
+      - STREAMLIT_SERVER_MAX_UPLOAD_SIZE=10
+    restart: unless-stopped

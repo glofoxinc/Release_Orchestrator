@@ -1,0 +1,27 @@
+﻿python : C:\Users\LYal01\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-pac
+kages\Python311\site-packages\requests\__init__.py:113: RequestsDependencyWarning: urllib3 (2.7.0) or chardet 
+(7.4.3)/charset_normalizer (3.4.7) doesn't match a supported version!
+At C:\Users\LYal01\AppData\Local\Temp\ps-script-b43b0f15-13e8-4279-846d-df6695314e85.ps1:83 char:67
++ ... sers\LYal01\ZABC\projects\done\small\jira-release-tool" ; python -c "
++                                                               ~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (C:\Users\LYal01...ported version!:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+  warnings.warn(
+Traceback (most recent call last):
+  File "<string>", line 32, in <module>
+  File "C:\Program 
+Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\encodings\cp1252.py", line 
+19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode characters in position 82-83: character maps to <undefined>
+SUMMARY: A test ticket 
+STATUS: Canceled
+ISSUETYPE: Change Request 10401
+PROJECT: SHIPIT
+DESCRIPTION: null
+--- NON-NULL CUSTOM FIELDS ---
+customfield_10000 (None): "2026-08-26T01:01:44.064-0500"
+customfield_10002 (None): "1|i1j8hx:"
+customfield_10022 (None): [{"id": "63271", "name": "Review Ready", "finalDecision": "approved", "canAnswerApproval": false, "approvers": [{"approver": {"accountId": "712020:0a7258e8-b186-4fcb-8146-c53f1e73c450", "emailAddress": "venkatasuryanagasushma.bhamidipati@abcfitness.com", "displayName": "Sushma Bhamidipati", "active": true, "timeZone": "America/Chicago", "_links": {"jiraRest": "https://abcfinancial.atlassian.net/rest/api/3/user?accountId=712020%3A0a7258e8-b186-4fcb-8146-c53f1e73c450", "avatarUrls": {"48x48": "https://secure.gravatar.com/avatar/193bbf814432dbc06ebe75f533402b5b?d=https%3A%2F%2Favatar-management--...

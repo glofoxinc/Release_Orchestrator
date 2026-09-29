@@ -9,6 +9,123 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install project and dev dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev,calendar,daily_review]"
+
+      - name: Import smoke (packaging gate)
+        run: >
+          python -c "import release_mcp, mcp_server, daily_review_agent;
+          from orchestrator.entry.cli import main; print('imports ok')"
+
+      - name: Lint with Ruff (pyproject rules)
+        run: ruff check .
+
+      - name: Critical lint gate (undefined names)
+        # F821 = undefined name — blocks merges on import errors
+        run: ruff check . --select=F821 --exit-non-zero-on-fix
+
+      - name: Formatter check (hardened + quality-gate paths)
+        # Scoped — full-repo ruff-format debt exists; avoid brittle global reformat gate.
+        run: >
+          ruff format --check
+          orchestrator/zones/product/mcp/wizard_store.py
+          orchestrator/zones/product/mcp/wizard.py
+          orchestrator/zones/product/mcp/slack_ops.py
+          orchestrator/zones/product/engine/deploy_ops.py
+          orchestrator/zones/product/engine/sharepoint_url.py
+          orchestrator/zones/product/engine/slack_announce.py
+          orchestrator/zones/product/engine/deployment_history.py
+          orchestrator/zones/quality/tests/test_quality_gate.py
+          orchestrator/zones/quality/tests/test_mcp_wizard.py
+          orchestrator/zones/quality/tests/test_wizard_store.py
+          orchestrator/zones/quality/tests/test_slack_announce.py
+          orchestrator/zones/quality/tests/test_platform_ops.py
+          orchestrator/zones/quality/tests/test_efficiency.py
+
+      - name: Typed check (hardened modules only)
+        run: >
+          mypy --config-file=pyproject.toml
+          orchestrator/zones/product/mcp/wizard_store.py
+          orchestrator/zones/product/engine/deploy_ops.py
+          orchestrator/zones/product/engine/sharepoint_url.py
+          orchestrator/zones/product/engine/slack_announce.py
+          orchestrator/zones/product/engine/deployment_history.py
+
+      - name: Hardened-module coverage gate
+        run: >
+          python -m pytest
+          orchestrator/zones/quality/tests/test_quality_gate.py
+          orchestrator/zones/quality/tests/test_mcp_wizard.py
+          orchestrator/zones/quality/tests/test_wizard_store.py
+          orchestrator/zones/quality/tests/test_slack_announce.py
+          orchestrator/zones/quality/tests/test_platform_ops.py
+          orchestrator/zones/quality/tests/test_efficiency.py
+          orchestrator/zones/quality/tests/test_headless_ops.py
+          --cov=release_mcp
+          --cov=deploy_ops
+          --cov=slack_announce
+          --cov=sharepoint_url
+          --cov=deployment_history
+          --cov-report=term-missing
+          --cov-fail-under=70
+
+      - name: Release-critical parity suite
+        run: >
+          python -m pytest
+          orchestrator/zones/quality/tests/test_release_critical_parity.py
+          orchestrator/zones/quality/tests/test_post_qa_and_mcp_parity.py
+          orchestrator/zones/quality/tests/test_mcp_wizard_parity.py
+          -q --tb=short
+
+      - name: Release notes E2E fixture
+        run: python orchestrator/zones/platform/ops/test_release_notes_e2e.py
+
+      - name: Daily Review Agent suite
+        run: >
+          python -m pytest
+          orchestrator/zones/quality/tests/test_daily_review_agent.py
+          orchestrator/zones/quality/tests/test_daily_review_guided.py
+          orchestrator/zones/quality/tests/test_playwright_outlook_auth.py
+          orchestrator/zones/quality/tests/test_preflight_and_failclosed.py
+          orchestrator/zones/quality/tests/test_calendar_orchestrator.py
+          orchestrator/zones/quality/tests/test_setup_mcp.py
+          orchestrator/zones/quality/tests/test_mcp_daily_review_registration.py
+          -q --tb=short
+
+      - name: Readiness tier and version drift tests
+        run: >
+          python -m pytest
+          orchestrator/zones/quality/tests/test_readiness_tiers.py
+          orchestrator/zones/quality/tests/test_version_drift.py
+          orchestrator/zones/quality/tests/test_workspace_schema.py
+          orchestrator/zones/quality/tests/test_sharepoint_receipt.py
+          orchestrator/zones/quality/tests/test_capture_baseline.py
+          -q --tb=short
+
+      - name: Capture baseline evidence (quick)
+        run: python orchestrator/zones/platform/ops/capture_baseline.py --quick
+
+      - name: Full test suite
+        if: matrix.python-version == '3.11'
+        run: python -m pytest orchestrator/zones/quality/tests/ -q
+
+  test-windows:
+    runs-on: windows-latest
 
     steps:
       - uses: actions/checkout@v4
@@ -23,80 +140,15 @@ jobs:
           python -m pip install --upgrade pip
           pip install -e ".[dev,calendar,daily_review]"
 
-      - name: Lint with Ruff (pyproject rules)
-        run: ruff check .
-
-      - name: Critical lint gate (undefined names)
-        # F821 = undefined name — blocks merges on import errors
-        run: ruff check . --select=F821 --exit-non-zero-on-fix
-
-      - name: Formatter check (hardened + quality-gate paths)
-        # Scoped — full-repo ruff-format debt exists; avoid brittle global reformat gate.
+      - name: Import smoke (packaging gate)
         run: >
-          ruff format --check
-          release_mcp/wizard_store.py
-          release_mcp/wizard.py
-          release_mcp/slack_ops.py
-          deploy_ops.py
-          sharepoint_url.py
-          slack_announce.py
-          deployment_history.py
-          tests/test_quality_gate.py
-          tests/test_mcp_wizard.py
-          tests/test_wizard_store.py
-          tests/test_slack_announce.py
-          tests/test_platform_ops.py
-          tests/test_efficiency.py
+          python -c "import release_mcp, mcp_server;
+          from orchestrator.entry.cli import main; print('imports ok')"
 
-      - name: Typed check (hardened modules only)
-        run: >
-          mypy --config-file=pyproject.toml
-          release_mcp/wizard_store.py
-          deploy_ops.py
-          sharepoint_url.py
-          slack_announce.py
-          deployment_history.py
-
-      - name: Hardened-module coverage gate
+      - name: Windows path and scheduler smoke
         run: >
           python -m pytest
-          tests/test_quality_gate.py
-          tests/test_mcp_wizard.py
-          tests/test_wizard_store.py
-          tests/test_slack_announce.py
-          tests/test_platform_ops.py
-          tests/test_efficiency.py
-          tests/test_headless_ops.py
-          --cov=release_mcp
-          --cov=deploy_ops
-          --cov=slack_announce
-          --cov=sharepoint_url
-          --cov=deployment_history
-          --cov-report=term-missing
-          --cov-fail-under=70
-
-      - name: Release-critical parity suite
-        run: >
-          python -m pytest
-          tests/test_release_critical_parity.py
-          tests/test_post_qa_and_mcp_parity.py
-          tests/test_mcp_wizard_parity.py
+          orchestrator/zones/quality/tests/test_schedule_time.py
+          orchestrator/zones/quality/tests/test_daily_review_idempotency.py
+          orchestrator/zones/quality/tests/test_workspace_schema.py
           -q --tb=short
-
-      - name: Release notes E2E fixture
-        run: python orchestrator/ops/test_release_notes_e2e.py
-
-      - name: Daily Review Agent suite
-        run: >
-          python -m pytest
-          tests/test_daily_review_agent.py
-          tests/test_daily_review_guided.py
-          tests/test_playwright_outlook_auth.py
-          tests/test_preflight_and_failclosed.py
-          tests/test_calendar_orchestrator.py
-          tests/test_setup_mcp.py
-          tests/test_mcp_daily_review_registration.py
-          -q --tb=short
-
-      - name: Full test suite
-        run: python -m pytest tests/ -q
