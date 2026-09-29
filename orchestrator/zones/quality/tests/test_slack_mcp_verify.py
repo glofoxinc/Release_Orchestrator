@@ -88,3 +88,18 @@ def test_offline_report_without_probes_has_warnings():
     report = build_verification_report(delivery_mode="cursor_slack_mcp").to_dict()
     assert report["delivery_mode"] == "cursor_slack_mcp"
     assert any("not yet probed" in w for w in report["warnings"])
+
+
+def test_verify_integrations_check_slack_mcp_uses_e2e_ready():
+    import os
+    import sys
+    from unittest.mock import patch
+
+    sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", "platform", "ops"))
+    from verify_integrations import Result, check_slack_mcp
+
+    fake_report = {"e2e_ready": True, "blockers": []}
+    with patch("release_mcp.slack_mcp_ops.slack_mcp_verify", return_value=fake_report):
+        results = check_slack_mcp()
+    assert len(results) == 1
+    assert results[0].status == Result.PASS

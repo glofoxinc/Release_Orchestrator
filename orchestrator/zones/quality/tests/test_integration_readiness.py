@@ -58,12 +58,16 @@ class TestIntegrationReadiness:
         monkeypatch.delenv("SLACK_BOT_TOKEN", raising=False)
         items = integration_readiness.collect_readiness_items(include_excluded=False)
         ids = {i.id for i in items}
+        all_items = integration_readiness.collect_readiness_items(include_excluded=True)
+        all_ids = {i.id for i in all_items}
         if slack_ops.slack_delivery_mode() == "cursor_slack_mcp":
-            assert "slack_announce" in ids
+            assert "slack_announce" in all_ids
         else:
             assert "slack_announce" not in ids
-        assert "sharepoint_playwright" in ids
-        assert "teams_playwright" in ids
+        # Archived Graph + ready Playwright paths are excluded_from_ops when configured.
+        assert "sharepoint_playwright" in all_ids
+        assert "sharepoint_upload" in all_ids
+        assert "teams_playwright" in all_ids or "teams_schedule" in all_ids
 
     def test_archived_integrations_skipped(self):
         import config

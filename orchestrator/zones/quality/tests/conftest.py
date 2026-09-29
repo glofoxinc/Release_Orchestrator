@@ -7,6 +7,7 @@ import importlib.abc
 import importlib.util
 import sys
 from pathlib import Path
+from unittest.mock import patch
 
 import pytest
 
@@ -98,3 +99,84 @@ def _default_team_scope_open(request, monkeypatch):
 
     monkeypatch.setattr(team_scope, "assert_keys_in_scoped_version", lambda *args, **kwargs: None)
     monkeypatch.setattr(team_scope, "keys_outside_scoped_version", lambda *args, **kwargs: [])
+
+
+_ONBOARDING_MISSING_ENV_TESTS = frozenset({
+    "test_assess_setup_flags_missing_jira",
+    "test_setup_guide_mentions_atlassian_token_url",
+    "test_welcome_blocked_without_credentials",
+    "test_run_guided_onboarding_without_env",
+})
+
+
+@pytest.fixture
+def mock_jira_offline(monkeypatch):
+    """Block live Jira for SHIPIT and service-desk preflight tests."""
+    import jira_client
+
+    monkeypatch.setenv("MOCK_MODE", "1")
+    monkeypatch.setattr(jira_client, "validate_service_desk_create_payload", lambda _s, _f: [])
+    monkeypatch.setattr(
+        jira_client,
+        "enrich_extracted_with_jira_evidence",
+        lambda items: items,
+        raising=False,
+    )
+    with patch(
+        "generators.shipit_ticket_evidence.enrich_extracted_with_jira_evidence",
+        lambda items: items,
+    ):
+        yield
+
+
+@pytest.fixture(autouse=True)
+def _shipit_offline_jira(request, monkeypatch):
+    """Auto-mock Jira preflight for SHIPIT test modules."""
+    if "test_shipit" not in Path(str(request.fspath)).name:
+        yield
+        return
+    import jira_client
+
+    monkeypatch.setenv("MOCK_MODE", "1")
+    monkeypatch.setattr(jira_client, "validate_service_desk_create_payload", lambda _s, _f: [])
+    monkeypatch.setattr(
+        jira_client,
+        "get_current_user",
+        lambda: {"accountId": "test-user", "displayName": "Test User"},
+    )
+    monkeypatch.setattr(jira_client, "find_tckt_by_summary", lambda _summary: None)
+    monkeypatch.setattr(jira_client, "find_service_ticket_by_summary", lambda *_a, **_k: None)
+    with patch(
+        "generators.shipit_ticket_evidence.enrich_extracted_with_jira_evidence",
+        lambda items: items,
+    ):
+        yield
+
+
+@pytest.fixture(autouse=True)
+def _mcp_onboarding_ready(request, monkeypatch):
+    """Mock full onboarding readiness for welcome/guided tests that expect status=ok."""
+    name = Path(str(request.fspath)).name
+    apply = name in {
+        "test_mcp_welcome.py",
+        "test_mcp_guided.py",
+        "test_mcp_onboarding.py",
+    } and request.node.name not in _ONBOARDING_MISSING_ENV_TESTS
+    if not apply:
+        yield
+        return
+
+    monkeypatch.setenv("JIRA_EMAIL", "test@example.com")
+    monkeypatch.setenv("JIRA_API_TOKEN", "fake-token-not-placeholder")
+    monkeypatch.setenv("JIRA_BASE_URL", "https://abcfinancial.atlassian.net")
+
+    ready = {
+        "jira_ready": True,
+        "fully_ready": True,
+        "items": [],
+        "next_setup_step": None,
+        "needs_track_picker": False,
+    }
+    with patch("release_mcp.onboarding_verify.setup_complete", return_value=True):
+        with patch("release_mcp.onboarding.assess_setup", return_value=ready):
+            yield

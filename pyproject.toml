@@ -96,7 +96,7 @@ py-modules = [
     "release_notes_compare", "release_session", "release_stats", "request_type_setter",
     "schedule_time", "service_ticket_plans", "session_persist", "session_restore",
     "sharepoint_receipt", "sharepoint_upload", "sharepoint_url", "shipit_post_create", "shipit_preflight",
-    "shipit_reference", "shipit_test_mode", "slack_announce", "slack_assignee_notify",
+    "shipit_reference", "shipit_test_mode", "slack_announce", "slack_assignee_notify", "slack_cascade",
     "slack_mcp_verify", "slack_message_content", "slack_reference", "tckt_reference",
     "team_crew", "team_scope", "teams_meeting_content", "teams_schedule",
     "template_engine", "template_library", "ticket_validator", "workspace_profile",

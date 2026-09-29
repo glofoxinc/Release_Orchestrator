@@ -93,6 +93,21 @@ def preflight_assignment_group(*, group_name: str | None = None) -> dict[str, An
     }
 
 
+GOLDEN_PATH_EXTRACTED: list[dict[str, Any]] = [
+    {
+        "ticket": "AN-GOLDEN",
+        "type": "Analyze",
+        "client": "Standard",
+        "report": "Golden Path",
+        "description": "Offline finalize — validated in test_golden_path_e2e.py",
+        "evidence": {
+            "description_plain": "Golden path E2E validated in test_golden_path_e2e.py",
+            "comments": [],
+        },
+    },
+]
+
+
 def preflight_shipit_create_dry_run(
     *,
     version_name: str,
@@ -108,6 +123,41 @@ def preflight_shipit_create_dry_run(
         projects=projects,
         dry_run=True,
     )
+
+
+def preflight_shipit_create_dry_run_safe(
+    *,
+    version_name: str,
+    sharepoint_url: str,
+    projects: list[str] | None = None,
+) -> dict[str, Any]:
+    """Dry-run SHIPIT create; falls back to offline golden-path sample when Jira is unreachable."""
+    try:
+        return preflight_shipit_create_dry_run(
+            version_name=version_name,
+            sharepoint_url=sharepoint_url,
+            projects=projects,
+        )
+    except jira_client.JiraApiError as exc:
+        from release_mcp import release_ops
+
+        version = version_name.strip()
+        result = release_ops.create_service_ticket(
+            version_name=version,
+            sharepoint_url=sharepoint_url.strip(),
+            projects=projects,
+            dry_run=True,
+            test_mode=True,
+            extracted_override=GOLDEN_PATH_EXTRACTED,
+            draft_overrides={
+                "summary": f"TEST SHIPIT Finalize - DO NOT DEPLOY (v{version})",
+            },
+        )
+        return {
+            **result,
+            "offline_fallback": True,
+            "jira_error": str(exc),
+        }
 
 
 def summarize_preflight(

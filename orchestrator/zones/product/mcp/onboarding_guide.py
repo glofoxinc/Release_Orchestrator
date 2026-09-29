@@ -60,11 +60,11 @@ MCP_CATALOG: tuple[dict[str, Any], ...] = (
         "id": "slack",
         "name": "Cursor Slack plugin (optional for Glofox)",
         "required": False,
-        "role": "Optional — public channels only. Glofox Step 6 uses Playwright, not Slack MCP.",
+        "role": "Fallback after Playwright — Step 6 cascade: Playwright → Slack MCP → bot token.",
         "cursor_setup": "Cursor → Settings → MCP → enable **Slack** plugin (ABC Fitness workspace)",
         "user_phrases": ["send slack mcp"],
         "mcp_tools": ["slack_send_message", "slack_read_channel", "slack_search_users"],
-        "notes": "Not required when browser_automation.slack.prefer_playwright is true (default for Glofox).",
+        "notes": "Required when Playwright partial/fails — both channels must succeed before slack done.",
     },
     {
         "id": "atlassian",

@@ -2464,6 +2464,62 @@ def _continue_after_slack(session: dict[str, Any], **update_kwargs: Any) -> dict
     return _process_step(session, next_step)
 
 
+def _apply_slack_receipt_inputs(session: dict[str, Any]) -> dict[str, Any]:
+    import slack_cascade as sc
+
+    artifacts = dict(session.get("artifacts") or {})
+    existing = artifacts.get("slack_receipts") or {}
+    incoming = sc.parse_receipt_inputs(session["inputs"].get("slack_receipts"))
+    merged = sc.merge_receipts(existing, incoming)
+    partial = artifacts.get("slack_partial") or {}
+    merged = sc.merge_receipts(merged, sc.receipts_from_send_result(partial))
+    if merged != existing:
+        session = wizard_store.update_session(
+            session["id"],
+            artifacts={"slack_receipts": merged},
+        )
+    return session
+
+
+def _slack_receipts_gate_response(
+    session: dict[str, Any],
+    preview: dict[str, Any],
+) -> dict[str, Any] | None:
+    """Block **slack done** until both channels have permalinks or ts."""
+    import slack_cascade as sc
+
+    session = _apply_slack_receipt_inputs(session)
+    receipts = (session.get("artifacts") or {}).get("slack_receipts") or {}
+    missing = sc.missing_receipt_keys(preview, receipts)
+    if not missing:
+        return None
+    cascade = sc.cascade_order()
+    return _response(
+        session,
+        status="needs_input",
+        prompt=(
+            f"Slack receipts still missing for: **{', '.join(missing)}**. "
+            f"Try in order: **{' → '.join(cascade)}**. "
+            "Record each permalink with **slack receipt squad <url>** and "
+            "**slack receipt buddies <url>**, then **slack done**."
+        ),
+        preview={**preview, "slack_receipts": receipts, "missing_receipt_keys": missing},
+        allowed_actions=["update", "resume", "back", "cancel"],
+    )
+
+
+def _sharepoint_required_for_slack(session: dict[str, Any]) -> str | None:
+    """Return error message when SharePoint receipt is missing before Slack send."""
+    import sharepoint_url as sp_url
+
+    url = str((session.get("artifacts") or {}).get("sharepoint_url") or "").strip()
+    if not url:
+        return "SharePoint URL is required before Slack — complete Step 4 first."
+    if not sp_url.validate_sharepoint_url(url):
+        return sp_url.sharepoint_validation_message(url) or "SharePoint URL failed validation."
+    return None
+
+
 def _slack_preview(session: dict[str, Any]) -> dict[str, Any]:
     tckt = session["artifacts"]["service_ticket"]
     schedule = _service_schedule(session)
@@ -2485,6 +2541,7 @@ def _slack_preview(session: dict[str, Any]) -> dict[str, Any]:
 def _process_slack(session: dict[str, Any]) -> dict[str, Any]:
     import browser_automation
 
+    session = _apply_slack_receipt_inputs(session)
     decision = str(session["inputs"].get("slack_decision") or "").lower()
     preview = _slack_preview(session)
     if config.slack_archived() or not preview.get("enabled", True):
@@ -2495,9 +2552,21 @@ def _process_slack(session: dict[str, Any]) -> dict[str, Any]:
             audit_event="slack_skipped_archived" if reason == "archived" else "slack_skipped_disabled",
         )
     if str(session["inputs"].get("slack_decision") or "").lower() in {"done", "posted", "slack done"}:
+        blocked = _slack_receipts_gate_response(session, preview)
+        if blocked is not None:
+            return blocked
+        session = _apply_slack_receipt_inputs(session)
+        receipts = (session.get("artifacts") or {}).get("slack_receipts") or {}
         return _continue_after_slack(
             session,
-            artifacts={"slack": {"status": "handoff_sent", "delivery": preview.get("delivery_mode")}},
+            artifacts={
+                "slack": {
+                    "status": "handoff_sent",
+                    "delivery": preview.get("delivery_mode"),
+                    "receipts": receipts,
+                },
+                "slack_receipts": receipts,
+            },
             audit_event="slack_mcp_handoff_done",
         )
     if decision == "skip":
@@ -2517,15 +2586,20 @@ def _process_slack(session: dict[str, Any]) -> dict[str, Any]:
         ]
     if decision != "send":
         mcp_hint = ""
-        if preview.get("can_post_via_playwright") and (
-            browser_automation.prefer_playwright_slack() or not preview.get("can_post_via_slack_mcp")
-        ):
+        import slack_cascade as sc
+
+        cascade = " → ".join(sc.cascade_order())
+        if preview.get("can_post_via_playwright") and browser_automation.prefer_playwright_slack():
             mcp_hint = (
-                " Say **send slack** (Playwright MCP — opens both Glofox channels in browser), "
-                "then **slack done** when posted."
+                f" Say **send slack** (Playwright first, then Slack MCP, then bot token: {cascade}). "
+                "Record permalinks with **slack receipt squad <url>** / **slack receipt buddies <url>**, "
+                "then **slack done** when both channels are posted."
             )
         elif preview.get("can_post_via_slack_mcp"):
-            mcp_hint = " Post via **Cursor Slack MCP** — say **send slack**, then **slack done**."
+            mcp_hint = (
+                " Post via **Cursor Slack MCP** — say **send slack**, record both permalinks, "
+                "then **slack done**."
+            )
         elif preview.get("can_post_via_playwright"):
             mcp_hint = " Say **send slack playwright** for Playwright MCP browser steps to both channels."
         elif preview.get("can_send"):
@@ -2552,6 +2626,15 @@ def _process_slack(session: dict[str, Any]) -> dict[str, Any]:
             ],
             preview=preview,
         )
+    sp_block = _sharepoint_required_for_slack(session)
+    if decision in {"send", "playwright", "browser"} and sp_block:
+        return _response(
+            session,
+            status="blocked",
+            prompt=sp_block,
+            preview=preview,
+        )
+
     slack_via_playwright = (
         decision in {"playwright", "browser"}
         or bool(session["inputs"].get("slack_via_playwright"))
@@ -2639,9 +2722,19 @@ def _confirm_slack(session: dict[str, Any], preview: dict[str, Any]) -> dict[str
         write_fp,
         result=result,
     )
+    import slack_cascade as sc
+
+    receipts = sc.merge_receipts(
+        (session.get("artifacts") or {}).get("slack_receipts") or {},
+        sc.receipts_from_send_result(result),
+    )
+    session = wizard_store.update_session(
+        session["id"],
+        artifacts={"slack_receipts": receipts},
+    )
     return _continue_after_slack(
         session,
-        artifacts={"slack": result, "slack_partial": None},
+        artifacts={"slack": result, "slack_partial": None, "slack_receipts": receipts},
         audit_event="slack_sent",
     )
 

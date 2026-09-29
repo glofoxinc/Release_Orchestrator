@@ -1,10 +1,9 @@
-﻿#!/usr/bin/env python3
-"""SHIPIT preflight CLI â€” metadata, assignment group, optional dry-run create.
+#!/usr/bin/env python3
+"""SHIPIT preflight CLI — metadata, assignment group, optional dry-run create.
 
 Usage:
-    python orchestrator/zones/platform/ops/shipit_preflight.py
-    python orchestrator/zones/platform/ops/shipit_preflight.py --assignment-only
-    python orchestrator/zones/platform/ops/shipit_preflight.py --dry-run --version 2026.3.09.09 \\
+    python orchestrator/zones/platform/ops/run_shipit_preflight.py
+    python orchestrator/zones/platform/ops/run_shipit_preflight.py --dry-run --version 2026.3.09.09 \\
         --sharepoint-url "https://tenant.sharepoint.com/.../Release.docx"
 
 Exit: 0 pass/skip, 1 fail, 2 bad args.
@@ -14,19 +13,12 @@ from __future__ import annotations
 
 import argparse
 import json
-import os
 import sys
 
-_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-if _ROOT not in sys.path:
-    sys.path.insert(0, _ROOT)
-
 try:
-    from dotenv import load_dotenv
-
-    load_dotenv(override=True)
+    from . import _bootstrap  # noqa: F401
 except ImportError:
-    pass
+    import _bootstrap  # noqa: F401
 
 
 def main() -> int:

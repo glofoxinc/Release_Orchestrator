@@ -10,12 +10,12 @@ Quick go/no-go for **Glofox Customize BI daily releases** via Cursor MCP (same g
 |-------|---------------------------|---------------|
 | Jira `.env` | **Yes** | `JIRA_BASE_URL`, `JIRA_EMAIL`, `JIRA_API_TOKEN` set |
 | `release-orchestrator` MCP | **Yes** | Cursor → MCP → green; or `setup status` |
-| Playwright MCP + M365/Slack login | **Yes** | SharePoint + Slack Step 6; say **playwright confirmed** |
+| Playwright MCP + M365 login | **Yes** | SharePoint Step 4 + Slack Step 6 (Playwright first); say **playwright confirmed** |
 | Full test suite | **Recommended** | `pytest orchestrator/zones/quality/tests/ -q` → 0 failures |
 | Operator sign-offs | **Recommended** | **shipit confirmed** · **slack confirmed** |
 | `production_ready` gate | Informational | Say **production ready** — tiers in [READINESS_MODEL.md](./READINESS_MODEL.md) |
 | Teams MCP | Daily Review meeting only | Not blocking daily PIC+AN release |
-| Slack plugin MCP | Primary send | Cursor `user-slack`; Playwright fallback on send failure |
+| Slack send cascade | **Yes** (both channels) | **Playwright** → **Slack MCP** → bot token; record both permalinks before **slack done** |
 
 ---
 
@@ -30,7 +30,7 @@ Quick go/no-go for **Glofox Customize BI daily releases** via Cursor MCP (same g
 ### Does **not** block daily release (Glofox)
 
 - `production_ready: false` when only `daily_review_mcp` is unverified  
-- Slack MCP plugin disabled (Playwright is primary)  
+- Slack MCP plugin disabled when Playwright succeeds on both channels  
 - Graph/MS_GRAPH archived integrations  
 - Colleague hasn't finished onboarding (you can still run if your machine is ready)
 

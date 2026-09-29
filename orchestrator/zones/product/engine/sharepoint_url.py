@@ -158,6 +158,55 @@ def parse_sharepoint_folder_browse_url(url: str) -> dict[str, str]:
     return out
 
 
+def month_folder_from_version(fix_version: str) -> str:
+    """YYYY.Q.MM.DD → YYYY-MM (e.g. 2026.3.09.16 → 2026-09)."""
+    parts = (fix_version or "").strip().split(".")
+    if len(parts) < 3:
+        raise ValueError(f"Unexpected fix version format: {fix_version}")
+    year, month = parts[0], int(parts[2])
+    if not (1 <= month <= 12):
+        raise ValueError(f"Unexpected month in fix version: {fix_version}")
+    return f"{year}-{month:02d}"
+
+
+def sharepoint_release_file_url(
+    *,
+    version_name: str,
+    filename: str = "",
+    download: bool = False,
+) -> str:
+    """Direct SharePoint file URL for Slack (parity with fitness-bi-release-notes)."""
+    import config
+
+    sp = (config.BROWSER_AUTOMATION or {}).get("sharepoint") or {}
+    site_url = str(sp.get("site_url") or "").rstrip("/")
+    hostname = str(sp.get("hostname") or "").strip()
+    if not site_url and hostname:
+        site_path = str(sp.get("site_path") or "").strip()
+        site_url = f"https://{hostname}{site_path}" if site_path else f"https://{hostname}"
+    base_folder = str(sp.get("folder_path") or "Shared Documents/Glofox - Customize/Release Notes").strip()
+    if not filename:
+        template = str(sp.get("remote_name_template") or "Release Notes {{version}}.docx")
+        filename = template.replace("{{version}}", version_name).strip()
+    from urllib.parse import quote
+
+    path = f"/{base_folder.lstrip('/')}/{filename}"
+    origin = site_url.split("/teams/")[0] if "/teams/" in site_url else site_url.rsplit("/", 1)[0]
+    if hostname and "sharepoint" in hostname:
+        origin = f"https://{hostname}"
+        site_path = str(sp.get("site_path") or "")
+        if site_path:
+            path = f"{site_path.rstrip('/')}/{base_folder.lstrip('/')}/{filename}".replace("//", "/")
+    url = f"{origin}{quote(path, safe='/')}"
+    return sharepoint_direct_download_url(url) if download else url
+
+
+def sharepoint_release_folder_url(*, version_name: str = "") -> str:
+    """SharePoint AllItems.aspx folder URL for the release month/quarter."""
+    folder_url, _label = resolve_sharepoint_folder_link(version_name=version_name)
+    return folder_url
+
+
 def sharepoint_direct_download_url(doc_url: str) -> str:
     """Turn a SharePoint document URL into a direct-download link for Slack."""
     raw = (doc_url or "").strip()

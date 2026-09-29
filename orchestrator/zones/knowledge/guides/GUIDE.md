@@ -113,7 +113,7 @@ Say **`welcome onboard`** once — linear wizard, one step at a time. After each
 | **release-orchestrator** | Always | `setup status` or green in Cursor MCP list |
 | **Playwright** | Glofox release + calendar | Sign in via browser → **`playwright confirmed`** |
 | **teams** | Daily Review only | **`teams_login`** → **`teams done`** |
-| **Slack plugin** | Optional | Glofox Step 6 uses Playwright for private channels |
+| **Slack plugin** | Fallback | Step 6 cascade: Playwright → Slack MCP → bot token |
 | **Jira `.env`** | Always | `JIRA_BASE_URL`, `JIRA_EMAIL`, `JIRA_API_TOKEN` |
 
 Paste MCP blocks: tool **`daily_review_mcp_config`** or ask agent in chat.
@@ -153,9 +153,10 @@ Nothing auto-posts to Slack or SharePoint — you confirm **`sharepoint done`** 
 | 3 | **`create release notes`** | Word DOCX → SharePoint upload handoff |
 | 4 | **`sharepoint done`** + URL | Save link + receipt (idempotent on retry) |
 | 5 | **`create shipit`** | SHIPIT ticket (blocked if PR gate fails) |
-| 6 | **`send slack`** | Both channels (see below) |
-| 7 | **`slack done`** | Continue |
-| 8 | Deploy | Paste deployment info or use Streamlit Deployer |
+| 6 | **`send slack`** | Both channels — Playwright first, then Slack MCP if needed (see below) |
+| 7 | **`slack receipt squad <url>`** · **`slack receipt buddies <url>`** | Record both permalinks |
+| 8 | **`slack done`** | Continue only when both receipts recorded |
+| 9 | Deploy | Paste deployment info or use Streamlit Deployer |
 
 **Shortcuts:** **`fetch release tickets`** (list only, no lock) · **`skip slack`** · **`help`**
 
@@ -171,9 +172,13 @@ Status alone is not enough.
 
 ### Slack (when you say `send slack`)
 
-Channels: **`#insights-customize-squad`** + **`#customize-bi-buddies`**
+**Must succeed on both channels** — try in order: **Playwright** → **Slack MCP** → bot token.
+
+Channels: **`#insights-customize-squad`** (`C08HB93PEVD`) + **`#customize-bi-buddies`** (`C08KM1USMM1`)
 
 Includes SharePoint download + folder links, SHIPIT link. Squad CC: Sushma, Sai Anirudh, Zeke, Eoin · Buddies CC: Sushma only.
+
+Record permalinks: **`slack receipt squad <url>`** and **`slack receipt buddies <url>`** — then **`slack done`**.
 
 ### Quick fixes
 
@@ -182,7 +187,7 @@ Includes SharePoint download + folder links, SHIPIT link. Squad CC: Sushma, Sai 
 | Ticket missing | Add **ready for review/release** comment on Jira |
 | PR blocked | Merge on GitHub → **`fetch release tickets`** |
 | SharePoint | **`upload sharepoint`** → upload → **`sharepoint done`** + URL |
-| Slack failed | **`send slack`** (Playwright) or manual → **`slack done`** |
+| Slack failed | Retry cascade: **`send slack`** (Playwright) → **`send slack mcp`** → record receipts → **`slack done`** |
 | Start over | **`welcome`** |
 
 ---
@@ -220,6 +225,7 @@ Pilot checklist: `.\orchestrator\zones\platform\ops\daily_review\pilot_signoff.p
 |------|------|
 | **Release Orchestrator** | Product |
 | **jira-release-tool** | This repo |
+| **Canonical GitHub** | `https://github.com/glofoxinc/release-orchestrator` |
 | **`release_mcp`** | MCP module — `python -m release_mcp` |
 
 Folder map: [REPO_LAYOUT.md](REPO_LAYOUT.md) · State detail: [STATE.md](STATE.md) · Push safety: [PUSH_SAFETY.md](PUSH_SAFETY.md)

@@ -197,6 +197,21 @@ def test_shipit_only_completes_after_slack_done():
         inputs={"slack_decision": "slack done"},
     )
     with patch("release_mcp.wizard.config.slack_archived", return_value=False):
+        blocked = wizard._process_slack(session)
+    assert blocked["step"] == wizard.STEP_SLACK
+    assert blocked["status"] == "needs_input"
+
+    session = wizard_store.update_session(
+        session["id"],
+        artifacts={
+            "slack_receipts": {
+                "squad": {"permalink": "https://slack.com/archives/C08HB93PEVD/p1"},
+                "buddies": {"permalink": "https://slack.com/archives/C08KM1USMM1/p2"},
+            }
+        },
+        inputs={"slack_decision": "slack done"},
+    )
+    with patch("release_mcp.wizard.config.slack_archived", return_value=False):
         done = wizard._process_slack(session)
     assert done["step"] == wizard.STEP_COMPLETE
 
