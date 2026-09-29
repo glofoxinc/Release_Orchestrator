@@ -1,4 +1,4 @@
-﻿"""Durable, confirmation-gated Release Orchestrator MCP workflow."""
+"""Durable, confirmation-gated Release Orchestrator MCP workflow."""
 
 from __future__ import annotations
 
