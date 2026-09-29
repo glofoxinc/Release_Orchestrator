@@ -241,6 +241,16 @@ def _normalize_message(message: str) -> str:
     return raw.replace("'", "").replace("'", "").replace("`", "")
 
 
+def _phrase_in_message(lowered: str, phrase: str) -> bool:
+    """Substring match; short tokens (hi, no) require word boundaries."""
+    p = (phrase or "").strip().lower()
+    if not p:
+        return False
+    if len(p) <= 3:
+        return re.search(rf"\b{re.escape(p)}\b", lowered) is not None
+    return p in lowered
+
+
 def _is_fetch_release_list_intent(lowered: str) -> bool:
     if "release notes" in lowered:
         return False
@@ -730,7 +740,7 @@ def interpret_message(
             "intent": "skip_shipit_review_ready",
         }
 
-    if any(p in lowered for p in WELCOME_PHRASES) or not workflow_id:
+    if any(_phrase_in_message(lowered, p) for p in WELCOME_PHRASES) or not workflow_id:
         inputs = {}
         if team:
             inputs["team_name"] = team
@@ -793,6 +803,31 @@ def interpret_message(
             "inputs": {"slack_decision": "skip"},
             "intent": "skip_slack",
         }
+
+    if workflow_id:
+        receipt_match = re.search(
+            r"slack receipt\s+(squad|buddies|insights-customize-squad|customize-bi-buddies)\s+(https://\S+)",
+            lowered,
+        )
+        if receipt_match:
+            channel_key = receipt_match.group(1)
+            if "squad" in channel_key:
+                channel_key = "squad"
+            elif "buddies" in channel_key:
+                channel_key = "buddies"
+            return {
+                "action": "update",
+                "workflow_id": workflow_id,
+                "inputs": {
+                    "slack_receipts": {
+                        channel_key: {
+                            "permalink": receipt_match.group(2).rstrip(").,;"),
+                            "source": "manual",
+                        }
+                    }
+                },
+                "intent": "slack_receipt",
+            }
 
     if workflow_id and any(p in lowered for p in SLACK_DONE_PHRASES):
         return {

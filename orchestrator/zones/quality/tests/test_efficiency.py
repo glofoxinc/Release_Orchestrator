@@ -294,7 +294,13 @@ class TestReadonlyConcurrency:
 
 class TestSearchPaginationShared:
     @patch("jira_client._post")
-    def test_get_issues_and_keys_share_helper(self, mock_post):
+    def test_get_issues_and_keys_share_helper(self, mock_post, monkeypatch):
+        monkeypatch.delenv("MOCK_MODE", raising=False)
+        monkeypatch.setattr(
+            jira_client,
+            "build_scoped_version_jql",
+            lambda project_key, version_id: f'project = {project_key} AND fixVersion = {version_id}',
+        )
         mock_post.return_value = {
             "issues": [{"key": "PIC-1", "fields": {"summary": "x"}}],
             "nextPageToken": None,

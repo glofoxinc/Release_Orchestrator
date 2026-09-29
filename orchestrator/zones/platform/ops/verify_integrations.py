@@ -531,8 +531,8 @@ def check_slack_mcp() -> list[Result]:
         ]
 
     report = slack_mcp_ops.slack_mcp_verify()
-    ok = bool(report.get("ok"))
     blockers = report.get("blockers") or []
+    ok = bool(report.get("e2e_ready")) and not blockers
     detail = "; ".join(str(b) for b in blockers[:3]) if blockers else "Slack MCP ready for send slack"
     return [
         Result(

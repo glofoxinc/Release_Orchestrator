@@ -10,7 +10,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from orchestrator.paths import REPO_ROOT
+from orchestrator.paths import OPS_DIR, REPO_ROOT
 
 _LAUNCH = REPO_ROOT / ".launch"
 _BASELINE = _LAUNCH / "baseline_evidence.json"
@@ -45,7 +45,7 @@ def capture_baseline(*, quick: bool = False) -> dict[str, Any]:
     }
     if not quick:
         checks["ruff"] = _run([py, "-m", "ruff", "check", "."])
-        checks["release_notes_e2e"] = _run([py, str(REPO_ROOT / "orchestrator" / "ops" / "test_release_notes_e2e.py")])
+        checks["release_notes_e2e"] = _run([py, str(OPS_DIR / "test_release_notes_e2e.py")])
 
     track = uo.get_stored_track() or uo.TRACK_RELEASE
     readiness = pr.assess_readiness_tiers(track=track, surface="mcp")

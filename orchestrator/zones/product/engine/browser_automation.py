@@ -108,9 +108,11 @@ def playwright_mcp_readiness() -> dict[str, Any]:
 
 def prefer_slack_mcp() -> bool:
     section = slack_section()
+    if "prefer_slack_mcp" in section:
+        return bool(section.get("prefer_slack_mcp"))
     if "prefer_playwright" in section:
         return not bool(section.get("prefer_playwright"))
-    return bool(section.get("prefer_slack_mcp", True))
+    return True
 
 
 def prefer_playwright_slack() -> bool:

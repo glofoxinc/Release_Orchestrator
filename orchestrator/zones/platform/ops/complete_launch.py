@@ -14,20 +14,15 @@ from __future__ import annotations
 
 import argparse
 import json
-import os
 import subprocess
 import sys
 
-_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-if _ROOT not in sys.path:
-    sys.path.insert(0, _ROOT)
-
 try:
-    from dotenv import load_dotenv
-
-    load_dotenv(override=True)
+    from . import _bootstrap  # noqa: F401
 except ImportError:
-    pass
+    import _bootstrap  # noqa: F401
+
+from orchestrator.paths import REPO_ROOT
 
 
 def _run_pytest(quick: bool) -> tuple[bool, str]:
@@ -42,7 +37,7 @@ def _run_pytest(quick: bool) -> tuple[bool, str]:
         ])
     else:
         cmd.append("orchestrator/zones/quality/tests/")
-    proc = subprocess.run(cmd, cwd=_ROOT, capture_output=True, text=True)
+    proc = subprocess.run(cmd, cwd=str(REPO_ROOT), capture_output=True, text=True)
     out = (proc.stdout or "") + (proc.stderr or "")
     line = out.strip().splitlines()[-1] if out.strip() else f"exit {proc.returncode}"
     return proc.returncode == 0, line

@@ -18,6 +18,15 @@ if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
 try:
+    from orchestrator.paths import ALIASES_DIR, ENGINE_DIR
+
+    for path in (ENGINE_DIR, ALIASES_DIR):
+        if str(path) not in sys.path:
+            sys.path.insert(0, str(path))
+except ImportError:
+    pass
+
+try:
     from dotenv import load_dotenv
 
     from orchestrator.paths import ENV_FILE

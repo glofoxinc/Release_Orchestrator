@@ -124,3 +124,65 @@ def test_build_comment_adf_mentions_assignee():
     content = body.get("content") or []
     first_para = (content[0].get("content") or []) if content else []
     assert any(node.get("type") == "mention" for node in first_para)
+
+
+def test_run_pr_gate_fail_open_without_token():
+    extracted = [{"ticket": "AN-1", "summary": "Fix", "project": "AN"}]
+    with (
+        patch.object(github_pr_gate, "gate_enabled", return_value=True),
+        patch.object(github_pr_gate, "github_configured", return_value={"configured": False}),
+    ):
+        result = github_pr_gate.run_pr_gate(extracted)
+    assert result["status"] == "skipped"
+    assert not result.get("tickets_with_blocking_prs")
+
+
+def test_run_pr_gate_passes_when_all_merged():
+    extracted = [{"ticket": "AN-5516", "summary": "Fix", "project": "AN"}]
+    with (
+        patch.object(github_pr_gate, "gate_enabled", return_value=True),
+        patch.object(github_pr_gate, "github_configured", return_value={"configured": True}),
+        patch.object(github_pr_gate, "check_ticket_github_prs") as check,
+    ):
+        check.return_value = {
+            "ticket": "AN-5516",
+            "open_prs": [],
+            "blocking_prs": [],
+        }
+        result = github_pr_gate.run_pr_gate(extracted)
+    assert result["blocking_count"] == 0
+
+
+def test_block_on_create_enabled_default():
+    with patch.object(github_pr_gate, "gate_enabled", return_value=True):
+        assert github_pr_gate.block_on_create_enabled() is True
+
+
+def test_pr_needs_attention_merged_passes():
+    pr = {"state": "closed", "draft": False, "merged": True, "mergeable": True}
+    reviews = {"approved_count": 1, "changes_requested_count": 0, "pending_count": 0}
+    needs, reason = github_pr_gate._pr_needs_attention(pr, reviews)
+    assert needs is False
+    assert reason == "merged_or_closed"
+
+
+def test_gate_disabled_skips():
+    extracted = [{"ticket": "AN-1", "summary": "x", "project": "AN"}]
+    with patch.object(github_pr_gate, "gate_enabled", return_value=False):
+        result = github_pr_gate.run_pr_gate(extracted)
+    assert result["status"] == "disabled"
+
+
+def test_open_draft_pr_needs_attention():
+    pr = {"state": "open", "draft": True, "merged": False, "mergeable": True}
+    reviews = {"approved_count": 0, "changes_requested_count": 0, "pending_count": 0}
+    needs, reason = github_pr_gate._pr_needs_attention(pr, reviews)
+    assert needs is True
+    assert reason == "draft_pr"
+
+
+def test_post_pr_comments_ok_when_no_blocking():
+    gate = {"tickets_with_blocking_prs": []}
+    out = github_pr_gate.post_pr_comments(gate, dry_run=True)
+    assert out["status"] == "ok"
+    assert out["posted"] == []

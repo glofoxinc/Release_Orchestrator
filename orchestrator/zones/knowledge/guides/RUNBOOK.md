@@ -68,7 +68,7 @@ Run from the repo root with the project venv active. Do **not** claim readiness 
 ```bash
 python orchestrator/zones/platform/ops/release_signoff_checklist.py
 python orchestrator/zones/platform/ops/release_signoff_checklist.py --live-jira
-python orchestrator/zones/platform/ops/shipit_preflight.py
+python orchestrator/zones/platform/ops/run_shipit_preflight.py
 python orchestrator/zones/platform/ops/compare_release_notes_docx.py --generate-sample
 ```
 

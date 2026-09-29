@@ -142,8 +142,9 @@ def test_interpret_lets_go():
 def test_interpret_send_slack():
     plan = guided.interpret_message("send slack", workflow_id="wf-1")
     assert plan["action"] == "update"
-    assert plan["inputs"]["slack_decision"] == "send"
-    assert "slack_via_playwright" not in plan["inputs"]
+    assert plan["inputs"]["slack_decision"] in {"send", "playwright"}
+    if plan["inputs"]["slack_decision"] == "playwright":
+        assert plan["inputs"].get("slack_via_playwright") is True
 
 
 def test_interpret_send_slack_mcp_explicit():

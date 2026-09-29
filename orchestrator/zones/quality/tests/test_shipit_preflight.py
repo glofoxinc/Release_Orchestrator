@@ -60,3 +60,21 @@ class TestShipitPreflight:
         monkeypatch.setattr(jira_client, "get_group", lambda _name: (_ for _ in ()).throw(err))
         out = sp.preflight_assignment_group(group_name="Bad/Group")
         assert out["status"] == "warn"
+
+    def test_dry_run_safe_offline_fallback(self, monkeypatch):
+        import jira_client
+        import shipit_preflight as sp
+
+        err = jira_client.JiraApiError("PIC missing", status_code=404)
+
+        def _boom(**_kwargs):
+            raise err
+
+        monkeypatch.setattr(sp, "preflight_shipit_create_dry_run", _boom)
+        out = sp.preflight_shipit_create_dry_run_safe(
+            version_name="2026.3.09.11",
+            sharepoint_url="https://example.com/Release%20Notes%202026.3.09.11.docx",
+        )
+        assert out.get("offline_fallback") is True
+        assert out.get("jira_error") == str(err)
+        assert out.get("status") in {"dry_run", "preflight_failed"}
