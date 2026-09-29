@@ -343,40 +343,49 @@ def render() -> None:
 
     mark_step2_loaded("tr_")
 
-    if release_gates.skip_review_completed_comments_enabled():
-        reviewable_issues: list[dict] = []
-        held_review_comment: list[dict] = []
-        for issue in issues:
-            key = str(issue.get("key") or "")
-            done, snippet = release_gates.ticket_has_review_completed_comment(key)
-            if done:
-                fields = issue.get("fields") or {}
-                held_review_comment.append(
-                    {
-                        "key": key,
-                        "summary": str(fields.get("summary") or ""),
-                        "snippet": snippet,
-                    }
-                )
-                continue
-            reviewable_issues.append(issue)
-        if held_review_comment:
-            st.info(
-                f"**{len(held_review_comment)}** ticket(s) hidden — Jira comments already mark review complete "
-                f"(e.g. \"review completed\")."
-            )
-            with st.expander(f"Held back from review fetch ({len(held_review_comment)})", expanded=False):
-                for row in held_review_comment:
-                    st.markdown(f"- **{row['key']}** — {row['summary']}")
-        issues = reviewable_issues
-        if not issues:
-            st.warning(
-                "All fetched tickets already have review-complete comments. Move them to Ready for Release "
-                "or use Release Notes when they are QA-ready."
-            )
-            if st.button("\u2190 Back"):
-                _go(1)
-            return
+    from release_mcp.release_ops import extracted_from_jira_issue
+
+    extracted_rows = [extracted_from_jira_issue(issue) for issue in issues]
+    comment_gate = release_gates.filter_extracted_in_progress_review_candidates(extracted_rows)
+    review_done_gate = (
+        release_gates.filter_extracted_review_completed_comments(extracted_rows)
+        if release_gates.skip_review_completed_comments_enabled()
+        else None
+    )
+    if review_done_gate and review_done_gate.get("held_back"):
+        extracted_rows = list(review_done_gate.get("kept") or extracted_rows)
+    kept_keys = {
+        str(row.get("ticket") or "").upper()
+        for row in (comment_gate.get("kept") or [])
+        if str(row.get("ticket") or "").strip()
+    }
+    held_missing_comment = list(comment_gate.get("held_back") or [])
+    held_review_comment = list((review_done_gate or {}).get("held_back") or [])
+    if held_missing_comment:
+        st.info(
+            f"**{len(held_missing_comment)}** ticket(s) hidden — no **ready for review** Jira comment "
+            f"(status alone is not enough)."
+        )
+        with st.expander("Held back — missing ready-for-review comment", expanded=False):
+            for row in held_missing_comment:
+                st.markdown(f"- **{row['key']}** ({row.get('status')}) — {row.get('summary')}")
+    if held_review_comment:
+        st.info(
+            f"**{len(held_review_comment)}** ticket(s) hidden — Jira comments already mark review complete."
+        )
+        with st.expander("Held back — review already complete", expanded=False):
+            for row in held_review_comment:
+                st.markdown(f"- **{row['key']}** — {row.get('summary')}")
+    issues = [
+        issue for issue in issues if str(issue.get("key") or "").upper() in kept_keys
+    ]
+    if not issues:
+        st.warning(
+            "No tickets with a ready-for-review Jira comment. Add the comment in Jira, then refresh."
+        )
+        if st.button("\u2190 Back"):
+            _go(1)
+        return
 
     if mode != MODE_STATUS and release_gates.ticket_review_pre_review_enabled():
         issues, _held_back = render_pre_review_panel(issues, session_prefix="tr_")

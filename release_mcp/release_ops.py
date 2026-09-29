@@ -378,32 +378,36 @@ def list_release_ready_tickets(
     *,
     jira_team_ids_by_project: dict[str, list[str]] | None = None,
 ) -> dict[str, Any]:
-    """Fetch release-ready tickets (Step 3 statuses) and return a formatted list — no wizard lock."""
+    """Fetch release-ready tickets (comment-gated) — list only, no wizard lock."""
     import release_gates
 
     project_keys = _default_projects(projects)
     statuses = {pk: list(config.release_notes_default_statuses(pk)) for pk in project_keys}
-    fetch = fetch_release_tickets(
+    result = fetch_release_notes_extracted(
         selection_mode="status",
-        statuses_by_project=statuses,
         projects=project_keys,
+        release_notes_statuses_by_project=statuses,
         jira_team_ids_by_project=jira_team_ids_by_project,
     )
-    if fetch.get("status") != "ok":
-        return fetch
-    extracted = list(fetch.get("extracted") or [])
+    if result.get("status") not in {"ok", "blocked"}:
+        return result
+    extracted = list(result.get("extracted") or [])
     outside = release_gates.filter_extracted_outside_squad_assignees(extracted)
     if outside.get("status") == "ok":
         extracted = list(outside.get("kept") or extracted)
-        fetch = {**fetch, "extracted": extracted, "total_tickets": len(extracted)}
     formatted = format_extracted_list_lines(extracted)
+    comment_gate = result.get("release_comment_gate") or {}
     return {
-        **fetch,
+        **result,
+        "extracted": extracted,
+        "total_tickets": len(extracted),
         "list_only": True,
         "fetch_intent": "release_list",
         "statuses_by_project": statuses,
         "formatted_list": formatted,
         "ticket_count": len(extracted),
+        "held_back_keys": comment_gate.get("held_back_keys") or [],
+        "held_back_count": len(comment_gate.get("held_back_keys") or []),
     }
 
 
@@ -476,71 +480,79 @@ def _merge_release_ready_comment_candidates(
     release_notes_statuses_by_project: dict[str, list[str]] | None = None,
     jira_team_ids_by_project: dict[str, list[str]] | None = None,
 ) -> dict[str, Any]:
-    """Add tickets from review statuses when a Jira comment says ready for release."""
+    """Release Notes admission — comment required; status alone is not enough."""
     import release_gates
 
-    if not release_gates.include_ready_for_release_comments_enabled():
+    phrases = list(release_gates.ready_for_release_comment_phrases())
+    held_back: list[dict] = []
+    if release_gates.require_ready_for_release_comment_all():
+        gate = release_gates.filter_extracted_ready_for_release_comments(extracted)
+        held_back = list(gate.get("held_back") or [])
+        extracted = list(gate.get("kept") or [])
+    elif not release_gates.include_ready_for_release_comments_enabled():
         return {
             "status": "disabled",
             "extracted": extracted,
             "comment_included_keys": [],
             "comment_included": [],
+            "held_back": [],
+            "held_back_keys": [],
             "candidate_fetch": None,
-            "phrases": list(release_gates.ready_for_release_comment_phrases()),
+            "phrases": phrases,
         }
 
-    rn_statuses = release_notes_statuses_by_project or release_notes_default_statuses_by_project(
-        projects
-    )
-    release_status_names = {
-        str(status).strip().lower()
-        for values in rn_statuses.values()
-        for status in (values or [])
-        if str(status).strip()
-    }
     by_key = {
         str(item.get("ticket") or "").upper(): item
         for item in extracted
         if str(item.get("ticket") or "").strip()
     }
-    candidate_statuses = release_gates.ready_for_release_comment_candidate_statuses(projects)
-    candidate_fetch = fetch_release_tickets(
-        selection_mode="status",
-        projects=projects,
-        statuses_by_project=candidate_statuses,
-        jira_team_ids_by_project=jira_team_ids_by_project,
-    )
-    comment_included: list[dict[str, str]] = []
-    for item in candidate_fetch.get("extracted") or []:
-        key = str(item.get("ticket") or "").upper()
-        if not key or key in by_key:
-            continue
-        status = str(item.get("status") or "").strip()
-        if status.lower() in release_status_names:
-            by_key[key] = item
-            continue
-        ready, snippet = release_gates.ticket_has_ready_for_release_comment(key)
-        if not ready:
-            continue
-        by_key[key] = item
-        comment_included.append(
-            {
-                "key": key,
-                "summary": str(item.get("summary") or ""),
-                "status": status,
-                "reason": "Jira comment indicates ready for release",
-                "comment_snippet": snippet,
-            }
-        )
+    comment_included: list[dict[str, str]] = [
+        {
+            "key": key,
+            "summary": str(item.get("summary") or ""),
+            "status": str(item.get("status") or "").strip(),
+            "reason": "Jira comment indicates ready for release",
+        }
+        for key, item in by_key.items()
+    ]
 
-    merged = list(by_key.values())
+    candidate_fetch = None
+    candidate_statuses: dict[str, list[str]] = {}
+    if release_gates.include_ready_for_release_comments_enabled():
+        candidate_statuses = release_gates.ready_for_release_comment_candidate_statuses(projects)
+        candidate_fetch = fetch_release_tickets(
+            selection_mode="status",
+            projects=projects,
+            statuses_by_project=candidate_statuses,
+            jira_team_ids_by_project=jira_team_ids_by_project,
+        )
+        for item in candidate_fetch.get("extracted") or []:
+            key = str(item.get("ticket") or "").upper()
+            if not key or key in by_key:
+                continue
+            ready, snippet = release_gates.ticket_has_ready_for_release_comment(key)
+            if not ready:
+                continue
+            by_key[key] = item
+            comment_included.append(
+                {
+                    "key": key,
+                    "summary": str(item.get("summary") or ""),
+                    "status": str(item.get("status") or "").strip(),
+                    "reason": "Jira comment indicates ready for release",
+                    "comment_snippet": snippet,
+                }
+            )
+
     return {
         "status": "ok",
-        "extracted": merged,
+        "extracted": list(by_key.values()),
         "comment_included_keys": [row["key"] for row in comment_included if row.get("key")],
         "comment_included": comment_included,
+        "held_back": held_back,
+        "held_back_keys": [row["key"] for row in held_back if row.get("key")],
         "candidate_fetch": candidate_fetch,
-        "phrases": list(release_gates.ready_for_release_comment_phrases()),
+        "phrases": phrases,
         "candidate_statuses_by_project": candidate_statuses,
     }
 
@@ -700,6 +712,11 @@ def fetch_release_notes_extracted(
                 "None of the locked tickets are in release-ready status yet. "
                 f"Not release-ready: {', '.join(not_release_ready_keys)}."
             )
+        elif comment_gate.get("held_back_keys"):
+            message = (
+                "No tickets with a ready-for-release Jira comment. "
+                f"Held back (status alone not enough): {', '.join(comment_gate['held_back_keys'])}."
+            )
         else:
             message = "No tickets matched release-ready statuses."
 
@@ -782,16 +799,25 @@ def generate_release_notes_docx_file(
     enforce_readiness: bool = True,
 ) -> dict[str, Any]:
     """Generate the same Word release notes DOCX the Streamlit UI produces."""
-    fetch = (
-        fetch_release_tickets(version_name, projects=projects, ticket_keys=ticket_keys)
-        if extracted_override is None
-        else {
+    if extracted_override is not None:
+        fetch = {
             "status": "ok",
             "projects": _default_projects(projects),
             "by_project": {},
             "extracted": extracted_override,
         }
-    )
+    elif ticket_keys:
+        fetch = fetch_tickets_by_keys(ticket_keys)
+        import release_gates
+
+        gate = release_gates.filter_extracted_ready_for_release_comments(fetch.get("extracted") or [])
+        fetch = {**fetch, "extracted": list(gate.get("kept") or [])}
+    else:
+        fetch = fetch_release_notes_extracted(
+            selection_mode="fix_version",
+            projects=_default_projects(projects),
+            version_name=version_name,
+        )
     if fetch.get("status") == "needs_input":
         return fetch
     extracted = fetch.get("extracted") or []
@@ -989,16 +1015,25 @@ def create_service_ticket(
             "hint": "Use the PIC/AN fix version exactly (YYYY.Q.MM.DD), e.g. 2026.3.09.11.",
         }
 
-    fetch = (
-        fetch_release_tickets(version_name, projects=projects, ticket_keys=ticket_keys)
-        if extracted_override is None
-        else {
+    if extracted_override is not None:
+        fetch = {
             "status": "ok",
             "projects": _default_projects(projects),
             "by_project": {},
             "extracted": extracted_override,
         }
-    )
+    elif ticket_keys:
+        fetch = fetch_tickets_by_keys(ticket_keys)
+        import release_gates
+
+        gate = release_gates.filter_extracted_ready_for_release_comments(fetch.get("extracted") or [])
+        fetch = {**fetch, "extracted": list(gate.get("kept") or [])}
+    else:
+        fetch = fetch_release_notes_extracted(
+            selection_mode="fix_version",
+            projects=_default_projects(projects),
+            version_name=version_name,
+        )
     if fetch.get("status") == "needs_input":
         return fetch
     extracted = enrich_extracted_with_jira_evidence(fetch.get("extracted") or [])

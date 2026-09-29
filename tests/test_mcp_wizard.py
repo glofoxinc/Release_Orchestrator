@@ -23,6 +23,37 @@ def _disable_release_gates_in_wizard(monkeypatch):
     """Legacy wizard tests use statuses that are not gate-ready at every step."""
     monkeypatch.setattr(release_gates, "gates_root_enabled", lambda: False)
     monkeypatch.setattr(release_gates, "gate_enabled", lambda _name: False)
+    monkeypatch.setattr(release_gates, "require_ready_for_review_comment_all", lambda: False)
+    monkeypatch.setattr(
+        release_gates,
+        "filter_extracted_in_progress_review_candidates",
+        lambda extracted: {
+            "status": "ok",
+            "kept": list(extracted),
+            "held_back": [],
+            "held_back_keys": [],
+        },
+    )
+    monkeypatch.setattr(
+        release_gates,
+        "filter_extracted_review_completed_comments",
+        lambda extracted: {
+            "status": "disabled",
+            "kept": list(extracted),
+            "held_back": [],
+            "held_back_keys": [],
+        },
+    )
+    monkeypatch.setattr(
+        release_gates,
+        "filter_extracted_outside_squad_assignees",
+        lambda extracted, **kwargs: {
+            "status": "skipped",
+            "kept": list(extracted),
+            "skipped": [],
+            "skipped_keys": [],
+        },
+    )
 
 
 @pytest.fixture(autouse=True)

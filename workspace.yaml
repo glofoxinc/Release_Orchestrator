@@ -265,8 +265,9 @@ workspace:
         - "Ready for Release"
       AN:
         - "QA(migrated)"
-    # Mirror Ticket Review comment gate: also include tickets from review statuses
-    # when a Jira comment says "ready for release" (same pattern as ready-for-review).
+    # Release Notes — Jira status alone is not enough; every ticket needs a
+    # "ready for release" comment before DOCX / SHIPIT.
+    require_ready_for_release_comment_all: true
     include_ready_for_release_comments: true
     ready_for_release_comment_phrases:
       - "ready for release"
@@ -349,8 +350,18 @@ workspace:
     skip_outside_squad_assignees: true
     # Step 1 — also pick up in-squad Review tickets when Jira Team field is empty/wrong.
     include_squad_assignee_without_team: true
-    # Step 2 auto-check when using "By status (board)" mode.
-    # In Progress tickets are included only when a Jira comment says ready for review.
+    # Step 1 — Jira status alone is not enough; every fetched ticket needs a
+    # "ready for review" comment (avoids Review-status tickets waiting on team).
+    require_ready_for_review_comment_all: true
+    ready_for_review_comment_phrases:
+      - "ready for review"
+      - "ready to review"
+      - "please review"
+      - "ready for peer review"
+    require_ready_for_review_comment_statuses:
+      - "In Progress"
+      - "Review"
+      - "In Review"
     default_checked_statuses:
       PIC:
         - "Review"
