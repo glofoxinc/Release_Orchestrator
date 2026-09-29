@@ -34,7 +34,7 @@ python -m venv .venv
 pip install -r requirements.txt
 Copy-Item .env.example .env
 notepad .env
-# Or one shot: .\scripts\setup_e2e.ps1
+# Or one shot: .\orchestrator\ops\setup_e2e.ps1
 ```
 
 Set in `.env`:
@@ -89,7 +89,7 @@ Selections carry across apps — pick releases once in Ticket Review.
    ```json
    "release-orchestrator": {
      "command": "C:/Users/LYal01/ZABC/projects/done/small/jira-release-tool/.venv/Scripts/python.exe",
-     "args": ["-m", "mcp_server"],
+     "args": ["-m", "release_mcp"],
      "cwd": "C:/Users/LYal01/ZABC/projects/done/small/jira-release-tool"
    }
    ```
@@ -113,7 +113,7 @@ DEFAULT_SELECTION_MODE=status
 | Setting | Where | Purpose |
 |---|---|---|
 | Jira URL / email / token | `.env` | Authentication |
-| Projects, service desk, apps | `workspace.yaml` or Settings UI | Team-specific config |
+| Projects, service desk, apps | `profiles/workspace.yaml` or Settings UI | Team-specific config |
 | Active team folder | `.env` `JIRA_TOOLKIT_WORKSPACE` or home page switcher | Multi-team |
 | TCKT desk/type IDs | Settings → Service Desk **or** `.env` | Auto-set Request Type |
 
@@ -121,7 +121,7 @@ DEFAULT_SELECTION_MODE=status
 
 Set **either**:
 
-- **Settings → Service Desk → Service Desk ID + Request Type ID** (saved to `workspace.yaml`), **or**
+- **Settings → Service Desk → Service Desk ID + Request Type ID** (saved to `profiles/workspace.yaml`), **or**
 - `.env`:
   ```ini
   TCKT_SERVICE_DESK_ID=123
@@ -160,5 +160,5 @@ See also [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) and [FAQ.md](./FAQ.md).
 ## Optional: CLI headless mode
 
 ```powershell
-.\.venv\Scripts\jira-release-tool.exe validate-config workspace.yaml
+.\.venv\Scripts\jira-release-tool.exe validate-config profiles/workspace.yaml
 ```

@@ -38,6 +38,14 @@ def test_pr_needs_attention_open_unapproved():
     assert reason == "not_approved"
 
 
+def test_pr_needs_attention_open_approved_not_merged():
+    pr = {"state": "open", "draft": False, "merged": False, "mergeable": True}
+    reviews = {"approved_count": 2, "changes_requested_count": 0, "pending_count": 0}
+    needs, reason = github_pr_gate._pr_needs_attention(pr, reviews)
+    assert needs is True
+    assert reason == "not_merged"
+
+
 def test_run_pr_gate_finds_blocking_prs():
     extracted = [
         {

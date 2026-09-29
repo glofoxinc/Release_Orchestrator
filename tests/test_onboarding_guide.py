@@ -57,4 +57,4 @@ def test_help_phrase_returns_cheat_sheet():
 def test_welcome_onboard_routes_with_intro():
     plan = guided.interpret_message("welcome onboard")
     assert plan["intent"] == "welcome_onboard"
-    assert plan["inputs"].get("interactive_onboarding") is True
+    assert plan["action"] == "beginner_wizard"

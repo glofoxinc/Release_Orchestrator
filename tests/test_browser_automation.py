@@ -151,9 +151,10 @@ def test_build_playwright_slack_compose_includes_links_and_mentions():
         for part in (block.get("parts") or [])
         if part.get("type") == "link"
     ]
-    assert len(link_parts) == 2
+    assert len(link_parts) == 3
     assert link_parts[0]["url"].startswith("https://abcfinancial.sharepoint.com")
-    assert link_parts[1]["url"].endswith("SHIPIT-17191")
+    assert "AllItems.aspx" in link_parts[1]["url"] or "sharepoint.com" in link_parts[1]["url"]
+    assert link_parts[2]["url"].endswith("SHIPIT-17191")
     mention_parts = [p for p in compose["blocks"][-1]["parts"] if p.get("type") == "mention"]
     assert len(mention_parts) == 1
     assert mention_parts[0]["user_id"] == "U08LDAQ7SDV"
@@ -211,9 +212,22 @@ def test_sharepoint_browser_upload_enabled_default():
     assert sharepoint_browser_upload_enabled() is True
 
 
-def test_slack_auto_handoff_after_shipit_default():
+def test_slack_auto_handoff_after_shipit_respects_never_post(monkeypatch):
+    import config
     from browser_automation import slack_auto_handoff_after_shipit
 
+    monkeypatch.setattr(
+        config,
+        "SLACK_ANNOUNCE",
+        {"never_post_unless_asked": True},
+    )
+    assert slack_auto_handoff_after_shipit() is False
+
+    monkeypatch.setattr(
+        config,
+        "SLACK_ANNOUNCE",
+        {"never_post_unless_asked": False},
+    )
     assert slack_auto_handoff_after_shipit() is True
 
 

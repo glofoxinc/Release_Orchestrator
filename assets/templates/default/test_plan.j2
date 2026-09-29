@@ -1,0 +1,29 @@
+{% if analyze_entries %}
+Data Accuracy & Standard Report Validation
+{% for entry in analyze_entries %}
+{% if entry.summary %}
+Validate {{ entry.summary }} in {{ entry.label }} ({{ entry.refs }}).
+{% else %}
+Validate {{ entry.label }} changes ({{ entry.refs }}).
+{% endif %}
+{% endfor %}
+
+{% endif %}
+{% if custom_entries %}
+Dashboard / Report Deployment Checks
+Verify newly created and updated dashboards and reports are published and accessible correctly for:
+{% for entry in custom_entries %}
+- {{ entry.label }}{% if entry.summary %} ({{ entry.summary }}){% endif %}
+
+{% endfor %}
+
+{% endif %}
+{% if dashboards %}
+Semantic Model & Filter Validation
+{% for d in dashboards %}
+- Confirm {{ d }} loads correctly with expected data.
+{% endfor %}
+
+{% endif %}
+Accessibility & Usability Checks
+Confirm report navigation, filters, display behavior, and end-user accessibility across all impacted {{ scope }} client workspaces.

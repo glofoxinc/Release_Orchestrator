@@ -1,35 +1,84 @@
-# Repository layout (Platform · MCP · Skill)
+# Repository layout
 
-Three deliverables, one repo. Shared Jira/DOCX/SHIPIT engine stays at repo root until a future `core/` extraction.
+Modern **`orchestrator/`** package — no loose Python at repo root except entrypoints (`app.py`, `cli.py`).
+
+**Weekly operator:** [docs/OPERATOR_GUIDE.md](docs/OPERATOR_GUIDE.md)  
+**Doc index:** [docs/README.md](docs/README.md)
+
+---
+
+## Top level
 
 ```
-jira-release-tool/
-├── release_platform/      # Streamlit UI (import: release_platform; legacy: ui.*)
-│   ├── app.py
-│   └── ui/
-├── release_mcp/           # Release Orchestrator MCP (python -m release_mcp)
-│   ├── server.py          # MCP tool registry
-│   ├── guided.py          # release_orchestrator chat
-│   ├── onboarding*.py     # welcome onboard flow
-│   └── steps/             # Per-step catalog + release_step_status
-├── mcp/                   # Pointer README only (package is release_mcp)
+release-orchestrator/
+├── orchestrator/           # All product code
+│   ├── core/               # Shared engine (Jira, gates, deploy, Slack, SHIPIT)
+│   ├── server/             # MCP chat server (import alias: release_mcp)
+│   ├── web/                # Streamlit UI (import alias: release_platform)
+│   ├── agents/
+│   │   └── review/         # 6 PM review agent (import alias: daily_review_agent)
+│   ├── generators/         # DOCX release notes
+│   ├── shared/
+│   │   ├── common/
+│   │   └── persistence/
+│   ├── ops/                # Preflight / verify scripts (not MCP runtime)
+│   └── tools/              # One-off maintenance scripts
+├── profiles/
+│   ├── workspace.yaml      # Team + integration settings
+│   └── workspaces/         # Alternate workspace profiles
+├── assets/
+│   └── templates/          # Jinja2 (Slack, DOCX, onboarding)
+├── docs/
+├── tests/
 ├── skills/
-│   └── release-orchestrator/
-│       └── SKILL.md       # Colleague playbook (share this folder)
-├── mcp_server/            # Legacy shim (-m mcp_server still works)
-├── templates/             # DOCX, Slack, onboarding YAML
-├── config.py, jira_client.py, deploy_ops.py, …  # shared engine
-└── archive/               # Retired configs (e.g. teams_schedule)
+├── release_mcp/            # Thin compat shim → orchestrator/server/
+├── release_platform/       # Thin compat shim → orchestrator/web/
+├── daily_review_agent/     # Thin compat shim → orchestrator/agents/review/
+├── mcp_server/             # Legacy MCP entry (-m mcp_server)
+├── app.py                  # Streamlit launcher
+└── cli.py                  # CLI launcher
 ```
 
-## Colleague quick start
+---
 
-1. Clone → venv → `.env` from `.env.example`
-2. Cursor MCP: `args: ["-m", "release_mcp"]`
-3. Chat: **`welcome onboard!`** → team + crew → **`full release`**
+## Import aliases (unchanged for colleagues)
+
+| Say / configure | Physical path |
+|-----------------|---------------|
+| `python -m release_mcp` | `orchestrator/server/` |
+| `streamlit run app.py` | `orchestrator/web/` |
+| `python -m daily_review_agent` | `orchestrator/agents/review/` |
+| `import config`, `import jira_client` | `orchestrator/core/` |
+| Ops scripts | `orchestrator/ops/` |
+
+Cursor MCP config stays: `args: ["-m", "release_mcp"]` — no change required.
+
+---
+
+## Weekly path (code flow)
+
+```
+orchestrator/server/guided.py
+  → orchestrator/core/ (jira_client, release_gates, slack_announce, …)
+  → orchestrator/generators/
+  → assets/templates/
+```
+
+---
+
+## Folder sizes (~`.py` files)
+
+| Path | ~Files | Role |
+|------|--------|------|
+| `orchestrator/core/` | 62 | Engine |
+| `orchestrator/server/` | 36 | MCP |
+| `orchestrator/web/` | 57 | Streamlit |
+| `orchestrator/agents/review/` | 29 | Daily review |
+| `orchestrator/ops/` | 13 + legacy | Manual ops |
+| `tests/` | 166 | Offline pytest |
+
+---
 
 ## Weekly release (chat)
 
-`yes` → `yes` → SharePoint → `yes` → `send slack` → `yes deploy`
-
-MCP step tools: **`release_step_status`** (empty = full map), **`release_step_catalog`**, **`release_step_<id>`** (onboarding, ticket_review, slack, deploy, …).
+`fetch review tickets` → `yes` → `create release notes` → `sharepoint done` → `create shipit` → `send slack` → `slack done`

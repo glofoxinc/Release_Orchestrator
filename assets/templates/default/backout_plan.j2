@@ -1,0 +1,6 @@
+Roll back to the previous versions of all modified dashboards and reports from the PROD backup.
+Remove or unpublish newly deployed dashboards/reports if required, and restore the prior production versions in the respective workspaces ({{ workspaces }}).
+{% if revert_items %}
+Revert {{ revert_items }} changes to their earlier versions where applicable.
+{% endif %}
+Inform stakeholders of the rollback and schedule a quick hotfix deployment if needed.

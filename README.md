@@ -108,7 +108,13 @@ modules that compose with the sibling `weekly-update-tool`:
 ### v3.1 Guided MCP (final release surface)
 
 - **`release_orchestrator`** — conversational E2E: welcome → yes through ticket review,
-  exclusions, release notes, SharePoint, SHIPIT, deploy, mark released.
+  exclusions, release notes, SharePoint, SHIPIT, Slack (opt-in), deploy, mark released.
+- **Status + comment gates** — not Fix Version–based. Review fetch requires a **ready for review**
+  Jira comment; release fetch requires **ready for release** (status alone is not enough).
+- **GitHub PR gate** — on release-ready ticket fetch, open PRs block release; Jira comments
+  @-mention assignees (`GITHUB_TOKEN` / `GH_TOKEN` in `.env`).
+- **Slack announce** — download + folder SharePoint links; squad CC (Sushma, Sai, Zeke, Eoin);
+  buddies CC (Sushma only). **Never auto-posts** — say **`send slack`** after SHIPIT.
 - **Status-first fetch** — PIC Review + AN Passed QA with Glofox team default (Ignite/ETL override).
 - **`say_to_user` / `user_can_say`** — agents show plain English; operators never memorize steps.
 - **Skill:** `release-orchestrator-mcp` in Cursor skills.
@@ -141,13 +147,14 @@ actions or confirmation tokens (auto-resolved on **yes**).
 
 | Step | What happens |
 |---|---|
-| 1 | Fetch review-ready PIC + AN tickets (Glofox team default; override Ignite/ETL) |
+| 1 | Fetch review-ready PIC + AN tickets (comment-gated; Glofox team default) |
 | 2 | Lock selection + exclusions |
-| 3 | Release notes DOCX |
-| 4 | SharePoint link (manual paste; Graph upload when enabled) |
+| 3 | Release notes DOCX (release-ready + comment-gated; GitHub PR check) |
+| 4 | SharePoint link (Playwright upload or manual paste) |
 | 5 | SHIPIT service ticket |
-| 6 | Deploy comments + Done transitions |
-| 7 | Mark released (optional) |
+| 6 | Slack preview — **`send slack`** to post (never auto-posted) |
+| 7 | Deploy comments + Done transitions |
+| 8 | Mark released (optional) |
 
 One-time `.env`: `JIRA_*` required; optional `DEFAULT_JIRA_TEAM`, `DEFAULT_PROJECTS=PIC,AN`, `DEFAULT_SELECTION_MODE=status`.
 
@@ -197,7 +204,7 @@ graph LR
 | Doc Generation | `python-docx` for Word release notes |
 | Templating | Jinja2 with filesystem loader and workspace overrides |
 | Configuration | YAML (`workspace.yaml`) + `.env` for credentials |
-| Testing | pytest (600+ tests) |
+| Testing | pytest (1,630+ offline tests) |
 | Linting | Ruff |
 | Containerization | Docker + docker-compose |
 | CI | GitHub Actions |
@@ -222,23 +229,30 @@ pip install -e ".[dev]"
 
 | I want to… | Start here |
 |------------|------------|
-| **Clone repo + Cursor MCP (first time)** | **[docs/COMPLETE_ONBOARDING.md](docs/COMPLETE_ONBOARDING.md)** — flowchart, MCP matrix. Say **`welcome onboard`**. Skill: **`skills/release-orchestrator-onboarding/SKILL.md`** |
-| **Run a weekly PIC+AN release** | **[skills/release-orchestrator/SKILL.md](skills/release-orchestrator/SKILL.md)** — phrase cheat sheet. Say **`fetch review tickets`** → **`create release notes`** → **`create shipit`** |
+| **Run a weekly PIC+AN release (MCP chat)** | **[docs/OPERATOR_GUIDE.md](docs/OPERATOR_GUIDE.md)** — start with **`week release`** |
+| **Fast install (MCP only, ~10 min)** | **[docs/MCP_ONLY_SETUP.md](docs/MCP_ONLY_SETUP.md)** |
+| **Full clone + Daily Review** | **[docs/COMPLETE_ONBOARDING.md](docs/COMPLETE_ONBOARDING.md)** — **`welcome onboard`** |
+| **vs Deployment Bot** | **[docs/COMPARISON.md](docs/COMPARISON.md)** |
 | **Can we release today?** | **[docs/RELEASE_READINESS.md](docs/RELEASE_READINESS.md)** — blocking vs non-blocking checks |
 | **Streamlit UI** | **[docs/SETUP.md](docs/SETUP.md)** |
 | **Incidents / undo** | **[docs/RUNBOOK.md](docs/RUNBOOK.md)** |
+| **What each folder / `.py` file does** | **[REPO_LAYOUT.md](REPO_LAYOUT.md)** — operator vs optional code |
+
+Full doc index: **[docs/README.md](docs/README.md)** (Operator vs Advanced).
 
 ### Operator phrases (E2E)
 
 | Say | Does |
 |-----|------|
-| `fetch review tickets` | Review-ready fetch + lock (Step 1) |
-| `fetch release tickets` | Release-ready list only (no lock) |
+| `fetch review tickets` | Review-ready fetch + lock (needs **ready for review** comment) |
+| `fetch release tickets` | Release-ready list + GitHub PR check (needs **ready for release** comment) |
 | `schedule review call` | Teams review-call calendar |
-| `create release notes` | DOCX + auto SharePoint upload |
-| `create shipit` | SHIPIT + auto Slack announce |
+| `create release notes` | DOCX + SharePoint upload handoff |
+| `create shipit` | SHIPIT change ticket |
+| `send slack` | Post to both channels (download + folder links; explicit only) |
+| `skip slack` | Continue without posting |
 
-Source: **`release_mcp/phrase_catalog.py`** · verify: `pytest tests/test_guided_phrase_e2e.py -q`
+Source: **`orchestrator/server/phrase_catalog.py`** · verify: `pytest tests/test_guided_phrase_e2e.py -q`
 
 ### Prerequisites
 
@@ -313,17 +327,21 @@ Effective JQL is always:
 Configure scope in **Settings → Projects**, use **Test team scope**, or call MCP
 `team_scope_status`. Workflows fail closed until every managed project is scoped.
 
-#### Pre-review and post-QA gates
+#### Release gates (Glofox defaults)
 
-`workspace.yaml` → `release_gates` controls two automatic stages:
+`workspace.yaml` → `release_gates` and `ticket_review` / `release_notes`:
 
 | Gate | When | Behavior |
 |------|------|----------|
-| **Pre-review** | Ticket Review step 2 | Tickets not in `pre_review.ready_statuses` are hidden; use **Send Slack to assignees** |
-| **Post-QA** | Release Notes step 2 | Tickets not in `post_qa.passed_statuses` are excluded from the release + DOCX excluded table |
+| **Ready for review comment** | Ticket Review / review fetch | Every ticket needs a **ready for review** Jira comment |
+| **Ready for release comment** | Release list / release notes | Every ticket needs a **ready for release** Jira comment |
+| **GitHub PR** | Release-ready fetch | Open PRs → Jira comment @ assignee (`release_gates.github_pr`) |
+| **Pre-review** (optional) | Ticket Review step 2 | Filter by Jira status; Slack notify assignees |
+| **Post-QA** (optional) | Release Notes | Exclude non-QA-passed tickets from DOCX |
 
-MCP tools: `pre_review_gate`, `post_qa_gate`, `release_gate_status`. Assignee Slack DMs
-require `SLACK_BOT_TOKEN` with `im:write` and `users:read.email`.
+Slack deployment announce: `slack_announce.never_post_unless_asked: true` — preview until **`send slack`**.
+
+MCP tools: `pre_review_gate`, `post_qa_gate`, `github_pr_gate_check`, `release_gate_status`.
 
 ### External integrations to finish later
 
@@ -430,7 +448,7 @@ jira-toolkit/
 │   ├── devops-team.yaml
 │   └── software-dev-team.yaml
 │
-├── tests/                          # pytest test suite (600+ tests)
+├── tests/                          # pytest test suite (1,630+ tests)
 │   ├── test_adf_builder.py
 │   ├── test_config.py
 │   ├── test_error_handling.py
@@ -452,6 +470,8 @@ jira-toolkit/
 | `JIRA_BASE_URL` | Yes | Jira Cloud instance URL (e.g. `https://yourorg.atlassian.net`) |
 | `JIRA_EMAIL` | Yes | Email address for Jira API authentication |
 | `JIRA_API_TOKEN` | Yes | API token from [Atlassian account settings](https://id.atlassian.com/manage-profile/security/api-tokens) |
+| `GITHUB_TOKEN` or `GH_TOKEN` | No | GitHub PR merge check on release-ready fetch (recommended for Glofox) |
+| `SLACK_BOT_TOKEN` | No | Optional; Cursor Slack MCP or Playwright works without it for announce |
 | `JIRA_TOOLKIT_WORKSPACE` | No | Active workspace folder name from `workspaces/` (empty = root) |
 | `STREAMLIT_SERVER_MAX_UPLOAD_SIZE` | No | Max upload size in MB (default: 10, used in Docker) |
 
@@ -523,7 +543,7 @@ The `jira_client.py` module handles all Jira REST API communication:
 python -m pytest tests/ -v
 ```
 
-All 668 tests run without network access — Jira API calls are mocked.
+All 1,630+ tests run without network access — Jira, GitHub, and Slack calls are mocked.
 
 ## Contributing
 

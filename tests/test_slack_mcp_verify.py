@@ -40,10 +40,10 @@ def test_build_verification_report_marks_channel_blockers():
                 "match": True,
             },
             {
-                "key": "trent",
-                "name": "Trent Vanest",
-                "configured_user_id": "U0ASR2XGRPZ",
-                "resolved_user_id": "U0ASR2XGRPZ",
+                "key": "sai_anirudh",
+                "name": "Sai Anirudh Karre",
+                "configured_user_id": "U0BSG4ABZC0",
+                "resolved_user_id": "U0BSG4ABZC0",
                 "match": True,
             },
         ],
@@ -76,8 +76,10 @@ def test_slack_mcp_e2e_handoff_builds_two_posts():
     assert posts[0]["channel_name"] == "insights-customize-squad"
     assert "Our upcoming deployment" in posts[0]["message"]
     assert "Deployment notes and the deployment ticket" in posts[0]["message"]
-    assert "<@U0ASR2XGRPZ>" in posts[0]["message"]
-    assert "<@U0ASR2XGRPZ>" not in posts[1]["message"]
+    assert "<@U0BSG4ABZC0>" in posts[0]["message"]
+    assert "<@U0BSG4ABZC0>" not in posts[1]["message"]
+    assert "SharePoint — Download:" in posts[0]["message"]
+    assert "SharePoint — Folder:" in posts[0]["message"]
 
 
 def test_offline_report_without_probes_has_warnings():

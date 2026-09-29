@@ -65,6 +65,44 @@ def isolated_store(tmp_path: Path):
     wizard_store.set_token_secret_override(None)
 
 
+@pytest.fixture(autouse=True)
+def _mock_jira_reads_for_wizard(monkeypatch):
+    """Wizard tests must never call live Jira (full-suite order can leave real credentials loaded)."""
+    import github_pr_gate
+    import jira_client
+    import release_date_confirm
+
+    monkeypatch.setattr(github_pr_gate, "gate_enabled", lambda: False)
+    monkeypatch.setattr(github_pr_gate, "comment_on_fetch_enabled", lambda: False)
+    monkeypatch.setattr(
+        release_date_confirm,
+        "fetch_fix_versions_by_ticket",
+        lambda ticket_keys: {k: ["2026.3.08.12"] for k in ticket_keys},
+    )
+    monkeypatch.setattr(
+        jira_client,
+        "get_project_versions",
+        lambda project_key, released=None: [{"id": "p1", "name": "2026.3.08.12"}],
+    )
+    monkeypatch.setattr(
+        jira_client,
+        "get_issues_for_version",
+        lambda project_key, version_id: [
+            {"key": "PIC-1"},
+            {"key": "AN-1"},
+        ],
+    )
+    monkeypatch.setattr(jira_client, "get_issue_comments", lambda issue_key: [])
+    monkeypatch.setattr(
+        jira_client,
+        "get_issue",
+        lambda issue_key: {
+            "key": issue_key,
+            "fields": {"fixVersions": [{"name": "2026.3.08.12"}]},
+        },
+    )
+
+
 def _ticket(key: str, project: str, client: str, report: str) -> dict:
     return {
         "ticket": key,
@@ -739,8 +777,9 @@ def test_slack_ops_apply_edits_reappends_canonical_cc():
     text = edited["channels"][0]["text"]
     assert "Body only" in text
     assert "<@U08LDAQ7SDV>" in text
-    assert "<@U0ASR2XGRPZ>" in text
-    assert "<@U062RM3T87Q>" not in text
+    assert "<@U0BSG4ABZC0>" in text
+    assert "<@U083R8TP1J9>" in text
+    assert "<@U01H0UL5JGP>" in text
     assert text.rstrip().endswith(sa.format_cc_line(channels[0], for_preview=False))
 
 
@@ -810,8 +849,8 @@ def test_send_slack_preview_ensures_cc_on_outbound_text():
         result = slack_ops.send_slack_preview(preview)
     assert result["status"] == "sent"
     assert all("CC:" in text for text in captured)
-    assert "<@U0ASR2XGRPZ>" in captured[0]
-    assert "<@U0ASR2XGRPZ>" not in captured[1]
+    assert "<@U0BSG4ABZC0>" in captured[0]
+    assert "<@U0BSG4ABZC0>" not in captured[1]
 
 
 def test_multi_project_deploy_results_and_undo_preview():

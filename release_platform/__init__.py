@@ -1,3 +1,5 @@
-"""Release Orchestrator Streamlit platform (import as ``release_platform``)."""
+"""Compatibility package — implementation in ``orchestrator/web/``."""
 
-__all__: list[str] = []
+from pathlib import Path
+
+__path__ = [str(Path(__file__).resolve().parent.parent / "orchestrator" / "web")]

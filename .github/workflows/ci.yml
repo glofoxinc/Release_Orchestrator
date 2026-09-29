@@ -84,7 +84,7 @@ jobs:
           -q --tb=short
 
       - name: Release notes E2E fixture
-        run: python scripts/test_release_notes_e2e.py
+        run: python orchestrator/ops/test_release_notes_e2e.py
 
       - name: Daily Review Agent suite
         run: >

@@ -24,17 +24,17 @@ search issues, and create deployment (**SHIPIT**) tickets.
 Verify with (never posts to Slack or creates Jira issues):
 
 ```bash
-python scripts/verify_integrations.py --check=all
-python scripts/verify_integrations.py --check=auth
-python scripts/verify_integrations.py --check=search --project=AN
-python scripts/verify_integrations.py --check=create --dry-run
-python scripts/verify_integrations.py --check=slack
-python scripts/verify_integrations.py --check=service_desk
-python scripts/verify_integrations.py --check=sharepoint --sharepoint-url=URL
-python scripts/verify_integrations.py --check=placeholders
-python scripts/verify_integrations.py --check=workspace
-python scripts/verify_integrations.py --no-live   # config-only Slack/SD
-python scripts/verify_integrations.py --mock
+python orchestrator/ops/verify_integrations.py --check=all
+python orchestrator/ops/verify_integrations.py --check=auth
+python orchestrator/ops/verify_integrations.py --check=search --project=AN
+python orchestrator/ops/verify_integrations.py --check=create --dry-run
+python orchestrator/ops/verify_integrations.py --check=slack
+python orchestrator/ops/verify_integrations.py --check=service_desk
+python orchestrator/ops/verify_integrations.py --check=sharepoint --sharepoint-url=URL
+python orchestrator/ops/verify_integrations.py --check=placeholders
+python orchestrator/ops/verify_integrations.py --check=workspace
+python orchestrator/ops/verify_integrations.py --no-live   # config-only Slack/SD
+python orchestrator/ops/verify_integrations.py --mock
 ```
 
 | Check | What it validates |
@@ -76,7 +76,7 @@ python scripts/verify_integrations.py --mock
 
 ### Verification
 ```bash
-python scripts/verify_integrations.py --check=auth
+python orchestrator/ops/verify_integrations.py --check=auth
 ```
 Expected: `[PASS] authenticated as <Your Name> (<email>)`.
 
@@ -104,7 +104,7 @@ Expected: `[PASS] authenticated as <Your Name> (<email>)`.
 | Attribute | Value |
 |---|---|
 | Status | Optional — enables proper Service Desk portal experience |
-| Configured in | `workspace.yaml` (`service_desk` block) |
+| Configured in | `profiles/workspace.yaml` (`service_desk` block) |
 | Key fields | `TCKT_SERVICE_DESK_ID`, `TCKT_REQUEST_TYPE_ID` |
 
 If Service Desk fields are missing, the ticket is still created via
@@ -121,7 +121,7 @@ normal or emergency change"** in the Details panel.
 Run without any Jira credentials:
 
 ```bash
-python scripts/verify_integrations.py --mock
+python orchestrator/ops/verify_integrations.py --mock
 MOCK_MODE=true streamlit run app.py   # UI stub data
 ```
 

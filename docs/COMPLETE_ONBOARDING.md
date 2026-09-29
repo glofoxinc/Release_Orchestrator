@@ -6,7 +6,8 @@
 
 Say **`welcome onboard`** — the agent drives **one step at a time**. After each step, say **`continue`**. It auto-installs Python, `.env`, and MCP config (generic template — no personal paths). You only hand-auth when needed (Jira token in `.env`, Playwright sign-in, Teams login). Say **`env checklist`** anytime for required fields.
 
-> **Can we release today?** See **[RELEASE_READINESS.md](./RELEASE_READINESS.md)** — what blocks vs what doesn't.
+> **Already set up?** Weekly releases → **[OPERATOR_GUIDE.md](./OPERATOR_GUIDE.md)** (one page, phrase order).  
+> **Can we release today?** → **[RELEASE_READINESS.md](./RELEASE_READINESS.md)** — blocking vs non-blocking checks.
 
 ---
 
@@ -108,7 +109,7 @@ copy .env.example .env
       "args": ["-m", "release_mcp"],
       "cwd": "C:/path/to/jira-release-tool",
       "env": {
-        "TEAMS_MCP_ROOT": "C:/path/to/jira-release-tool/release_mcp/scripts/daily_review",
+        "TEAMS_MCP_ROOT": "C:/path/to/jira-release-tool/orchestrator/ops/daily_review",
         "RELEASE_ORCHESTRATOR_ROOT": "C:/path/to/jira-release-tool"
       }
     }

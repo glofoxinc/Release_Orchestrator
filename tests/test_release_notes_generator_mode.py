@@ -15,7 +15,7 @@ class TestExternalGeneratorDetection:
         from release_platform.ui.release_notes import step4_generate as s4
 
         app_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        builtin = os.path.join(app_dir, "generators", "release_notes_generator.py")
+        builtin = os.path.join(app_dir, "orchestrator", "generators", "release_notes_generator.py")
         monkeypatch.setattr(
             "config._ws",
             {"release_notes": {"generator_script": "generators/release_notes_generator.py"}},

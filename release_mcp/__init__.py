@@ -1,3 +1,5 @@
-"""MCP Server exposing Jira operations for AI agent integration."""
+"""Compatibility package — implementation in ``orchestrator/server/``."""
 
-__version__ = "3.1.0"
+from pathlib import Path
+
+__path__ = [str(Path(__file__).resolve().parent.parent / "orchestrator" / "server")]
