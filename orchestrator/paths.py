@@ -59,6 +59,12 @@ STREAMLIT_CONFIG_DIR = RUNTIME_ROOT / "streamlit"
 
 PROJECT_MCP_CONFIG = ORCH_ROOT / ".cursor" / "mcp.json"
 DAILY_REVIEW_OPS_DIR = OPS_DIR / "daily_review"
+REQUIREMENTS_MCP_FILE = DEPS_DIR / "requirements-mcp.txt"
+REQUIREMENTS_FILE = DEPS_DIR / "requirements.txt"
+SETUP_E2E_PS1 = OPS_DIR / "setup_e2e.ps1"
+DAILY_REVIEW_SETUP_PS1 = DAILY_REVIEW_OPS_DIR / "setup.ps1"
+AGENT_YAML_FILE = AGENTS_DIR / "review" / "agent.yaml"
+COMPLETE_LAUNCH_PY = OPS_DIR / "complete_launch.py"
 
 # Back-compat names used in older code
 WORKSPACE_ROOT = ZONES_ROOT

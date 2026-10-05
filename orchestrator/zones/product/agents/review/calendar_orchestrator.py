@@ -492,7 +492,7 @@ def orchestrator_readiness(cfg: AgentConfig) -> dict[str, Any]:
 
             st = browser_automation.playwright_mcp_readiness()
             st["primary"] = True
-            st["handoff_tool"] = "daily_review_calendar_playwright_handoff"
+            st["handoff_tool"] = "dr_cal_handoff"
             st["trigger_phrases"] = st.get("trigger_phrases") or ["schedule review call"]
         elif name == "playwright_outlook":
             from daily_review_agent.playwright_outlook_auth import outlook_readiness

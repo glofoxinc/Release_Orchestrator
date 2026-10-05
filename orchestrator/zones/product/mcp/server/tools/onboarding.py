@@ -53,8 +53,8 @@ def onboarding_guide() -> dict:
 def onboarding_wizard(message: str = "welcome onboard") -> dict:
     """Beginner linear onboarding — one step at a time, auto-install where possible.
 
-    Say **welcome onboard**, then **`continue`** after each step. Auto-runs venv, pip,
-    `.env` template, and MCP merge (generic template — no personal paths).
+    Say **welcome onboard** — auto-runs venv, pip, `.env`, MCP merge in one burst.
+    Pauses only for Jira credentials, one MCP reload, and Playwright sign-in.
 
     Args:
         message: welcome onboard, continue, release only, use glofox, env inputs, etc.
@@ -82,6 +82,27 @@ def install_mcp_config(track: str = "release") -> dict:
         key = "release"
     result = mcp_installer.merge_starter_servers(track=key, backup=True)
     return enrich_tool_response(result, tool="install_mcp_config")
+
+
+@mcp.tool(name="onboarding_preflight")
+def onboarding_preflight(track: str = "release", apply_fix: bool = False) -> dict:
+    """Run onboarding preflight before welcome onboard — Node, venv, MCP JSON, deprecated servers.
+
+    Args:
+        track: release, daily_review, or both.
+        apply_fix: When true, merge MCP blocks and strip deprecated servers in project mcp.json.
+    """
+    from release_mcp import onboarding_preflight as opf
+
+    key = (track or "release").strip().lower()
+    if key not in {"release", "daily_review", "both"}:
+        key = "release"
+    if apply_fix:
+        payload = opf.apply_safe_fixes(track=key)
+    else:
+        report = opf.run_preflight(track=key)
+        payload = {"report": report, "markdown": opf.format_preflight_markdown(report)}
+    return enrich_tool_response(payload, tool="onboarding_preflight")
 
 
 @mcp.tool()

@@ -78,9 +78,9 @@ release-orchestrator = "orchestrator.entry.cli:main"
 daily-review-agent = "daily_review_agent.__main__:main"
 
 [project.urls]
-Homepage = "https://github.com/abcfitness-insights/jira-release-tool"
-Repository = "https://github.com/abcfitness-insights/jira-release-tool"
-Issues = "https://github.com/abcfitness-insights/jira-release-tool/issues"
+Homepage = "https://github.com/glofoxinc/release-orchestrator"
+Repository = "https://github.com/glofoxinc/release-orchestrator"
+Issues = "https://github.com/glofoxinc/release-orchestrator/issues"
 
 [tool.setuptools]
 py-modules = [

@@ -41,25 +41,41 @@ def _probe_mcp_install(*, track: str) -> dict[str, Any]:
         "step_id": "mcp_install",
         "detail": status.get("config_path") or "No mcp.json",
         "issues": issues,
-        "fix": "Say **continue** after merge, or run daily_review_mcp_config for blocks.",
+        "fix": "Re-run welcome onboard (auto-merge) or daily_review_mcp_config for blocks.",
         "data": {"install_status": status, "validation": val},
     }
 
 
 def _probe_cursor_reload(*, track: str) -> dict[str, Any]:
-    from orchestrator.paths import PROJECT_MCP_CONFIG
     from release_mcp import mcp_installer
+    from release_mcp import onboarding_mcp_ping as ping
 
     status = mcp_installer.install_status(track=track)
-    path = PROJECT_MCP_CONFIG
-    ok = bool(path.is_file()) and bool(status.get("ready"))
+    live = ping.live_mcp_ready(require_config=True)
+    config_ok = bool(status.get("ready")) and not status.get("parse_error")
+    module_ok = bool((live.get("ping") or {}).get("ok"))
+    ack = onboarding_store.manual_confirmed("cursor_mcp")
+    ok = config_ok and module_ok and ack
+    if config_ok and module_ok and not ack:
+        issues = ["Reload Cursor MCP once in Settings, then say **mcp configured** (or any message)."]
+    elif not config_ok:
+        issues = ["Fix .cursor/mcp.json — run onboarding_preflight(apply_fix=true)"]
+    elif not module_ok:
+        issues = ["release_mcp import failed — fix pip/venv first"]
+    else:
+        issues = []
+    if ok:
+        onboarding_store.record_manual_confirm("cursor_mcp")
     return {
         "ok": ok,
         "step_id": "cursor_reload",
-        "detail": f"Project MCP: `{path}`",
-        "issues": [] if ok else ["Reload Cursor MCP after editing .cursor/mcp.json"],
-        "fix": "Cursor → Settings → MCP → Reload, then say **continue** or **mcp configured**.",
-        "data": status,
+        "detail": (
+            f"MCP config={config_ok} module_smoke={module_ok} reload_ack={ack} "
+            f"tools={(live.get('ping') or {}).get('tool_count')}"
+        ),
+        "issues": issues,
+        "fix": "Cursor → Settings → MCP → Reload (once). Then **mcp configured** or any chat message.",
+        "data": {"install_status": status, "live": live},
     }
 
 
@@ -95,13 +111,26 @@ def _probe_teams() -> dict[str, Any]:
 def _probe_jira_env() -> dict[str, Any]:
     params = env_ob.assess_env_params()
     ok = bool(params.get("credentials_ready"))
+    live: dict[str, Any] | None = None
+    if ok:
+        live = env_ob.validate_jira_credentials_live()
+        ok = bool(live.get("ok"))
+    issues: list[str] = []
+    if not params.get("credentials_ready"):
+        issues.append("Set JIRA_BASE_URL, JIRA_EMAIL, JIRA_API_TOKEN in .env")
+    elif live and not live.get("ok") and not live.get("skipped"):
+        issues.append(str(live.get("error") or "Jira API rejected credentials"))
     return {
         "ok": ok,
         "step_id": "jira_env",
-        "detail": "Jira .env credentials",
-        "issues": [] if ok else ["Set JIRA_BASE_URL, JIRA_EMAIL, JIRA_API_TOKEN in .env"],
+        "detail": (
+            f"Jira API OK ({live.get('display_name')})"
+            if ok and live
+            else "Jira .env credentials"
+        ),
+        "issues": issues,
         "fix": "Edit `.env` locally — never paste token in chat. Say **env checklist**.",
-        "data": params,
+        "data": {"params": params, "live": live},
     }
 
 
@@ -121,7 +150,7 @@ def probe_step(step_id: str, *, track: str | None = None) -> dict[str, Any]:
             "step_id": sid,
             "detail": "Python venv",
             "issues": [] if ok else ["venv python not found"],
-            "fix": "Say **continue** to retry pip install.",
+            "fix": "Send any message to retry automated pip install.",
             "data": {},
         }
     if sid == "jira_env":
@@ -172,7 +201,7 @@ def probe_step(step_id: str, *, track: str | None = None) -> dict[str, Any]:
             "step_id": sid,
             "detail": "Setup complete check",
             "issues": [] if setup_complete(track=track) else ["Required setup steps incomplete"],
-            "fix": "Finish prior steps, then **continue**.",
+            "fix": "Finish prior steps — wizard will auto-advance when ready.",
             "data": {},
         }
     elif sid == "complete":

@@ -6,7 +6,7 @@ import os
 from pathlib import Path
 from typing import Any
 
-from orchestrator.paths import ENV_FILE, REPO_ROOT
+from orchestrator.paths import AGENT_YAML_FILE, DAILY_REVIEW_OPS_DIR, ENV_FILE, REPO_ROOT
 from release_mcp import onboarding_store
 
 TRACK_RELEASE = "release"
@@ -181,12 +181,12 @@ DAILY_REVIEW_STEPS: tuple[dict[str, Any], ...] = (
         "instructions": (
             "From repo root:\n"
             "```\n"
-            "cd orchestrator/ops/daily_review\n"
+            f"cd {DAILY_REVIEW_OPS_DIR.relative_to(REPO_ROOT).as_posix()}\n"
             "npm install\n"
             "```\n"
             "Or run MCP tool: `daily_review_setup(install=true)`"
         ),
-        "where": "orchestrator/ops/daily_review/ or sibling teams-mcp project.",
+        "where": f"{DAILY_REVIEW_OPS_DIR.relative_to(REPO_ROOT).as_posix()}/ or sibling teams-mcp project.",
     },
     {
         "id": "agent_yaml",
@@ -196,7 +196,7 @@ DAILY_REVIEW_STEPS: tuple[dict[str, Any], ...] = (
         "tracks": frozenset({TRACK_DAILY_REVIEW, TRACK_BOTH}),
         "check": _agent_yaml_ok,
         "instructions": (
-            "Edit `orchestrator/agents/review/agent.yaml`:\n"
+            f"Edit `{AGENT_YAML_FILE.relative_to(REPO_ROOT).as_posix()}`:\n"
             "- `jira_team.id` + `name` (Glofox Insights Customize)\n"
             "- `teams.summary_conversation_id` — Teams group chat ID for on-demand summary posts\n"
             "- `organizer_upn` — your abcfitness.com UPN\n"
@@ -205,7 +205,7 @@ DAILY_REVIEW_STEPS: tuple[dict[str, Any], ...] = (
             "required = leadership + QA + in-squad assignees · optional = review/release crew · "
             "skip = TEAM_CREW_EXCLUDE + outside squad (Gabriel/Erasmo for Glofox Customize BI)."
         ),
-        "where": "orchestrator/agents/review/agent.yaml",
+        "where": AGENT_YAML_FILE.relative_to(REPO_ROOT).as_posix(),
     },
     {
         "id": "outlook_playwright",
@@ -263,7 +263,7 @@ DAILY_REVIEW_STEPS: tuple[dict[str, Any], ...] = (
         "instructions": (
             "Daily Review is **on-demand only** — nothing runs at 6 PM automatically.\n"
             "When you want a review: say **`daily review welcome`** and confirm each step.\n"
-            "Optional pilot sign-off: `orchestrator/ops/daily_review/pilot_signoff.ps1`.\n"
+            f"Optional pilot sign-off: `{DAILY_REVIEW_OPS_DIR.relative_to(REPO_ROOT).as_posix()}/pilot_signoff.ps1`.\n"
             "Keep `enabled: false` in agent.yaml unless you explicitly opt into auto-schedule later."
         ),
         "where": "MCP chat — daily_review_orchestrator / daily review welcome",

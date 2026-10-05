@@ -37,7 +37,17 @@ Ask once if unclear (or infer from message):
 
 Persist via chat: user’s phrase maps to `onboarding_track` in MCP state.
 
-### 2. Single wizard entry (all setup phrases)
+### 2. Preflight first (mandatory)
+
+Before **`welcome onboard`**:
+
+1. MCP: **`onboarding_preflight(track="release")`**
+2. If not `ready`: **`onboarding_preflight(track="release", apply_fix=true)`** → reload Cursor MCP **once**
+3. CLI: `python orchestrator/zones/platform/ops/onboarding_preflight.py --fix`
+
+Removes **`daily-review-agent`** from project mcp.json, pins Playwright MCP, injects Node PATH.
+
+### 3. Single wizard entry (all setup phrases)
 
 | User says | Route |
 |-----------|-------|
@@ -47,16 +57,17 @@ Persist via chat: user’s phrase maps to `onboarding_track` in MCP state.
 
 1. User says **`welcome onboard`** → call **`onboarding_wizard(message="welcome onboard")`**
 2. **Default track:** daily release (`release only`) — user may say **`both`** or **`daily review only`**
-3. After each step, user says **`continue`** — re-call wizard with their message
+3. Wizard **auto-bursts** automated steps — do **not** ask for **`continue`** between them; only human gates (Jira token, MCP reload, Playwright/Teams login)
 4. Auto steps (venv, pip, `.env`, **`install_mcp_config`**) run inside the wizard — agent reports ✅/❌
-5. **`onboarding_verify.probe_step`** runs per step — auto-confirms MCP when probes pass (no honor-system)
+5. Call **`onboarding_preflight`** first; use short DR tool names **`dr_mcp_config`**, **`dr_cal_handoff`**, etc. when driving MCP from chat
+6. On Playwright step, use **`playwright_handoff`** from wizard + Playwright MCP **`browser_navigate`** immediately
 
 ### 3. Run automated checks (do not skip)
 
 Execute in order:
 
 1. **`release_orchestrator(message="setup status")`** — wizard progress + **`onboarding_verify.run_all_probes()`**
-2. **`install_mcp_config`** or **`daily_review_mcp_config`** if MCP merge failed (writes **`.cursor/mcp.json`** in repo)
+2. **`install_mcp_config`** or **`dr_mcp_config`** if MCP merge failed (writes **`.cursor/mcp.json`** in repo)
 3. **`daily_review_setup(install=true)`** — if Daily Review track and npm bridge missing
 4. Read **`validate_cursor_mcp_config`** output if parse errors (fix JSON before continuing)
 5. **`setup_complete`** gates wizard finish — **`production ready`** is informational only (launch evidence tier)
@@ -75,9 +86,9 @@ Report a table:
 
 | Gap | Agent action |
 |-----|----------------|
-| No venv | Run `.\scripts\setup_e2e.ps1` (or `python -m venv .venv` + pip install) |
+| No venv | Run `.\orchestrator\zones\platform\ops\setup_e2e.ps1` (or wizard auto venv) |
 | No `.env` | Call **`onboarding_env`** or let user say values in plain English (`org is abcfinancial`, `email you@…`, `use glofox`) — agent writes `.env`. Token: paste in `.env` only (recommended) |
-| No MCP JSON | Show blocks from `daily_review_mcp_config`; merge to **`.cursor/mcp.json`** in repo → **reload Cursor** |
+| No MCP JSON | Show blocks from **`dr_mcp_config`**; merge to **`.cursor/mcp.json`** in repo → **reload Cursor** |
 | No team crew | **use glofox** → **crew done** (writes TEAM_CREW_* to `.env`) |
 | Playwright not signed in | Open Slack/M365 once via Playwright MCP; user signs in → **playwright confirmed** |
 | Teams not logged in | User runs **teams_login** in chat when prompted |

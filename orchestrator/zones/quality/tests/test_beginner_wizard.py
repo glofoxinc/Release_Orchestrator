@@ -34,12 +34,20 @@ def test_welcome_onboard_routes_to_beginner_wizard():
     assert plan["action"] == "beginner_wizard"
 
 
-def test_wizard_welcome_step(monkeypatch):
+def test_wizard_welcome_auto_burst(monkeypatch):
+    from pathlib import Path
+
     onboarding_store.clear_state()
+    monkeypatch.setattr(beginner_wizard, "_VENV_PY", Path("/__nonexistent__/python.exe"))
+    monkeypatch.setattr(beginner_wizard, "_ENV_FILE", Path("/__nonexistent__/.env"))
     with patch.object(beginner_wizard, "_auto_venv", return_value={"ok": True, "detail": "skip"}):
-        body = beginner_wizard.process_message("welcome onboard")
-    assert body["wizard_step"] == "welcome"
-    assert "continue" in body["prompt"].lower()
+        with patch.object(beginner_wizard, "_run_preflight_onboarding", return_value={"status": "ready"}):
+            with patch.object(beginner_wizard, "_auto_pip", return_value={"ok": True, "detail": "skip"}):
+                with patch.object(beginner_wizard, "_packages_ready", return_value=True):
+                    with patch.object(beginner_wizard, "_auto_env_file", return_value={"ok": True, "detail": "skip"}):
+                        body = beginner_wizard.process_message("welcome onboard")
+    assert body["wizard_index"] >= 1
+    assert "Automated setup" in body["prompt"] or body.get("auto_batch")
 
 
 def test_continue_advances_after_track(monkeypatch):
@@ -54,10 +62,10 @@ def test_continue_advances_after_track(monkeypatch):
 
 def test_welcome_defaults_release_track():
     onboarding_store.clear_state()
-    with patch.object(beginner_wizard, "_auto_venv", return_value={"ok": True, "detail": "skip"}):
-        body = beginner_wizard.process_message("welcome onboard")
+    with patch.object(beginner_wizard, "_run_preflight_onboarding", return_value={"status": "ready"}):
+        with patch.object(beginner_wizard, "_auto_venv", return_value={"ok": True, "detail": "skip"}):
+            body = beginner_wizard.process_message("welcome onboard")
     assert body["track"] == "release"
-    assert "daily release" in body["prompt"].lower()
 
 
 def test_verify_step_uses_setup_complete_not_production_ready():

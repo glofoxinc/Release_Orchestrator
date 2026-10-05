@@ -8,7 +8,7 @@ alwaysApply: true
 
 When the user clones this repo, says **welcome onboard**, **onboarding**, **setup status**, or asks how to set up MCPs:
 
-1. Read **`skills/release-orchestrator-onboarding/SKILL.md`** and follow its protocol.
+1. Read **`orchestrator/zones/knowledge/skills/release-orchestrator-onboarding/SKILL.md`** and run **`onboarding_preflight`** first.
 2. Point humans to **`orchestrator/zones/knowledge/guides/GUIDE.md`** — one doc for install, setup, and daily release.
 3. **Verify every MCP** — do not assume they exist:
    - `release-orchestrator` (stdio in mcp.json)

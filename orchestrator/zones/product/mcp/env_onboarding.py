@@ -9,9 +9,10 @@ from typing import Any
 
 import team_crew as tc
 
-from orchestrator.paths import REPO_ROOT as _PROJECT_ROOT
-_ENV_FILE = _PROJECT_ROOT / ".env"
-_ENV_EXAMPLE = _PROJECT_ROOT / ".env.example"
+from orchestrator.paths import ENV_EXAMPLE_FILE, ENV_FILE, REPO_ROOT as _PROJECT_ROOT
+
+_ENV_FILE = ENV_FILE
+_ENV_EXAMPLE = ENV_EXAMPLE_FILE
 
 # Keys the guided onboard flow may auto-write (never commit `.env`).
 _ONBOARD_ENV_KEYS = frozenset({
@@ -132,6 +133,26 @@ def required_env_specs() -> tuple[dict[str, Any], ...]:
             "check": lambda: bool(_env("DEFAULT_SELECTION_MODE")),
         },
     )
+
+
+def validate_jira_credentials_live() -> dict[str, Any]:
+    """Call Jira /myself — confirms token + email + base URL."""
+    status = assess_env_params()
+    if not status.get("credentials_ready"):
+        return {
+            "ok": False,
+            "skipped": True,
+            "reason": "credentials_incomplete",
+            "missing": status.get("required_missing") or [],
+        }
+    try:
+        import jira_client
+
+        user = jira_client.get_current_user()
+        display = str(user.get("displayName") or user.get("emailAddress") or user.get("accountId") or "")
+        return {"ok": True, "display_name": display, "account_id": user.get("accountId")}
+    except Exception as exc:  # noqa: BLE001
+        return {"ok": False, "error": str(exc)[:300]}
 
 
 def assess_env_params() -> dict[str, Any]:
@@ -284,6 +305,11 @@ def ensure_env_file_from_example() -> bool:
     target = _env_path()
     if target.is_file():
         return True
+    if not _ENV_EXAMPLE.is_file():
+        root_example = _PROJECT_ROOT / ".env.example"
+        if root_example.is_file():
+            _ENV_EXAMPLE.parent.mkdir(parents=True, exist_ok=True)
+            _ENV_EXAMPLE.write_text(root_example.read_text(encoding="utf-8"), encoding="utf-8")
     if not _ENV_EXAMPLE.is_file():
         target.write_text(
             "\n".join(
