@@ -33,6 +33,17 @@ def detect_npx() -> str:
         found = shutil.which(name)
         if found:
             return json_path(found)
+    node = detect_node()
+    if node and "{{" not in node:
+        sibling = Path(node.replace("/", os.sep)).parent / "npx.cmd"
+        if sibling.is_file():
+            return json_path(sibling)
+    for candidate in (
+        Path.home() / "nodejs" / "npx.cmd",
+        Path("C:/Program Files/nodejs/npx.cmd"),
+    ):
+        if candidate.is_file():
+            return json_path(candidate)
     return "npx"
 
 

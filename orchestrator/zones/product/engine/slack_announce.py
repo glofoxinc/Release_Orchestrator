@@ -447,13 +447,13 @@ def format_sharepoint_download_display(
     *,
     for_preview: bool = False,
 ) -> str:
-    """Direct download link for the Release Notes .docx."""
-    sp_label = _sharepoint_doc_label(draft)
-    url = (draft.sharepoint_download_url or draft.sharepoint_url or "").strip()
-    if not url:
-        from sharepoint_url import sharepoint_direct_download_url
+    """SharePoint link that opens the Release Notes .docx (Word Online / viewer)."""
+    from sharepoint_url import sharepoint_document_open_url
 
-        url = sharepoint_direct_download_url(draft.sharepoint_url)
+    sp_label = _sharepoint_doc_label(draft)
+    url = sharepoint_document_open_url((draft.sharepoint_url or "").strip())
+    if not url:
+        url = sharepoint_document_open_url((draft.sharepoint_download_url or "").strip())
     if for_preview or not url:
         return sp_label
     return f"<{url}|{sp_label}>"
@@ -510,7 +510,7 @@ def build_announce_text(
         "Hello Team,\n"
         f"Our upcoming deployment is scheduled for {day}.\n"
         "Deployment notes and the deployment ticket are below for reference:\n\n"
-        f"SharePoint — Download: {sharepoint_download}\n"
+        f"SharePoint — Release Notes: {sharepoint_download}\n"
         f"SharePoint — Folder: {sharepoint_folder}\n"
         f"Service Desk: {service_desk_display}\n"
         f"{cc_line}"

@@ -26,7 +26,9 @@ def test_ping_release_mcp_module():
 def test_mcp_tool_names_under_limit():
     importlib.reload(srv)
     tm = getattr(srv.mcp, "_tool_manager", None) or getattr(srv.mcp, "tool_manager", None)
-    tools = tm._tools if hasattr(tm, "_tools") else {}
+    assert tm is not None, "FastMCP tool manager missing — cannot enforce MCP 60-char name limit"
+    tools = getattr(tm, "_tools", None)
+    assert isinstance(tools, dict) and tools, "No MCP tools registered on release_mcp.server"
     names = sorted(tools.keys())
     long_names = [n for n in names if len(n) > _MAX_TOOL_LEN]
     assert not long_names, f"Tool names exceed {_MAX_TOOL_LEN} chars: {long_names}"

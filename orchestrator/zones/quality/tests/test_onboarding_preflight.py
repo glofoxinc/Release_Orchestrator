@@ -67,11 +67,21 @@ def test_auto_pip_uses_canonical_requirements(tmp_path, monkeypatch):
     assert any(str(REQUIREMENTS_MCP_FILE) in " ".join(c) for c in calls)
 
 
-def test_welcome_includes_preflight_once(monkeypatch):
-    from release_mcp import onboarding_store
+def test_welcome_includes_preflight_once(tmp_path, monkeypatch):
+    from release_mcp import mcp_installer, onboarding_store
 
+    onboarding_store.set_state_path_override(tmp_path / "onboarding_state.json")
+    monkeypatch.setattr(mcp_installer, "project_mcp_config_path", lambda: tmp_path / "mcp.json")
+
+    def _fake_preflight(*, track: str, force_fix: bool = False) -> dict:
+        return {"status": "ready", "checks": [], "next_action": "welcome onboard"}
+
+    monkeypatch.setattr(beginner_wizard, "_run_preflight_onboarding", _fake_preflight)
     onboarding_store.clear_state()
-    with patch.object(beginner_wizard, "_auto_venv", return_value={"ok": True, "detail": "skip"}):
-        body = beginner_wizard.process_message("welcome onboard")
-    assert "preflight" in body["prompt"].lower() or "Onboarding" in body["prompt"]
-    onboarding_store.clear_state()
+    try:
+        with patch.object(beginner_wizard, "_auto_venv", return_value={"ok": True, "detail": "skip"}):
+            body = beginner_wizard.process_message("welcome onboard")
+        assert "preflight" in body["prompt"].lower() or "Onboarding" in body["prompt"]
+    finally:
+        onboarding_store.clear_state()
+        onboarding_store.set_state_path_override(None)

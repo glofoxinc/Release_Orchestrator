@@ -11,8 +11,6 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 from generators.release_notes_test_by import (
     CHANGE_TABLE_TEST_BY_POOL,
     ETL_TEST_BY_NAME,
-    TESTING_STATUS_DONE,
-    TESTING_STATUS_ETL_DONE,
     assign_change_table_testers,
     assign_change_table_testing_statuses,
     eligible_test_by_candidates,
@@ -120,27 +118,21 @@ class TestAssignChangeTableTesters:
 
 
 class TestTestingStatus:
-    def test_mona_owner_is_etl_done(self):
+    def test_default_status_blank_until_manual_qa(self):
         assert is_etl_ticket_owner("Ramugalla Mona Sujitha") is True
-        assert resolve_testing_status("Mona") == TESTING_STATUS_ETL_DONE
-        assert resolve_testing_status("Ramugalla Mona Sujitha") == TESTING_STATUS_ETL_DONE
+        assert resolve_testing_status("Mona") == ""
+        assert resolve_testing_status("Ramugalla Mona Sujitha") == ""
+        assert resolve_testing_status("Navya Begum") == ""
+        assert resolve_testing_status("Lakshmi Narasimha") == ""
 
-    def test_other_owner_is_done(self):
-        assert resolve_testing_status("Navya Begum") == TESTING_STATUS_DONE
-        assert resolve_testing_status("Lakshmi Narasimha") == TESTING_STATUS_DONE
-
-    def test_batch_statuses(self):
+    def test_batch_statuses_blank(self):
         entries = [
             {"ticket": "PIC-1", "assignee": "Mona"},
             {"ticket": "PIC-2", "assignee": "Chanti"},
             {"ticket": "AN-3", "assignee": "Ramugalla Mona Sujitha"},
         ]
         statuses = assign_change_table_testing_statuses(entries)
-        assert statuses == [
-            TESTING_STATUS_ETL_DONE,
-            TESTING_STATUS_DONE,
-            TESTING_STATUS_ETL_DONE,
-        ]
+        assert statuses == ["", "", ""]
 
 
 class TestEtlContentDetection:
@@ -178,9 +170,9 @@ class TestEtlContentDetection:
         testers = assign_change_table_testers(entries)
         statuses = assign_change_table_testing_statuses(entries)
         assert testers[0] == ETL_TEST_BY_NAME
-        assert statuses[0] == TESTING_STATUS_ETL_DONE
+        assert statuses[0] == ""
         assert testers[1] != ETL_TEST_BY_NAME
-        assert statuses[1] == TESTING_STATUS_DONE
+        assert statuses[1] == ""
 
     def test_mona_owned_ticket_test_by_is_mona_nikhila(self):
         entries = [{"ticket": "PIC-1", "assignee": "Mona Sujitha", "summary": "x"}]

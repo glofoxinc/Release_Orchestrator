@@ -207,6 +207,19 @@ def sharepoint_release_folder_url(*, version_name: str = "") -> str:
     return folder_url
 
 
+def sharepoint_document_open_url(doc_url: str) -> str:
+    """Normalize a SharePoint doc link so Slack/browser opens the file (not download)."""
+    raw = (doc_url or "").strip()
+    if not raw:
+        return ""
+    lowered = raw.lower()
+    if "action=download" in lowered:
+        return re.sub(r"action=download", "action=default", raw, flags=re.IGNORECASE)
+    if "download=1" in lowered:
+        return re.sub(r"[?&]download=1", "", raw, flags=re.IGNORECASE)
+    return raw
+
+
 def sharepoint_direct_download_url(doc_url: str) -> str:
     """Turn a SharePoint document URL into a direct-download link for Slack."""
     raw = (doc_url or "").strip()

@@ -52,7 +52,9 @@ def main() -> int:
     if status == "ready":
         return 0
     if status == "needs_fix":
-        return 0
+        return 2
+    if status == "blocked":
+        return 1
     return 1
 
 

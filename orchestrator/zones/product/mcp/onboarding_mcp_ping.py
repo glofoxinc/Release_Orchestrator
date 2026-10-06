@@ -37,9 +37,17 @@ def ping_release_mcp_module(*, timeout: int = 90) -> dict[str, Any]:
     if proc.returncode != 0:
         err = (proc.stderr or proc.stdout or "")[:500]
         return {"ok": False, "stage": "import", "error": err or f"exit {proc.returncode}"}
+    lines = (proc.stdout or "").strip().splitlines()
+    if not lines:
+        return {
+            "ok": False,
+            "stage": "import",
+            "error": "Empty tool count output from release_mcp smoke script",
+            "raw": (proc.stderr or "")[:200],
+        }
     try:
-        count = int((proc.stdout or "").strip().splitlines()[-1])
-    except ValueError:
+        count = int(lines[-1])
+    except (ValueError, IndexError):
         return {"ok": False, "stage": "import", "error": "Could not parse tool count", "raw": proc.stdout[:200]}
     if count < 5:
         return {"ok": False, "stage": "tools", "error": f"Too few MCP tools registered ({count})"}

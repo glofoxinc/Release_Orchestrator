@@ -181,8 +181,30 @@ def _long_mcp_tool_names() -> list[dict[str, Any]]:
 
         importlib.reload(srv)
         tm = getattr(srv.mcp, "_tool_manager", None) or getattr(srv.mcp, "tool_manager", None)
-        tools = tm._tools if hasattr(tm, "_tools") else {}
-        names = sorted(tools.keys()) if tools else []
+        if tm is None:
+            rows.append(
+                _check(
+                    "MCP tool name length",
+                    False,
+                    "FastMCP tool manager not found on release_mcp.server",
+                    fix="Upgrade FastMCP or adjust tool-manager introspection",
+                    severity="warn",
+                )
+            )
+            return rows
+        tools = getattr(tm, "_tools", None)
+        if not isinstance(tools, dict) or not tools:
+            rows.append(
+                _check(
+                    "MCP tool name length",
+                    False,
+                    "No MCP tools registered (cannot verify 60-char limit)",
+                    fix="Fix release_mcp.server registration before onboarding",
+                    severity="warn",
+                )
+            )
+            return rows
+        names = sorted(tools.keys())
         long_names = [n for n in names if len(n) > _MAX_TOOL_NAME_LEN]
         rows.append(
             _check(

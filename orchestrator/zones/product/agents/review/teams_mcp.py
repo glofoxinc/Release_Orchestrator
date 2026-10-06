@@ -18,6 +18,9 @@ _BRIDGE = script("teams_bridge.mjs")
 
 
 def _node_exe() -> str:
+    raw = (os.environ.get("NODE_EXE") or "").strip()
+    if raw and Path(raw).is_file():
+        return raw
     from daily_review_agent.setup_mcp import _detect_node
 
     detected = _detect_node()

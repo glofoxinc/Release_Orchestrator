@@ -34,19 +34,29 @@ def test_e2e_mcp_merge_writes_playwright_with_env(tmp_path, monkeypatch):
     onboarding_store.clear_state()
 
 
-def test_e2e_wizard_pip_step_advances_when_import_ok(monkeypatch):
+def test_e2e_wizard_pip_step_advances_when_import_ok(tmp_path, monkeypatch):
     from release_mcp import unified_onboarding as uo
+
+    onboarding_store.set_state_path_override(tmp_path / "onboarding_state.json")
+    monkeypatch.setattr(mcp_installer, "project_mcp_config_path", lambda: tmp_path / "mcp.json")
+    monkeypatch.setattr(
+        beginner_wizard,
+        "_run_preflight_onboarding",
+        lambda *, track, force_fix=False: {"status": "ready", "checks": []},
+    )
 
     onboarding_store.clear_state()
     onboarding_store.set_track(uo.TRACK_RELEASE)
-    onboarding_store.merge_state({"wizard_step_index": 1})
-
-    with patch.object(beginner_wizard, "_auto_venv", return_value={"ok": True, "detail": "ok"}):
-        with patch.object(beginner_wizard, "_auto_pip", return_value={"ok": True, "detail": "ok"}):
-            with patch.object(beginner_wizard, "_packages_ready", return_value=True):
-                body = beginner_wizard.process_message("continue")
-    assert body["wizard_index"] >= 2
-    onboarding_store.clear_state()
+    onboarding_store.merge_state({"wizard_step_index": 1, "preflight_ran": True})
+    try:
+        with patch.object(beginner_wizard, "_auto_venv", return_value={"ok": True, "detail": "ok"}):
+            with patch.object(beginner_wizard, "_auto_pip", return_value={"ok": True, "detail": "ok"}):
+                with patch.object(beginner_wizard, "_packages_ready", return_value=True):
+                    body = beginner_wizard.process_message("continue")
+        assert body["wizard_index"] >= 2
+    finally:
+        onboarding_store.clear_state()
+        onboarding_store.set_state_path_override(None)
 
 
 def test_e2e_deprecated_server_detected_in_preflight(tmp_path, monkeypatch):

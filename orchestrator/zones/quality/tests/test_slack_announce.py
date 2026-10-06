@@ -55,7 +55,7 @@ def test_build_messages_match_channel_ccs():
     assert "Wednesday, August 05, 2026" in squad.preview
     assert "Our upcoming deployment is scheduled for" in squad.preview
     assert "Production Deployment" in squad.preview
-    assert "SharePoint — Download:" in squad.preview
+    assert "SharePoint — Release Notes:" in squad.preview
     assert "SharePoint — Folder:" in squad.preview
     assert "Release Notes 2026.3.08.05.docx" in squad.preview
     assert "<@U08LDAQ7SDV>" in squad.text
@@ -96,7 +96,7 @@ def test_operator_gold_standard_buddies_channel_2026_3_09_23():
     preview = buddies.preview
     assert "Our upcoming deployment is scheduled for Wednesday, September 23, 2026." in preview
     assert "Deployment notes and the deployment ticket are below for reference:" in preview
-    assert "SharePoint — Download: Release Notes 2026.3.09.23.docx" in preview
+    assert "SharePoint — Release Notes: Release Notes 2026.3.09.23.docx" in preview
     assert "SharePoint — Folder:" in preview
     assert "Service Desk: Glofox Insights Customize BI - Prod Deployment - Release Version 2026.3.09.23" in preview
     assert "CC: @Sushma Bhamidipati" in preview
@@ -125,7 +125,7 @@ def test_shipit_17191_style_message_preview():
     assert "Sai Anirudh Karre" in squad.preview
     assert "Sai Anirudh Karre" not in buddies.preview
     assert "Sushma Bhamidipati" in buddies.preview
-    assert "SharePoint — Download:" in squad.preview
+    assert "SharePoint — Release Notes:" in squad.preview
     assert "SharePoint — Folder:" in squad.preview
 
 
@@ -373,5 +373,5 @@ def test_draft_from_session_includes_download_and_folder_links():
     assert draft.sharepoint_download_url.endswith("action=download")
     assert "Release Notes/2026" in draft.sharepoint_folder_label
     preview = sa.build_channel_messages(draft)[0].preview
-    assert "SharePoint — Download:" in preview
+    assert "SharePoint — Release Notes:" in preview
     assert "SharePoint — Folder:" in preview

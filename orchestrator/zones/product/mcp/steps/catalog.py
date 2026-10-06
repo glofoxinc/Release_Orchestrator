@@ -14,7 +14,7 @@ RELEASE_STEPS: tuple[dict[str, Any], ...] = (
         "title": "First-time onboard",
         "user_phrases": ["welcome onboard", "done", "use glofox", "crew done", "crew status"],
         "mcp_tools": ["onboarding_guide", "team_crew_status", "release_orchestrator"],
-        "required_mcps": ["release-orchestrator", "playwright"],
+        "required_mcps": ["release-orchestrator", "slack"],
     },
     {
         "id": "ticket_review",
