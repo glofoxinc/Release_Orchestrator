@@ -15,6 +15,9 @@ from orchestrator.paths import (
     venv_python,
 )
 
+# Pinned — avoid @latest surprises during onboarding (Playwright MCP server).
+PLAYWRIGHT_MCP_PACKAGE = "@playwright/mcp@0.0.39"
+
 
 def detect_python() -> str:
     venv = venv_python()
@@ -30,6 +33,17 @@ def detect_npx() -> str:
         found = shutil.which(name)
         if found:
             return json_path(found)
+    node = detect_node()
+    if node and "{{" not in node:
+        sibling = Path(node.replace("/", os.sep)).parent / "npx.cmd"
+        if sibling.is_file():
+            return json_path(sibling)
+    for candidate in (
+        Path.home() / "nodejs" / "npx.cmd",
+        Path("C:/Program Files/nodejs/npx.cmd"),
+    ):
+        if candidate.is_file():
+            return json_path(candidate)
     return "npx"
 
 
@@ -40,7 +54,31 @@ def detect_node() -> str:
     found = shutil.which("node")
     if found:
         return json_path(found)
+    for candidate in (
+        Path.home() / "nodejs" / "node.exe",
+        Path("C:/Program Files/nodejs/node.exe"),
+    ):
+        if candidate.is_file():
+            return json_path(candidate)
     return "{{NODE_EXE}}"
+
+
+def mcp_node_path_env() -> dict[str, str]:
+    """Ensure Node/npm directory is on PATH for Cursor MCP child processes."""
+    base = os.environ.get("PATH", "")
+    dirs: list[str] = []
+    for cmd in (detect_node(), detect_npx()):
+        if not cmd or "{{" in cmd or cmd in {"node", "npx"}:
+            continue
+        parent = str(Path(cmd.replace("/", os.sep)).parent)
+        if parent and parent not in dirs:
+            dirs.append(parent)
+    if not dirs:
+        return {}
+    merged = os.pathsep.join(dirs)
+    if base:
+        merged = merged + os.pathsep + base
+    return {"PATH": merged}
 
 
 def detect_teams_mcp_root() -> str:
@@ -61,13 +99,11 @@ def starter_mcp_servers(*, track: str = "release") -> dict[str, Any]:
     repo = json_path(_PROJECT_ROOT)
     teams_ops = json_path(DAILY_REVIEW_OPS_DIR)
     npx = detect_npx()
+    node_path_env = mcp_node_path_env()
 
     servers: dict[str, Any] = {
         "release-orchestrator": {
-            "_description": (
-                "Release Orchestrator — daily PIC/AN release + optional Daily Review. "
-                "Say welcome onboard or week release."
-            ),
+            "_description": "Release Orchestrator — welcome onboard / week release",
             "type": "stdio",
             "command": py,
             "args": ["-m", "release_mcp"],
@@ -78,14 +114,11 @@ def starter_mcp_servers(*, track: str = "release") -> dict[str, Any]:
             },
         },
         "playwright": {
-            "_description": (
-                "Playwright MCP — SharePoint upload, Slack Step 6, review-call calendar. "
-                "Sign in to M365 + Slack web once after enable."
-            ),
+            "_description": "Playwright MCP — SharePoint, Slack, calendar",
             "type": "stdio",
             "command": npx,
-            "args": ["-y", "@playwright/mcp@latest", "--browser", "msedge"],
-            "env": {},
+            "args": ["-y", PLAYWRIGHT_MCP_PACKAGE, "--browser", "msedge"],
+            "env": dict(node_path_env),
         },
     }
 
@@ -94,22 +127,24 @@ def starter_mcp_servers(*, track: str = "release") -> dict[str, Any]:
         run_mjs = str(Path(teams_root.replace("/", os.sep)) / "run.mjs")
         bridge = DAILY_REVIEW_OPS_DIR / "teams_bridge.mjs"
         if "{{" not in teams_root and Path(run_mjs).is_file():
+            teams_env = {"LOG_LEVEL": "error"}
+            teams_env.update(node_path_env)
             servers["teams"] = {
                 "_description": "Teams MCP — Daily Review summary chat + alerts. First: teams_login.",
                 "type": "stdio",
                 "command": detect_node(),
                 "args": [json_path(Path(run_mjs))],
                 "cwd": teams_root,
-                "env": {"LOG_LEVEL": "error"},
+                "env": teams_env,
             }
         elif bridge.is_file():
             servers["teams"] = {
-                "_description": "Teams bridge — orchestrator/zones/platform/ops/daily_review/teams_bridge.mjs",
+                "_description": "Teams bridge (Daily Review chat)",
                 "type": "stdio",
                 "command": detect_node(),
                 "args": [json_path(bridge)],
                 "cwd": json_path(DAILY_REVIEW_OPS_DIR),
-                "env": {"LOG_LEVEL": "error"},
+                "env": {"LOG_LEVEL": "error", **node_path_env},
             }
         else:
             servers["teams"] = {

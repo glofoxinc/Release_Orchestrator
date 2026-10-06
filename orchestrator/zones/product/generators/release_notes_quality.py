@@ -392,8 +392,8 @@ def prepare_change_table_entries(
     Key Highlights and Reports / Dashboards Delivered, so the Ticket Details
     rows do not ship stubs like ``Report=E`` or ``Client=XtremeFitness``.
 
-    ``testing_statuses`` (when provided) fills Testing Status — typically
-    ``ETL Done`` for Mona-owned ETL tickets and ``Done`` for everyone else.
+    ``testing_statuses`` (when provided) fills Testing Status — typically blank
+    at generation time until QA updates the DOCX manually.
     """
     cleaned = improve_extracted(extracted)
     rows: list[dict[str, Any]] = []

@@ -519,13 +519,13 @@ def build_playwright_slack_compose(
         draft.sharepoint_url,
         version,
     )
-    from sharepoint_url import resolve_sharepoint_folder_link, sharepoint_direct_download_url
+    from sharepoint_url import resolve_sharepoint_folder_link, sharepoint_document_open_url
 
-    sp_download_url = (
-        getattr(draft, "sharepoint_download_url", "")
-        or sharepoint_direct_download_url(draft.sharepoint_url)
-        or (draft.sharepoint_url or "").strip()
-    )
+    sp_download_url = sharepoint_document_open_url((draft.sharepoint_url or "").strip())
+    if not sp_download_url:
+        sp_download_url = sharepoint_document_open_url(
+            (getattr(draft, "sharepoint_download_url", "") or "").strip()
+        )
     sp_folder_url = (getattr(draft, "sharepoint_folder_url", "") or "").strip()
     sp_folder_label = (
         getattr(draft, "sharepoint_folder_label", "") or "Release Notes folder"
@@ -575,7 +575,7 @@ def build_playwright_slack_compose(
         {"type": "blank"},
         {
             "type": "line",
-            "parts": [_text("SharePoint — Download: "), sharepoint_download_part],
+            "parts": [_text("SharePoint — Release Notes: "), sharepoint_download_part],
         },
         {
             "type": "line",
@@ -589,7 +589,7 @@ def build_playwright_slack_compose(
         f"Our upcoming deployment is scheduled for {day}.",
         "Deployment notes and the deployment ticket are below for reference:",
         "",
-        f"SharePoint — Download: {sp_label}",
+        f"SharePoint — Release Notes: {sp_label}",
         f"SharePoint — Folder: {sp_folder_label}",
         f"Service Desk: {ticket_label}",
         "CC: " + " ".join(f"@{p.name}" for p in cc_people),

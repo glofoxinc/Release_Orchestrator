@@ -19,7 +19,7 @@ def test_fetch_slack_reference_17191():
     assert "Our upcoming deployment" in ref.squad_preview
     assert "Deployment notes and the deployment ticket" in ref.squad_preview
     assert "Sai Anirudh Karre" in ref.squad_preview
-    assert "SharePoint — Download:" in ref.squad_preview
+    assert "SharePoint — Release Notes:" in ref.squad_preview
     assert "SharePoint — Folder:" in ref.squad_preview
     assert "Sai Anirudh Karre" not in ref.buddies_preview
     assert "Sushma Bhamidipati" in ref.buddies_preview

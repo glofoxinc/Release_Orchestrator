@@ -11,7 +11,7 @@ body_rules:
   - "Open with Hello Team,"
   - "Line 2: Our upcoming deployment is scheduled for {Weekday, Month DD, YYYY}."
   - "Blank line, then: Deployment notes and the deployment ticket are below for reference:"
-  - "Blank line, then SharePoint — Download: Release Notes {version}.docx (direct download link)"
+  - "Blank line, then SharePoint — Release Notes: Release Notes {version}.docx (opens the document in SharePoint)"
   - "SharePoint — Folder: Release Notes/{quarter} (exact quarter folder link)"
   - "Service Desk: full ticket title — e.g. Glofox Insights Customize BI - Prod Deployment - Release Version {version}"
   - "Close with CC: line with required mentions per channel (no Thanks! line)"
@@ -41,7 +41,7 @@ examples:
       Our upcoming deployment is scheduled for Wednesday, September 23, 2026.
       Deployment notes and the deployment ticket are below for reference:
 
-      SharePoint — Download: Release Notes 2026.3.09.23.docx
+      SharePoint — Release Notes: Release Notes 2026.3.09.23.docx
       SharePoint — Folder: Release Notes/2026 - Q3
       Service Desk: Glofox Insights Customize BI - Prod Deployment - Release Version 2026.3.09.23
       CC: @Sushma Bhamidipati @Sai Anirudh Karre @Zeke Brustkern @Eoin George
@@ -50,7 +50,7 @@ examples:
       Our upcoming deployment is scheduled for Wednesday, September 23, 2026.
       Deployment notes and the deployment ticket are below for reference:
 
-      SharePoint — Download: Release Notes 2026.3.09.23.docx
+      SharePoint — Release Notes: Release Notes 2026.3.09.23.docx
       SharePoint — Folder: Release Notes/2026 - Q3
       Service Desk: Glofox Insights Customize BI - Prod Deployment - Release Version 2026.3.09.23
       CC: @Sushma Bhamidipati
@@ -68,7 +68,7 @@ examples:
       Our upcoming deployment is scheduled for Monday, September 14, 2026.
       Deployment notes and the deployment ticket are below for reference:
 
-      SharePoint — Download: Release Notes 2026.3.09.14.docx
+      SharePoint — Release Notes: Release Notes 2026.3.09.14.docx
       SharePoint — Folder: Release Notes/2026 - Q3
       Service Desk: Glofox Insights Customize BI - Prod Deployment - Release Version 2026.3.09.14
       CC: @Sushma Bhamidipati @Sai Anirudh Karre @Zeke Brustkern @Eoin George
@@ -77,7 +77,7 @@ examples:
       Our upcoming deployment is scheduled for Monday, September 14, 2026.
       Deployment notes and the deployment ticket are below for reference:
 
-      SharePoint — Download: Release Notes 2026.3.09.14.docx
+      SharePoint — Release Notes: Release Notes 2026.3.09.14.docx
       SharePoint — Folder: Release Notes/2026 - Q3
       Service Desk: Glofox Insights Customize BI - Prod Deployment - Release Version 2026.3.09.14
       CC: @Sushma Bhamidipati

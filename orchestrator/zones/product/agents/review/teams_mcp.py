@@ -14,17 +14,18 @@ logger = logging.getLogger(__name__)
 from daily_review_agent.paths import REPO_ROOT, SCRIPTS_DIR, script
 
 _PROJECT_ROOT = REPO_ROOT
-_DEFAULT_NODE = Path(r"C:/Users/LYal01/nodejs/node.exe")
 _BRIDGE = script("teams_bridge.mjs")
 
 
 def _node_exe() -> str:
-    for key in ("NODE_EXE", "NODE_PATH"):
-        val = (os.environ.get(key) or "").strip()
-        if key == "NODE_EXE" and val:
-            return val
-    if _DEFAULT_NODE.is_file():
-        return str(_DEFAULT_NODE)
+    raw = (os.environ.get("NODE_EXE") or "").strip()
+    if raw and Path(raw).is_file():
+        return raw
+    from daily_review_agent.setup_mcp import _detect_node
+
+    detected = _detect_node()
+    if detected is not None and detected.is_file():
+        return str(detected)
     return "node"
 
 

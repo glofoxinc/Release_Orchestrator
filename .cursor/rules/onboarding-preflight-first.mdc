@@ -1,0 +1,21 @@
+---
+description: Run onboarding preflight before welcome onboard; fix known install/MCP pitfalls
+alwaysApply: true
+---
+
+# Onboarding preflight-first (Release Orchestrator)
+
+When the user says **welcome onboard**, **onboarding**, **setup status**, or starts first-time setup:
+
+1. Call MCP tool **`onboarding_preflight`** (or CLI `python orchestrator/zones/platform/ops/onboarding_preflight.py`) before driving the wizard.
+2. If status is not `ready`, run **`onboarding_preflight(apply_fix=true)`** once, then ask for **one** Cursor MCP reload.
+3. **Never** run `pip install -r requirements-mcp.txt` at repo root — use `orchestrator/zones/config/deps/requirements-mcp.txt`.
+4. Remove deprecated MCP server **`daily-review-agent`** from mcp.json (tools live on **release-orchestrator**).
+5. Glofox Step 6 Slack = **Playwright MCP**, not Slack MCP.
+6. `.env` path: **`orchestrator/zones/runtime/local/.env`** (same as engine config).
+7. On Playwright sign-in step, invoke **Playwright MCP** (`browser_navigate`) — do not tell the user to open a browser manually first.
+8. Daily Review short MCP aliases: **`dr_cal_handoff`**, **`dr_mcp_config`**, **`dr_attendee_policy`**, **`dr_sched_batch`**, **`dr_sched_adhoc`** (prefer these over long `daily_review_*` names in chat).
+9. Do **not** ask the user to say **`continue`** between auto steps — wizard auto-bursts; only stop at human gates (Jira, MCP reload, Playwright login).
+10. **`beginner_wizard`** may return **`playwright_handoff`** — immediately call Playwright MCP `browser_navigate` to the URL in that payload; user completes MFA only.
+
+Skill: `orchestrator/zones/knowledge/skills/release-orchestrator-onboarding/SKILL.md`

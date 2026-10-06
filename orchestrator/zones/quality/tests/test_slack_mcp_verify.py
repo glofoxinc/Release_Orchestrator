@@ -80,7 +80,7 @@ def test_slack_mcp_e2e_handoff_builds_two_posts():
     assert "Deployment notes and the deployment ticket" in posts[0]["message"]
     assert "<@U0BSG4ABZC0>" in posts[0]["message"]
     assert "<@U0BSG4ABZC0>" not in posts[1]["message"]
-    assert "SharePoint — Download:" in posts[0]["message"]
+    assert "SharePoint — Release Notes:" in posts[0]["message"]
     assert "SharePoint — Folder:" in posts[0]["message"]
 
 

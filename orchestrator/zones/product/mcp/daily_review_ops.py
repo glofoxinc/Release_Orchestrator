@@ -72,7 +72,7 @@ def register(mcp: Any) -> None:
         report = run_setup(install=install)
         return format_setup_text(report) + "\n\n" + _json(report)
 
-    @mcp.tool()
+    @mcp.tool(name="dr_mcp_config")
     def daily_review_mcp_config() -> str:
         """Copy-paste Cursor mcp.json blocks for release-orchestrator + teams (+ Playwright/Slack plugins)."""
         from daily_review_agent.setup_mcp import generate_mcp_snippets, validate_cursor_mcp_config
@@ -132,7 +132,7 @@ def register(mcp: Any) -> None:
         clear_schedule()
         return _json({"ok": True, "message": "Schedule cleared. Use --force or daily_review_run to run anyway."})
 
-    @mcp.tool()
+    @mcp.tool(name="dr_attendee_policy")
     def daily_review_attendee_policy(force: bool = True) -> str:
         """Preview Daily Review ticket scope + meeting invite policy.
 
@@ -192,7 +192,7 @@ def register(mcp: Any) -> None:
             result["setup_hint"] = "Run daily_review_setup() — complete fix_commands first."
         return _json(result)
 
-    @mcp.tool()
+    @mcp.tool(name="dr_sched_batch")
     def daily_review_schedule_batch(
         date: str = "",
         start_at: str = "20:00",
@@ -232,7 +232,7 @@ def register(mcp: Any) -> None:
             )
         )
 
-    @mcp.tool()
+    @mcp.tool(name="dr_sched_adhoc")
     def daily_review_schedule_ad_hoc(
         subject: str,
         start_iso: str,
@@ -255,7 +255,7 @@ def register(mcp: Any) -> None:
             )
         )
 
-    @mcp.tool()
+    @mcp.tool(name="dr_cal_handoff")
     def daily_review_calendar_playwright_handoff(
         dry_run: bool = True,
         force: bool = True,

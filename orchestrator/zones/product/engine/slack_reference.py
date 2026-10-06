@@ -220,7 +220,7 @@ def compare_preview_to_reference(
             "Hello Team,",
             "Our upcoming deployment is scheduled for",
             "Deployment notes and the deployment ticket are below for reference:",
-            "SharePoint — Download:",
+            "SharePoint — Release Notes:",
             "SharePoint — Folder:",
             "Service Desk:",
             "CC:",

@@ -4,11 +4,11 @@ ETL tickets are handled specially:
 - Detected when the Jira assignee/owner is an ETL owner (default: Mona) **or**
   the ticket content matches an ETL signal (e.g. "... BI Reporting").
 - Test by → ``Mona/Nikhila`` (the ETL testers).
-- Testing Status → ``ETL Done``.
+- Testing Status → left blank until QA updates manually.
 
 All other tickets:
 - Test by → balanced pick from the QA pool, never the ticket owner.
-- Testing Status → ``Done``.
+- Testing Status → left blank until manual testing is recorded.
 """
 
 from __future__ import annotations
@@ -196,15 +196,14 @@ def resolve_testing_status(
     *,
     etl_owners: tuple[str, ...] | list[str] | None = None,
 ) -> str:
-    """ETL owner tickets → ``ETL Done``; everyone else → ``Done``.
+    """Default Testing Status for new release notes (empty until QA fills in).
 
     This owner-only helper is kept for callers that have just the assignee.
     Prefer :func:`is_etl_ticket` when the full ticket entry is available so
     content-based ETL tickets are also caught.
     """
-    if is_etl_ticket_owner(assignee, etl_owners=etl_owners):
-        return TESTING_STATUS_ETL_DONE
-    return TESTING_STATUS_DONE
+    del assignee, etl_owners
+    return ""
 
 
 def resolve_change_table_test_by(
@@ -280,15 +279,6 @@ def assign_change_table_testing_statuses(
     etl_owners: tuple[str, ...] | list[str] | None = None,
     content_patterns: tuple[str, ...] | list[str] | None = None,
 ) -> list[str]:
-    """Return Testing Status per entry.
-
-    ETL tickets (Mona-owned or ETL by content) → ``ETL Done``; else ``Done``.
-    """
-    return [
-        TESTING_STATUS_ETL_DONE
-        if is_etl_ticket(
-            entry, etl_owners=etl_owners, content_patterns=content_patterns
-        )
-        else TESTING_STATUS_DONE
-        for entry in entries
-    ]
+    """Return Testing Status per entry (blank until testers update the DOCX)."""
+    del etl_owners, content_patterns
+    return ["" for _ in entries]

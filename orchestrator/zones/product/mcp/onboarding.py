@@ -233,9 +233,9 @@ SETUP_STEPS: tuple[dict[str, Any], ...] = (
         "check": lambda: True,
         "instructions": (
             "Say **production ready** (or call `production_readiness()`).\n"
-            "Finish launch: `python orchestrator/ops/complete_launch.py` (or mark sign-offs in MCP):\n"
+            "Finish launch: `python orchestrator/zones/platform/ops/complete_launch.py` (or mark sign-offs in MCP):\n"
             "- **shipit confirmed** after SHIPIT dry-run\n"
-            "- **slack confirmed** after Step 6 Slack MCP post\n"
+            "- **slack confirmed** after Step 6 Playwright Slack post\n"
             "When both are recorded → **launch complete**."
         ),
         "where": "MCP chat or platform Home → Production readiness panel.",
@@ -338,7 +338,7 @@ def format_setup_guide(assessment: dict[str, Any], *, compact: bool = False) -> 
     lines.append("**After setup:** Reload MCP in Cursor, then say **start** to pick your first action.")
     lines.append("")
     lines.append(
-        "*Slack:* Step 6 uses **Cursor Slack MCP** — no bot token needed. Say **skip slack** to skip announce."
+        "*Slack:* Step 6 uses **Playwright MCP** (Glofox private channels). Say **skip slack** to skip announce."
     )
 
     if compact and next_item:

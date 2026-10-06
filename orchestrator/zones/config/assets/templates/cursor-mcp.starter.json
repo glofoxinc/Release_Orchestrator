@@ -16,7 +16,7 @@
       "_description": "Playwright MCP — SharePoint, Slack, calendar (sign in once)",
       "type": "stdio",
       "command": "{{NPX_CMD}}",
-      "args": ["-y", "@playwright/mcp@latest", "--browser", "msedge"],
+      "args": ["-y", "@playwright/mcp@0.0.39", "--browser", "msedge"],
       "env": {}
     }
   }
