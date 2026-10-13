@@ -4,6 +4,15 @@
 
 PyPI package name remains `jira-release-tool` (historical alias). Operator-facing name: **Release Orchestrator** (`release-orchestrator` MCP server and console script).
 
+## Team guide (HTML)
+
+| Link | Use when |
+|------|----------|
+| [DOCUMENTATION.html on GitHub Pages](https://glofoxinc.github.io/Release_Orchestrator/DOCUMENTATION.html) | Default share link after [Pages is enabled](https://github.com/glofoxinc/Release_Orchestrator/settings/pages) (**Deploy from branch** → `gh-pages` → `/`) |
+| [CDN mirror (same file)](https://cdn.jsdelivr.net/gh/glofoxinc/Release_Orchestrator@gh-pages/DOCUMENTATION.html) | Works immediately if Pages is not live yet |
+
+Source: [`DOCUMENTATION.html`](DOCUMENTATION.html) on `main`; static site branch: `gh-pages`.
+
 ## Structure
 
 | At repo root | Purpose |
