@@ -1261,6 +1261,7 @@ def extract_ticket_info(summary: str, ticket_key: str) -> dict:
 
     is_custom = _is_multi_client_project(ticket_key)
     ticket_type = "Custom" if is_custom else "Analyze"
+    refine_summary = summary
 
     if is_custom:
         client = extract_client_name(summary, extraction, prefix)
@@ -1313,12 +1314,40 @@ def extract_ticket_info(summary: str, ticket_key: str) -> dict:
             report = sub[0].strip()
             description = sub[1].strip() if len(sub) > 1 else description
 
-    return {
+    if is_custom and report and description and description.lower() != report.lower():
+        refine_summary = f"{report} - {description}"
+    elif is_custom and len(_CLIENT_SEPARATOR.split(summary, maxsplit=1)) > 1:
+        refine_summary = _CLIENT_SEPARATOR.split(summary, maxsplit=1)[1].strip()
+
+    try:
+        from generators.ticket_title_parse import refine_ticket_title_fields
+
+        refined = refine_ticket_title_fields(
+            refine_summary,
+            report=report,
+            description=description,
+        )
+        report = refined.get("report") or report
+        description = refined.get("description") or description
+        asset_type = refined.get("asset_type") or ""
+        display_report = refined.get("display_report") or report
+    except ImportError:
+        asset_type = ""
+        display_report = report
+
+    payload = {
         "type": ticket_type,
         "client": client,
         "report": report,
         "description": description,
     }
+    if asset_type:
+        payload["asset_type"] = asset_type
+    if display_report and display_report != report:
+        payload["display_report"] = display_report
+    elif display_report:
+        payload["display_report"] = display_report
+    return payload
 
 
 # ── Group by assignee ────────────────────────────────────────────

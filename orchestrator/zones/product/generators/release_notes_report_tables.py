@@ -112,7 +112,11 @@ def _entry_text(entry: dict[str, Any]) -> str:
     )
 
 
-def classify_asset_type(text: str) -> str:
+def classify_asset_type(text: str, *, entry: dict[str, Any] | None = None) -> str:
+    if entry:
+        explicit = clean_release_text(entry.get("asset_type") or "")
+        if explicit in {"Dashboard", "Paginated report", "Semantic model", "Documentation"}:
+            return explicit
     lowered = (text or "").lower()
     if _PAGINATED.search(lowered):
         return "Paginated report"
@@ -170,6 +174,9 @@ def _owners_from_entries(entries: list[dict[str, Any]]) -> str:
 def _report_name_for_group(item: dict[str, Any], *, client: str | None = None) -> str:
     entries = item.get("entries") or []
     sample = entries[0] if entries else {}
+    display = clean_release_text(sample.get("display_report") or "")
+    if display:
+        return display
     report = clean_release_text(sample.get("report") or "")
     label = clean_release_text(item.get("label") or "")
     if client:
@@ -207,13 +214,14 @@ def _rows_from_consolidated(
             continue
         seen.add(key)
         tickets = ", ".join(item.get("tickets") or [])
+        sample = entries[0] if entries else {}
         rows.append(
             ReportTableRow(
                 client=client,
                 name=name,
                 tickets=tickets,
                 owner=_owners_from_entries(entries),
-                asset_type=classify_asset_type(combined),
+                asset_type=classify_asset_type(combined, entry=sample),
                 change_type=_merge_change_types(
                     [classify_change_type(_entry_text(entry)) for entry in entries]
                     or [classify_change_type(combined)]

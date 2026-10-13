@@ -187,6 +187,25 @@ def improve_extracted_entry(entry: dict[str, Any]) -> dict[str, Any]:
         # Keep identical values; builders treat this as redundant.
         description = report
 
+    summary = clean_release_text(improved.get("summary") or "")
+    if summary:
+        try:
+            from generators.ticket_title_parse import refine_ticket_title_fields
+
+            refined = refine_ticket_title_fields(
+                summary,
+                report=report,
+                description=description,
+            )
+            report = clean_release_text(refined.get("report") or report)
+            description = clean_release_text(refined.get("description") or description)
+            if refined.get("asset_type"):
+                improved["asset_type"] = refined["asset_type"]
+            if refined.get("display_report"):
+                improved["display_report"] = clean_release_text(refined["display_report"])
+        except ImportError:
+            pass
+
     improved["client"] = client
     improved["report"] = report
     improved["description"] = description
@@ -271,7 +290,9 @@ def build_dashboard_lines(extracted: list[dict[str, Any]]) -> list[str]:
         entries = item.get("entries") or []
         sample = entries[0] if entries else {}
         summary = clean_release_text(item.get("summary") or "")
-        report = clean_release_text(sample.get("report") or item.get("label") or "")
+        report = clean_release_text(
+            sample.get("display_report") or sample.get("report") or item.get("label") or ""
+        )
         client = clean_release_text(sample.get("client") or "")
 
         if sample.get("type") == "Custom" or (client and client != "Standard"):
