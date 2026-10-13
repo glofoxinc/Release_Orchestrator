@@ -282,15 +282,6 @@ def assess_release_notes_readiness(data: dict[str, Any]) -> ReadinessReport:
             )
         )
 
-    if ticket_keys and not (data.get("release_owner") or "").strip():
-        insights.append(
-            ReleaseInsight(
-                "warning",
-                "Release Owner is empty.",
-                "Fill Release Owner on Step 3 before publishing.",
-            )
-        )
-
     if ticket_keys and not (data.get("dev_team") or "").strip():
         insights.append(
             ReleaseInsight(

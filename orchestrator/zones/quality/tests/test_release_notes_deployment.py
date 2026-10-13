@@ -94,7 +94,7 @@ def test_extract_deployment_rows_from_generated_docx():
     ]
 
 
-def test_enrich_deployment_rows_fills_status_and_id():
+def test_enrich_deployment_rows_fills_id_only_by_default():
     rows = [["Jetts", "Navya", "", ""]]
     deploy = {
         "Jetts": {
@@ -105,7 +105,7 @@ def test_enrich_deployment_rows_fills_status_and_id():
         }
     }
     enriched = enrich_deployment_rows(rows, deploy)
-    assert enriched[0][2] == "Deployed"
+    assert enriched[0][2] == ""
     assert enriched[0][3].startswith("abc-123")
 
 
@@ -135,7 +135,7 @@ def test_merge_parsed_deployments_matches_client():
         )
     ]
     merged = merge_parsed_deployments(rows, parsed)
-    assert merged[0][2] == "Deployed"
+    assert merged[0][2] == ""
     assert "uuid-1" in merged[0][3]
 
 
@@ -153,7 +153,7 @@ def test_build_deployment_rows_sorted():
     rows = parse_deployment_rows(text)
     assert [r[0] for r in rows] == ["Analyze", "Jetts"]
     jetts = next(r for r in rows if r[0] == "Jetts")
-    assert jetts[2] == "Deployed"
+    assert jetts[2] == ""
     assert jetts[3].startswith("id-j")
 
 

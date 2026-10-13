@@ -9,7 +9,7 @@ PAGE_CONTENT_WIDTH_TWIPS = int((8.5 - (2 * PAGE_MARGIN_INCHES)) * 1440)
 # Metadata defaults — update workspace.yaml release_notes section to match your team.
 REFERENCE_META = {
     "dev_team": "Customize BI Team",
-    "release_owner": "Lakshmi Narasimha",
+    "release_owner": "",
     "senior_mgr": "Sushma Bhamidipati",
     "director": "Trent Vanest",
     "svp": "Rahul Das",
@@ -145,7 +145,8 @@ EXCLUDED_ROW_FIELDS = (
     "reason",
 )
 
-DEFAULT_DEPLOYMENT_STATUS = "Deployed"
+# Leave deployment Status blank in new release notes; fill manually after prod deploy.
+DEFAULT_DEPLOYMENT_STATUS = ""
 
 # Deployment table visual tokens (Grid Table 4 Accent 1 / reference theme accent1).
 DEPLOYMENT_HEADER_FILL = "156082"

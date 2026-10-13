@@ -29,7 +29,7 @@ CHANGE_TABLE_TEST_BY_POOL: tuple[str, ...] = (
     "Sushma",
 )
 
-# Jira assignees treated as ETL owners → Testing Status = "ETL Done".
+# Jira assignees treated as ETL owners → Test by = Mona/Nikhila; Status stays blank.
 ETL_OWNER_NAMES: tuple[str, ...] = ("Mona",)
 
 # Test by name applied to ETL tickets. Override via

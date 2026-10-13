@@ -8,10 +8,7 @@ from typing import Any
 
 from docx import Document
 
-from generators.release_notes_template_defaults import (
-    DEFAULT_DEPLOYMENT_STATUS,
-    DEPLOYMENT_HEADERS,
-)
+from generators.release_notes_template_defaults import DEPLOYMENT_HEADERS
 
 _DEPLOYMENT_ROW_COLS = 4
 
@@ -163,8 +160,7 @@ def enrich_deployment_rows(
 
         info = _match_deploy_info(cols[0], deploy_by_client)
         if info and info.get("deployment_id"):
-            if overwrite or not cols[2].strip():
-                cols[2] = (info.get("status") or DEFAULT_DEPLOYMENT_STATUS).strip()
+            # Status column stays blank until release owner updates the DOCX manually.
             if overwrite or not cols[3].strip():
                 cols[3] = format_deployment_id_time(info)
 
@@ -184,7 +180,6 @@ def merge_parsed_deployments(
             "deployment_id": p.deployment_id,
             "deployment_date": p.deployment_date,
             "deployment_time": p.deployment_time,
-            "status": DEFAULT_DEPLOYMENT_STATUS,
         }
         for p in parsed
         if getattr(p, "deployment_id", "")
