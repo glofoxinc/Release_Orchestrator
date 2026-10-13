@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Release Orchestrator — Team guide</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <style>
+:root { --navy:#0A1628; --navy-2:#12243C; --gold:#C9A227; --cream:#F4E4A6; --ink:#1e293b; --muted:#64748b; --line:#e2e8f0; --ok:#059669; --bad:#dc2626; --paper:#f8fafc; }
+* { box-sizing:border-box; }
+body { margin:0; font-family:"Segoe UI",Calibri,system-ui,sans-serif; color:var(--ink); background:var(--paper); line-height:1.55; }
+header { background:linear-gradient(135deg,var(--navy) 0%,var(--navy-2) 70%); color:#fff; padding:48px 40px 36px; text-align:center; border-bottom:6px solid var(--gold); }
+header .eyebrow { color:var(--gold); letter-spacing:.28em; font-size:12px; font-weight:700; margin:0 0 12px; }
+header h1 { margin:0 0 10px; font-size:40px; font-weight:700; color:var(--cream); }
+header .lead { margin:0 auto 18px; max-width:720px; font-size:18px; color:#E8EEF5; }
+.pills { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; }
+.pill { background:#152A45; border:1px solid var(--gold); color:var(--cream); border-radius:999px; padding:7px 14px; font-size:13px; font-weight:600; }
+nav { max-width:980px; margin:16px auto 0; padding:0 20px; display:flex; flex-wrap:wrap; gap:8px; justify-content:center; }
+nav a { color:var(--navy); font-size:13px; font-weight:600; text-decoration:none; background:#fff; border:1px solid var(--line); border-radius:999px; padding:6px 12px; }
+nav a:hover { border-color:var(--gold); }
+main { max-width:980px; margin:0 auto; padding:24px 20px 64px; }
+section { background:#fff; border:1px solid var(--line); border-radius:14px; padding:28px; margin-bottom:18px; }
+h2 { margin:0 0 14px; color:var(--navy); font-size:22px; border-left:5px solid var(--gold); padding-left:12px; }
+h3 { margin:18px 0 8px; color:var(--navy-2); font-size:16px; }
+p { margin:0 0 12px; }
+.compare { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.before,.after { border-radius:10px; padding:16px 18px; background:#f8fafc; }
+.before { border-left:5px solid var(--bad); }
+.after { border-left:5px solid var(--ok); }
+.before h3,.after h3 { margin-top:0; }
+.highlight { text-align:center; font-size:20px; color:var(--ok); font-weight:700; margin:16px 0 0; }
+table { width:100%; border-collapse:collapse; margin-top:8px; }
+th,td { border:1px solid #cbd5e1; padding:10px 12px; text-align:left; vertical-align:top; }
+th { background:var(--navy); color:#fff; }
+tr:nth-child(even) td { background:#f8fafc; }
+.steps { counter-reset:step; margin:0; padding:0; list-style:none; }
+.steps li { position:relative; padding:16px 16px 16px 64px; margin:0 0 10px; background:#f8fafc; border:1px solid var(--line); border-radius:10px; }
+.steps li::before { counter-increment:step; content:counter(step); position:absolute; left:16px; top:16px; width:32px; height:32px; border-radius:50%; background:var(--navy); color:var(--cream); font-weight:700; line-height:32px; text-align:center; }
+.done { background:#ecfdf5; border:1px solid #a7f3d0; border-radius:10px; padding:14px 16px; margin-top:12px; }
+.prompt { background:#12243C; color:var(--cream); font-family:Consolas,monospace; padding:8px 12px; border-radius:8px; display:inline-block; }
+footer { text-align:center; color:var(--muted); font-size:13px; padding:8px 0 24px; }
+ul.features { margin:0; padding-left:20px; }
+ul.features li { margin:0 0 8px; }
+.mermaid { background:#f8fafc; border-radius:10px; padding:12px; }
+.time td:nth-child(3) { font-weight:700; color:var(--ok); }
+@media (max-width:720px) { .compare { grid-template-columns:1fr; } header h1 { font-size:30px; } }
+  </style>
+</head>
+<body>
+  <header>
+    <p class="eyebrow">INSIGHTS &amp; REPORTING · WEEKLY RELEASE</p>
+    <h1>Release Orchestrator</h1>
+    <p class="lead">An internal <strong>Jira automation toolkit</strong> in <strong>Cursor (Release Orchestrator MCP)</strong> — releases, <strong>TCKT</strong> change tickets, deployment comments, release notes, and history from <strong>one configured workspace</strong>. Typical run: <strong>5–15 minutes</strong> when tickets are ready. You preview every live Jira post, ticket create, and message before it goes out.</p>
+    <div class="pills">
+      <span class="pill">PIC + AN + TCKT</span>
+      <span class="pill">Glofox &amp; Ignite</span>
+      <span class="pill">Deploy tracking &amp; history</span>
+      <span class="pill">5–10 min onboarding</span>
+    </div>
+  </header>
+  <nav>
+    <a href="#goal">Goal</a>
+    <a href="#features">All features</a>
+    <a href="#problem">Problem</a>
+    <a href="#time">How fast</a>
+    <a href="#flow">Flow</a>
+    <a href="#onboard">Quick start</a>
+  </nav>
+  <main>
+    <section id="goal">
+      <h2>Goal</h2>
+      <p>Build an internal Jira automation toolkit — <strong>Release Orchestrator MCP</strong> — so the team can manage releases, deployment tracking, and change tickets from <strong>one configurable workspace in Cursor</strong>, without repetitive manual Jira work every week.</p>
+      <h3>Description</h3>
+      <p>Standardize how the team prepares releases, creates and consolidates <strong>TCKT</strong> change tickets, posts structured <strong>deployment comments</strong>, generates Word release notes, and keeps a <strong>deployment history</strong> across multiple Jira projects (for example PIC, AN, and service desk). One ticket list drives notes, SharePoint, the change ticket, Slack, Outlook, and Teams — so copy-paste, missed fields, and inconsistent release documentation drop away. Program settings (Glofox, Ignite, approvers, channels) live in shared config; you run the flow by talking to the MCP in Cursor, not in a separate web app.</p>
+      <h3>Success looks like</h3>
+      <ul class="features">
+        <li>Any supported release can be prepared and reviewed in <strong>one guided flow</strong> in Cursor.</li>
+        <li>Deployment details are parsed, posted to Jira, and <strong>tracked with history</strong> you can look up later.</li>
+        <li>Change tickets are created with validated approvers, test/backout/impact plans, and a <strong>preview (and diff) before submit</strong>.</li>
+        <li>Release notes documents are <strong>generated from Jira tickets</strong>, grouped by dashboard or report.</li>
+        <li><strong>Multi-project</strong> releases (standard + custom, multiple fix versions) work from the same configuration.</li>
+        <li>Release managers and analysts can run deployments <strong>independently</strong> after a short walkthrough of this guide.</li>
+      </ul>
+      <h3>What we achieve</h3>
+      <ul class="features">
+        <li>A <strong>consistent release and deployment process</strong> instead of ad-hoc Jira updates and side spreadsheets.</li>
+        <li><strong>Faster, error-free TCKT creation</strong> with pre-flight validation before anything is submitted.</li>
+        <li><strong>Automatic release notes</strong> and an audit trail of who deployed what and when.</li>
+        <li>Fewer <strong>duplicate deployment comments</strong> and missed <strong>Done</strong> transitions after prod.</li>
+        <li><strong>DORA-style visibility</strong> into deployment frequency and lead time from recorded history.</li>
+        <li>One toolkit reusable across BI and engineering workspaces that share the same release pattern.</li>
+      </ul>
+      <h3>What we use it for</h3>
+      <ul class="features">
+        <li>Preparing <strong>multi-project releases</strong> before a production deploy.</li>
+        <li>Creating and consolidating <strong>TCKT</strong> change tickets for dashboard or report updates.</li>
+        <li>Posting <strong>structured deployment comments</strong> on tickets after a successful release.</li>
+        <li>Generating Word release notes (and client notes where needed) for stakeholders.</li>
+        <li>Tracking deployment history and marking releases complete when prod is verified.</li>
+        <li>Service desk and approver workflows with <strong>preview before create</strong>.</li>
+        <li>Slack deploy posts, Outlook mail, Teams review calls, and SharePoint uploads in the same run.</li>
+        <li>Choosing safe deploy dates (no Friday deploys, holiday-aware scheduling).</li>
+      </ul>
+    </section>
+
+    <section id="features">
+      <h2>Everything the MCP handles (simple)</h2>
+      <p>One release list in Cursor. Each row is a real step you can preview before anything goes live.</p>
+      <table>
+        <tr><th>Step</th><th>What happens</th></tr>
+        <tr><td><strong>Ticket review</strong></td><td>Loads standard and custom tickets for the release; groups by report so the same dashboard is not listed twice.</td></tr>
+        <tr><td><strong>Ready gates</strong></td><td>Reads Jira comments (<strong>ready for review</strong> / <strong>ready for release</strong>) so you know who is in the ship.</td></tr>
+        <tr><td><strong>Review call</strong></td><td>Helps schedule the Teams review meeting and sends Slack / Outlook invites to the right people.</td></tr>
+        <tr><td><strong>Safe dates</strong></td><td>Suggests review and deploy days using the company calendar — no Friday deploys, no deploy the day before a holiday.</td></tr>
+        <tr><td><strong>Release notes</strong></td><td>Builds the internal Word release notes from tickets (testing evidence slots included).</td></tr>
+        <tr><td><strong>Client release notes</strong></td><td>Builds a shorter client-facing Word doc for custom clients when needed.</td></tr>
+        <tr><td><strong>SharePoint upload</strong></td><td>Creates quarter/month folders and uploads <strong>both</strong> Word files to the same place; links flow to the change ticket and Slack.</td></tr>
+        <tr><td><strong>Change ticket (SHIPIT)</strong></td><td>Creates the production change ticket with implementation, test, backout, and impact text filled from the same tickets; preview before submit.</td></tr>
+        <tr><td><strong>Slack deploy message</strong></td><td>Drafts the channel post with the correct change ticket link and a plain summary of work types; you approve, then send.</td></tr>
+        <tr><td><strong>Slack &amp; Outlook notices</strong></td><td>Direct messages to release owner, testers, and leadership when the change ticket exists or when the review call is booked.</td></tr>
+        <tr><td><strong>Jira reminders</strong></td><td>After the change ticket is created, nudges assignees on their tickets so they reply in Jira — not in group chat.</td></tr>
+        <tr><td><strong>Deployment comments</strong></td><td>Builds the standard post-deploy Jira comment from your deployment info; you preview, then post — avoids copy-paste mistakes.</td></tr>
+        <tr><td><strong>After deploy</strong></td><td>Records the deploy, updates history, can move tickets toward <strong>Done</strong>, and mark the release complete when you confirm production.</td></tr>
+        <tr><td><strong>Deployment dashboard</strong></td><td>Summarizes recent deploys and metrics so leads see frequency and lead time without maintaining a spreadsheet.</td></tr>
+        <tr><td><strong>Glofox &amp; Ignite</strong></td><td>Same MCP; you pick the program so people, channels, and SharePoint paths match that release.</td></tr>
+      </table>
+      <p class="highlight">Typical run through change ticket + Slack: <strong>5–15 minutes</strong> when tickets are ready.</p>
+    </section>
+
+    <section id="problem">
+      <h2>What problem it solves</h2>
+      <div class="compare">
+        <div class="before"><h3>Before</h3><p>Tickets in Jira, notes in Word, TCKT fields pasted by hand, deployment comments rewritten every release, Done transitions forgotten, history in someone’s spreadsheet. Same report listed three times. Easy to miss approvers, testers, or a holiday.</p></div>
+        <div class="after"><h3>With the MCP</h3><p>One list in Cursor drives notes, SharePoint, TCKT, deployment comments, and announcements. Pre-flight checks catch bad fields before submit. You preview every Jira write and every Slack or mail send. Deploy dates skip Fridays and bad holiday gaps.</p></div>
+      </div>
+      <p class="highlight">You stay in control — preview first, confirm every live send.</p>
+    </section>
+
+    <section id="time">
+      <h2>How fast it is</h2>
+      <p>When tickets already have the right Jira comments, the MCP runs the full path in one session — load tickets, notes, SharePoint, change ticket, Slack, and Outlook previews — in about <strong>5–15 minutes</strong>. Manual work used to spread across half a day.</p>
+      <table class="time">
+        <tr><th>What you finish</th><th>Before (typical)</th><th>With MCP (typical)</th></tr>
+        <tr><td>Grouped ticket list + review</td><td>45–90 min</td><td>Part of the 5–15 min run</td></tr>
+        <tr><td>Internal + client Word notes</td><td>1.5–3 hours</td><td>Generated in the same run</td></tr>
+        <tr><td>SharePoint + change ticket + Slack</td><td>1.5–2.5 hours</td><td>Same run through send (after you preview)</td></tr>
+        <tr><td><strong>End-to-end until SHIPIT &amp; Slack</strong></td><td><strong>4–8 hours</strong></td><td><strong>5–15 minutes</strong></td></tr>
+      </table>
+      <p><strong>One-time MCP setup in Cursor:</strong> about <strong>5 minutes</strong> (Jira, Slack, Outlook). <strong>New teammate walkthrough</strong> (read this page + one watched run): <strong>5–10 minutes</strong> max.</p>
+      <p class="highlight">Developer readiness and QA still happen on their own schedule — the MCP does not wait for prod testing.</p>
+    </section>
+
+    <section id="flow">
+      <h2>Simple flow (every release)</h2>
+      <div class="mermaid">
+flowchart TD
+  A["Setup in Cursor"] --> B["Pick version and program"]
+  B --> C["Review tickets in Jira"]
+  C --> D["Teams review call"]
+  D --> E["Release notes + client notes"]
+  E --> F["SharePoint upload"]
+  F --> G["Create change ticket"]
+  G --> H["Slack deploy post"]
+  H --> I["Outlook and Slack to team"]
+  I --> J["Production deploy when ready"]
+      </div>
+      <p>Leadership gets notified when the change ticket exists. Assignees get a Jira reminder on their tickets. Deploy only on a safe workday (not Friday).</p>
+    </section>
+
+    <section id="onboard">
+      <h2>Quick onboarding (new users)</h2>
+      <ol class="steps">
+        <li>Open the Release Orchestrator repo in <strong>Cursor</strong>.</li>
+        <li>Say <span class="prompt">Setup Release Orchestrator</span> and sign in to Jira, Slack, and Outlook when asked (once).</li>
+        <li>Reload the MCP in Cursor.</li>
+        <li>Start a release: choose program (Glofox or Ignite), pick versions, follow the steps in order.</li>
+        <li>Always <strong>preview</strong> Slack and email before sending live.</li>
+      </ol>
+      <h3>Who does what</h3>
+      <table>
+        <tr><th>Role</th><th>Your job</th></tr>
+        <tr><td><strong>Developer</strong></td><td>Comment on the Jira ticket when ready — not in group chat.</td></tr>
+        <tr><td><strong>Release owner</strong></td><td>Run the MCP, preview, then send Slack and mail.</td></tr>
+        <tr><td><strong>Tester</strong></td><td>QA tickets; add screenshots in the notes after prod.</td></tr>
+        <tr><td><strong>Leadership</strong></td><td>Gets a short summary when the change ticket is created.</td></tr>
+      </table>
+      <div class="done"><strong>Team onboarding:</strong> share this page and walk one release together — <strong>5–10 minutes</strong>. You are ready when you can run through to change ticket + Slack preview on your own.</div>
+      <h3>If something goes wrong</h3>
+      <table>
+        <tr><th>Issue</th><th>Try this</th></tr>
+        <tr><td>No tickets show up</td><td>Check the release version name on tickets in Jira.</td></tr>
+        <tr><td>Someone says they are ready but MCP does not see it</td><td>They must comment on the <strong>Jira ticket</strong>, not only chat in Slack.</td></tr>
+        <tr><td>SharePoint or mail failed</td><td>Use the browser handoff Cursor offers; do not paste passwords in chat.</td></tr>
+        <tr><td>Message did not send</td><td>You may still be in preview mode — send only after you approve.</td></tr>
+      </table>
+    </section>
+  </main>
+  <footer>Release Orchestrator MCP · Glofox &amp; Ignite · preview before every send · <a href="https://glofoxinc.github.io/Release_Orchestrator/DOCUMENTATION.html" style="color:var(--muted)">Share this link</a></footer>
+  <script>mermaid.initialize({ startOnLoad: true, theme: "base", themeVariables: { primaryColor: "#C9A227", primaryTextColor: "#0A1628", primaryBorderColor: "#0A1628", lineColor: "#0A1628", fontFamily: "Segoe UI" } });</script>
+</body>
+</html>
