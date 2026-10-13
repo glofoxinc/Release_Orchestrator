@@ -50,12 +50,12 @@ ul.features li { margin:0 0 8px; }
   <header>
     <p class="eyebrow">INSIGHTS &amp; REPORTING · WEEKLY RELEASE</p>
     <h1>Release Orchestrator</h1>
-    <p class="lead">A strong <strong>Cursor MCP</strong> that runs your weekly release in one place — tickets through Word notes, SharePoint, change ticket, and Slack — in about <strong>5–15 minutes</strong> when tickets are ready. You preview first; nothing sends until you say so.</p>
+    <p class="lead">An internal <strong>Jira automation toolkit</strong> in <strong>Cursor (Release Orchestrator MCP)</strong> — releases, <strong>TCKT</strong> change tickets, deployment comments, release notes, and history from <strong>one configured workspace</strong>. Typical run: <strong>5–15 minutes</strong> when tickets are ready. You preview every live Jira post, ticket create, and message before it goes out.</p>
     <div class="pills">
+      <span class="pill">PIC + AN + TCKT</span>
       <span class="pill">Glofox &amp; Ignite</span>
-      <span class="pill">Standard + Custom</span>
-      <span class="pill">5–15 min to SHIPIT + Slack</span>
-      <span class="pill">5–10 min team onboarding</span>
+      <span class="pill">Deploy tracking &amp; history</span>
+      <span class="pill">5–10 min onboarding</span>
     </div>
   </header>
   <nav>
@@ -69,30 +69,37 @@ ul.features li { margin:0 0 8px; }
   <main>
     <section id="goal">
       <h2>Goal</h2>
-      <p>Build one internal release assistant — <strong>Release Orchestrator MCP</strong> — so BI and engineering teams can prepare a production release, create change tickets, publish notes, and notify the right people without repeating the same manual Jira and document work every week.</p>
+      <p>Build an internal Jira automation toolkit — <strong>Release Orchestrator MCP</strong> — so the team can manage releases, deployment tracking, and change tickets from <strong>one configurable workspace in Cursor</strong>, without repetitive manual Jira work every week.</p>
       <h3>Description</h3>
-      <p>Standardize how releases are prepared: pull tickets from Jira, group them by report, write internal release notes and client-facing notes, upload files to SharePoint, create the change ticket with plans and approvers, post the deploy message in Slack with the correct ticket link, and send Outlook or Slack messages to owners, testers, and leadership. Everything uses the <strong>same ticket list</strong> so nothing drifts apart.</p>
+      <p>Standardize how the team prepares releases, creates and consolidates <strong>TCKT</strong> change tickets, posts structured <strong>deployment comments</strong>, generates Word release notes, and keeps a <strong>deployment history</strong> across multiple Jira projects (for example PIC, AN, and service desk). One ticket list drives notes, SharePoint, the change ticket, Slack, Outlook, and Teams — so copy-paste, missed fields, and inconsistent release documentation drop away. Program settings (Glofox, Ignite, approvers, channels) live in shared config; you run the flow by talking to the MCP in Cursor, not in a separate web app.</p>
       <h3>Success looks like</h3>
       <ul class="features">
         <li>Any supported release can be prepared and reviewed in <strong>one guided flow</strong> in Cursor.</li>
-        <li>Change tickets are created with validated fields and a <strong>preview before submit</strong>.</li>
-        <li>Release notes and client notes are <strong>generated from Jira</strong>, not rebuilt by hand.</li>
-        <li>SharePoint, the change ticket, and Slack all point to the <strong>same version and files</strong>.</li>
-        <li>New release owners can walk through the guide with the team in <strong>5–10 minutes</strong> and run the full path the same day.</li>
+        <li>Deployment details are parsed, posted to Jira, and <strong>tracked with history</strong> you can look up later.</li>
+        <li>Change tickets are created with validated approvers, test/backout/impact plans, and a <strong>preview (and diff) before submit</strong>.</li>
+        <li>Release notes documents are <strong>generated from Jira tickets</strong>, grouped by dashboard or report.</li>
+        <li><strong>Multi-project</strong> releases (standard + custom, multiple fix versions) work from the same configuration.</li>
+        <li>Release managers and analysts can run deployments <strong>independently</strong> after a short walkthrough of this guide.</li>
       </ul>
       <h3>What we achieve</h3>
       <ul class="features">
-        <li>One consistent process instead of ad-hoc updates in Jira, Word, chat, and email.</li>
-        <li>Fewer missed fields, duplicate report lines, and wrong links in deploy messages.</li>
-        <li>A clear trail of who deployed what and when.</li>
+        <li>A <strong>consistent release and deployment process</strong> instead of ad-hoc Jira updates and side spreadsheets.</li>
+        <li><strong>Faster, error-free TCKT creation</strong> with pre-flight validation before anything is submitted.</li>
+        <li><strong>Automatic release notes</strong> and an audit trail of who deployed what and when.</li>
+        <li>Fewer <strong>duplicate deployment comments</strong> and missed <strong>Done</strong> transitions after prod.</li>
+        <li><strong>DORA-style visibility</strong> into deployment frequency and lead time from recorded history.</li>
+        <li>One toolkit reusable across BI and engineering workspaces that share the same release pattern.</li>
       </ul>
       <h3>What we use it for</h3>
       <ul class="features">
-        <li>Weekly dashboard and report releases (standard and custom clients).</li>
-        <li>Creating change tickets for production deploys.</li>
-        <li>Word release notes for stakeholders and shorter client notes where needed.</li>
-        <li>Slack deploy announcements, Outlook mail, and Teams meeting reminders.</li>
-        <li>Picking safe deploy dates around weekends and company holidays.</li>
+        <li>Preparing <strong>multi-project releases</strong> before a production deploy.</li>
+        <li>Creating and consolidating <strong>TCKT</strong> change tickets for dashboard or report updates.</li>
+        <li>Posting <strong>structured deployment comments</strong> on tickets after a successful release.</li>
+        <li>Generating Word release notes (and client notes where needed) for stakeholders.</li>
+        <li>Tracking deployment history and marking releases complete when prod is verified.</li>
+        <li>Service desk and approver workflows with <strong>preview before create</strong>.</li>
+        <li>Slack deploy posts, Outlook mail, Teams review calls, and SharePoint uploads in the same run.</li>
+        <li>Choosing safe deploy dates (no Friday deploys, holiday-aware scheduling).</li>
       </ul>
     </section>
 
@@ -112,7 +119,9 @@ ul.features li { margin:0 0 8px; }
         <tr><td><strong>Slack deploy message</strong></td><td>Drafts the channel post with the correct change ticket link and a plain summary of work types; you approve, then send.</td></tr>
         <tr><td><strong>Slack &amp; Outlook notices</strong></td><td>Direct messages to release owner, testers, and leadership when the change ticket exists or when the review call is booked.</td></tr>
         <tr><td><strong>Jira reminders</strong></td><td>After the change ticket is created, nudges assignees on their tickets so they reply in Jira — not in group chat.</td></tr>
-        <tr><td><strong>After deploy</strong></td><td>Records the deploy and can mark the release complete when you confirm production.</td></tr>
+        <tr><td><strong>Deployment comments</strong></td><td>Builds the standard post-deploy Jira comment from your deployment info; you preview, then post — avoids copy-paste mistakes.</td></tr>
+        <tr><td><strong>After deploy</strong></td><td>Records the deploy, updates history, can move tickets toward <strong>Done</strong>, and mark the release complete when you confirm production.</td></tr>
+        <tr><td><strong>Deployment dashboard</strong></td><td>Summarizes recent deploys and metrics so leads see frequency and lead time without maintaining a spreadsheet.</td></tr>
         <tr><td><strong>Glofox &amp; Ignite</strong></td><td>Same MCP; you pick the program so people, channels, and SharePoint paths match that release.</td></tr>
       </table>
       <p class="highlight">Typical run through change ticket + Slack: <strong>5–15 minutes</strong> when tickets are ready.</p>
@@ -121,8 +130,8 @@ ul.features li { margin:0 0 8px; }
     <section id="problem">
       <h2>What problem it solves</h2>
       <div class="compare">
-        <div class="before"><h3>Before</h3><p>Tickets in Jira, notes in Word, folders hunted in SharePoint, change ticket filled field by field, “please comment” in group chats, deploy post with the wrong link. Same report listed three times. Easy to miss a tester or a holiday.</p></div>
-        <div class="after"><h3>With the MCP</h3><p>One list drives notes, files, change ticket, and messages. Developers answer on the Jira ticket only. You preview Slack and mail, then send. Deploy dates skip Fridays and bad holiday gaps.</p></div>
+        <div class="before"><h3>Before</h3><p>Tickets in Jira, notes in Word, TCKT fields pasted by hand, deployment comments rewritten every release, Done transitions forgotten, history in someone’s spreadsheet. Same report listed three times. Easy to miss approvers, testers, or a holiday.</p></div>
+        <div class="after"><h3>With the MCP</h3><p>One list in Cursor drives notes, SharePoint, TCKT, deployment comments, and announcements. Pre-flight checks catch bad fields before submit. You preview every Jira write and every Slack or mail send. Deploy dates skip Fridays and bad holiday gaps.</p></div>
       </div>
       <p class="highlight">You stay in control — preview first, confirm every live send.</p>
     </section>
