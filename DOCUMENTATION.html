@@ -60,10 +60,10 @@ ul.features li { margin:0 0 8px; }
   </header>
   <nav>
     <a href="#goal">Goal</a>
-    <a href="#problem">Problem it solves</a>
-    <a href="#time">Time saved</a>
-    <a href="#does">What it does</a>
-    <a href="#flow">Simple flow</a>
+    <a href="#features">All features</a>
+    <a href="#problem">Problem</a>
+    <a href="#time">How fast</a>
+    <a href="#flow">Flow</a>
     <a href="#onboard">Quick start</a>
   </nav>
   <main>
@@ -96,6 +96,28 @@ ul.features li { margin:0 0 8px; }
       </ul>
     </section>
 
+    <section id="features">
+      <h2>Everything the MCP handles (simple)</h2>
+      <p>One release list in Cursor. Each row is a real step you can preview before anything goes live.</p>
+      <table>
+        <tr><th>Step</th><th>What happens</th></tr>
+        <tr><td><strong>Ticket review</strong></td><td>Loads standard and custom tickets for the release; groups by report so the same dashboard is not listed twice.</td></tr>
+        <tr><td><strong>Ready gates</strong></td><td>Reads Jira comments (<strong>ready for review</strong> / <strong>ready for release</strong>) so you know who is in the ship.</td></tr>
+        <tr><td><strong>Review call</strong></td><td>Helps schedule the Teams review meeting and sends Slack / Outlook invites to the right people.</td></tr>
+        <tr><td><strong>Safe dates</strong></td><td>Suggests review and deploy days using the company calendar — no Friday deploys, no deploy the day before a holiday.</td></tr>
+        <tr><td><strong>Release notes</strong></td><td>Builds the internal Word release notes from tickets (testing evidence slots included).</td></tr>
+        <tr><td><strong>Client release notes</strong></td><td>Builds a shorter client-facing Word doc for custom clients when needed.</td></tr>
+        <tr><td><strong>SharePoint upload</strong></td><td>Creates quarter/month folders and uploads <strong>both</strong> Word files to the same place; links flow to the change ticket and Slack.</td></tr>
+        <tr><td><strong>Change ticket (SHIPIT)</strong></td><td>Creates the production change ticket with implementation, test, backout, and impact text filled from the same tickets; preview before submit.</td></tr>
+        <tr><td><strong>Slack deploy message</strong></td><td>Drafts the channel post with the correct change ticket link and a plain summary of work types; you approve, then send.</td></tr>
+        <tr><td><strong>Slack &amp; Outlook notices</strong></td><td>Direct messages to release owner, testers, and leadership when the change ticket exists or when the review call is booked.</td></tr>
+        <tr><td><strong>Jira reminders</strong></td><td>After the change ticket is created, nudges assignees on their tickets so they reply in Jira — not in group chat.</td></tr>
+        <tr><td><strong>After deploy</strong></td><td>Records the deploy and can mark the release complete when you confirm production.</td></tr>
+        <tr><td><strong>Glofox &amp; Ignite</strong></td><td>Same MCP; you pick the program so people, channels, and SharePoint paths match that release.</td></tr>
+      </table>
+      <p class="highlight">Typical run through change ticket + Slack: <strong>5–15 minutes</strong> when tickets are ready.</p>
+    </section>
+
     <section id="problem">
       <h2>What problem it solves</h2>
       <div class="compare">
@@ -119,43 +141,19 @@ ul.features li { margin:0 0 8px; }
       <p class="highlight">Developer readiness and QA still happen on their own schedule — the MCP does not wait for prod testing.</p>
     </section>
 
-    <section id="does">
-      <h2>What the MCP does (plain list)</h2>
-      <ul class="features">
-        <li><strong>Jira</strong> — Load tickets for the release; check who said they are ready (comments on the ticket); create the change ticket with implementation, test, backout, and impact text; remind assignees after the ticket exists.</li>
-        <li><strong>Release notes</strong> — Build the internal Word doc from tickets (one line per report, tickets grouped). Build client notes for custom work when needed.</li>
-        <li><strong>SharePoint</strong> — Create the right folder for the quarter and month; upload internal and client Word files to the same place; attach links on the change ticket and in Slack.</li>
-        <li><strong>Slack</strong> — Draft the deploy message with the correct change ticket link and a short summary of work types; send when you approve.</li>
-        <li><strong>Outlook</strong> — Email release owner, testers, and leadership when the change ticket is created or when a review call is scheduled.</li>
-        <li><strong>Teams</strong> — Help schedule or update the review meeting and notify people who should join.</li>
-        <li><strong>Calendar</strong> — Suggest review and deploy dates using the company holiday calendar; avoid Friday deploys and awkward days before a day off.</li>
-        <li><strong>Programs</strong> — Same MCP supports <strong>Glofox</strong> and <strong>Ignite</strong> (different people, channels, and folders per program — you pick the program for that release).</li>
-        <li><strong>Safety</strong> — Preview by default; no passwords in chat; does not change your data warehouse.</li>
-      </ul>
-      <h3>Who does what (simple)</h3>
-      <table>
-        <tr><th>Role</th><th>Your job</th></tr>
-        <tr><td><strong>Developer</strong></td><td>On your Jira ticket, comment <strong>ready for review</strong> or <strong>ready for release</strong> when true. No need to spam group chats.</td></tr>
-        <tr><td><strong>Release owner</strong></td><td>Run the MCP in Cursor, preview each step, create the change ticket, send Slack and mail when ready.</td></tr>
-        <tr><td><strong>Tester</strong></td><td>Test your tickets; after production, add screenshots in the testing section of the notes.</td></tr>
-        <tr><td><strong>Leadership</strong></td><td>Gets a short Slack and Outlook summary when the change ticket is created (linked tickets only).</td></tr>
-      </table>
-    </section>
-
     <section id="flow">
       <h2>Simple flow (every release)</h2>
       <div class="mermaid">
 flowchart TD
-  A["Set up once in Cursor"] --> B["Pick release version"]
-  B --> C["Load tickets from Jira"]
-  C --> D["Developers comment ready on tickets"]
-  D --> E["Review call on Teams"]
-  E --> F["Generate Word notes"]
-  F --> G["Upload to SharePoint"]
-  G --> H["Create change ticket"]
-  H --> I["Slack deploy message"]
-  I --> J["Outlook and Slack to owner and testers"]
-  J --> K["You confirm production deploy"]
+  A["Setup in Cursor"] --> B["Pick version and program"]
+  B --> C["Review tickets in Jira"]
+  C --> D["Teams review call"]
+  D --> E["Release notes + client notes"]
+  E --> F["SharePoint upload"]
+  F --> G["Create change ticket"]
+  G --> H["Slack deploy post"]
+  H --> I["Outlook and Slack to team"]
+  I --> J["Production deploy when ready"]
       </div>
       <p>Leadership gets notified when the change ticket exists. Assignees get a Jira reminder on their tickets. Deploy only on a safe workday (not Friday).</p>
     </section>
@@ -169,7 +167,15 @@ flowchart TD
         <li>Start a release: choose program (Glofox or Ignite), pick versions, follow the steps in order.</li>
         <li>Always <strong>preview</strong> Slack and email before sending live.</li>
       </ol>
-      <div class="done"><strong>Team onboarding:</strong> share this page and walk one release together — <strong>5–10 minutes</strong>. You are ready when you can see tickets and run through to change ticket + Slack preview on your own.</div>
+      <h3>Who does what</h3>
+      <table>
+        <tr><th>Role</th><th>Your job</th></tr>
+        <tr><td><strong>Developer</strong></td><td>Comment on the Jira ticket when ready — not in group chat.</td></tr>
+        <tr><td><strong>Release owner</strong></td><td>Run the MCP, preview, then send Slack and mail.</td></tr>
+        <tr><td><strong>Tester</strong></td><td>QA tickets; add screenshots in the notes after prod.</td></tr>
+        <tr><td><strong>Leadership</strong></td><td>Gets a short summary when the change ticket is created.</td></tr>
+      </table>
+      <div class="done"><strong>Team onboarding:</strong> share this page and walk one release together — <strong>5–10 minutes</strong>. You are ready when you can run through to change ticket + Slack preview on your own.</div>
       <h3>If something goes wrong</h3>
       <table>
         <tr><th>Issue</th><th>Try this</th></tr>
@@ -180,7 +186,7 @@ flowchart TD
       </table>
     </section>
   </main>
-  <footer>Release Orchestrator MCP · Glofox &amp; Ignite · preview before every send</footer>
+  <footer>Release Orchestrator MCP · Glofox &amp; Ignite · preview before every send · <a href="https://glofoxinc.github.io/release-orchestrator/DOCUMENTATION.html" style="color:var(--muted)">Share this link</a></footer>
   <script>mermaid.initialize({ startOnLoad: true, theme: "base", themeVariables: { primaryColor: "#C9A227", primaryTextColor: "#0A1628", primaryBorderColor: "#0A1628", lineColor: "#0A1628", fontFamily: "Segoe UI" } });</script>
 </body>
 </html>
