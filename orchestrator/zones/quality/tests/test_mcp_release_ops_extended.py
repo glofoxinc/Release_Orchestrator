@@ -45,6 +45,39 @@ def test_generate_release_notes_docx_no_tickets(monkeypatch):
     assert result["status"] == "error"
 
 
+def test_generate_client_release_notes_docx_file_pic_only(tmp_path):
+    from release_mcp import release_ops
+
+    dest = tmp_path / "Client Release Notes 2026.4.10.15.docx"
+    result = release_ops.generate_client_release_notes_docx_file(
+        "2026.4.10.15",
+        output_path=str(dest),
+        extracted_override=[
+            {
+                "ticket": "AN-5596",
+                "project": "AN",
+                "type": "Analyze",
+                "client": "Standard",
+                "report": "Class Utilization",
+                "description": "rename",
+            },
+            {
+                "ticket": "PIC-6326",
+                "project": "PIC",
+                "type": "Custom",
+                "client": "Lift",
+                "report": "Corporate Partnership Analysis",
+                "description": "Australia update",
+            },
+        ],
+    )
+    assert result["ok"] is True
+    assert result["client_ticket_count"] == 1
+    assert result["client_clients"] == ["Lift"]
+    assert dest.exists()
+    assert dest.stat().st_size > 1000
+
+
 def test_list_all_teams_cached(monkeypatch, tmp_path):
     import config
 

@@ -23,6 +23,7 @@ from release_mcp.server.bootstrap import logger, mcp
 def create_service_ticket(
     version_name: str,
     sharepoint_url: str | None = None,
+    client_sharepoint_url: str | None = None,
     projects: list[str] | None = None,
     ticket_keys: list[str] | None = None,
     planned_start_date: str | None = None,
@@ -51,6 +52,7 @@ def create_service_ticket(
     Args:
         version_name: Fix version (e.g. 2026.3.08.12)
         sharepoint_url: SharePoint link to Release Notes .docx (required to create)
+        client_sharepoint_url: Optional Client Release Notes link (same SharePoint folder)
         projects: Optional subset of PIC/AN
         ticket_keys: Optional include-only keys
         planned_start_date: YYYY-MM-DD (defaults from version date)
@@ -70,6 +72,7 @@ def create_service_ticket(
         release_ops.create_service_ticket(
             version_name=version_name,
             sharepoint_url=sharepoint_url,
+            client_sharepoint_url=client_sharepoint_url,
             projects=projects,
             ticket_keys=ticket_keys,
             planned_start_date=planned_start_date,

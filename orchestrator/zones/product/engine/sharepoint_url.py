@@ -5,7 +5,7 @@ from __future__ import annotations
 import os
 import re
 from datetime import date
-from urllib.parse import parse_qs, unquote, urlparse
+from urllib.parse import parse_qs, quote, unquote, urlparse
 
 # Path / deep-link markers (host alone is not enough for link-shape soft gate).
 _LINK_SHAPE_HINTS = (
@@ -76,6 +76,42 @@ def has_sharepoint_link_shape(url: str) -> bool:
             if ".docx" in unquote(str(val)).lower() or "sharepoint" in unquote(str(val)).lower():
                 return True
     return False
+
+
+def release_notes_docx_name(version: str) -> str:
+    ver = (version or "").strip().lstrip("vV")
+    return f"Release Notes {ver}.docx" if ver else "Release Notes.docx"
+
+
+def client_notes_docx_name(version: str) -> str:
+    ver = (version or "").strip().lstrip("vV")
+    return f"Client Release Notes {ver}.docx" if ver else "Client Release Notes.docx"
+
+
+def sibling_sharepoint_url(url: str, *, from_name: str, to_name: str) -> str:
+    """Swap a known .docx file name inside a SharePoint URL (same folder)."""
+    raw = (url or "").strip()
+    src = (from_name or "").strip()
+    dest = (to_name or "").strip()
+    if not raw or not src or not dest or src == dest:
+        return ""
+    variants = (
+        (src, dest),
+        (src.replace(" ", "%20"), dest.replace(" ", "%20")),
+        (quote(src, safe=""), quote(dest, safe="")),
+    )
+    for old, new in variants:
+        if old and old in raw:
+            return raw.replace(old, new, 1)
+    return ""
+
+
+def sibling_client_notes_url(release_notes_url: str, version: str) -> str:
+    return sibling_sharepoint_url(
+        release_notes_url,
+        from_name=release_notes_docx_name(version),
+        to_name=client_notes_docx_name(version),
+    )
 
 
 def validate_sharepoint_url(

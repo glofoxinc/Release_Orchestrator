@@ -165,12 +165,13 @@ def resolve_sharepoint_folder_relative(
     cfg = sp_cfg or sharepoint_section()
     folder_path = str(cfg.get("folder_path") or "Shared Documents/Release Notes").strip()
     ref = reference_date or parse_release_version_date(version_name) or date.today()
-    if "{{quarter}}" in folder_path:
-        return folder_path.replace("{{quarter}}", sp.quarter_label(ref))
-    if bool(cfg.get("auto_quarter_subfolder", False)):
-        base = folder_path.rstrip("/\\")
-        return f"{base}/{sp.quarter_label(ref)}"
-    return folder_path
+    return sp.apply_folder_tokens(
+        folder_path,
+        ref,
+        auto_year_subfolder=bool(cfg.get("auto_year_subfolder", False)),
+        auto_quarter_subfolder=bool(cfg.get("auto_quarter_subfolder", False)),
+        auto_month_subfolder=bool(cfg.get("auto_month_subfolder", False)),
+    )
 
 
 def resolve_sharepoint_id_path(
@@ -342,6 +343,7 @@ def build_sharepoint_upload_handoff(
     *,
     version_name: str = "",
     remote_name: str | None = None,
+    extra_files: list[tuple[str, str]] | None = None,
 ) -> dict[str, Any]:
     """Playwright MCP playbook to upload Release Notes .docx to SharePoint."""
     st = status()
@@ -473,6 +475,43 @@ def build_sharepoint_upload_handoff(
             ),
         ),
     ]
+    order = 9
+    extras = extra_files or []
+    extra_meta: list[dict[str, str]] = []
+    for extra_path, extra_name in extras:
+        abs_extra = os.path.abspath(extra_path)
+        if not os.path.isfile(abs_extra):
+            continue
+        extra_meta.append({"local_path": abs_extra, "remote_name": extra_name})
+        steps.append(
+            _step(
+                order,
+                f"Upload {extra_name}",
+                mcp_tool="browser_file_upload",
+                arguments={"paths": [abs_extra]},
+                note=f"Same folder as release notes. Select: {abs_extra}",
+            )
+        )
+        order += 1
+        steps.append(
+            _step(
+                order,
+                f"Copy {extra_name} link",
+                mcp_tool="browser_run_code_unsafe",
+                arguments={
+                    "code": (
+                        "async (page) => {"
+                        f"  const row = page.getByText({extra_name!r}, {{ exact: false }}).first();"
+                        "  if (!(await row.count())) return 'Client notes file row not visible yet';"
+                        "  await row.click({ button: 'right' });"
+                        "  return 'Copy the Client Release Notes SharePoint URL';"
+                        "}"
+                    ),
+                },
+                note="Paste as **client_sharepoint_url** (same folder as release notes).",
+            )
+        )
+        order += 1
 
     return {
         "ok": bool(folder_url),
@@ -481,11 +520,13 @@ def build_sharepoint_upload_handoff(
         "instruction": (
             "Execute each step below using **Playwright MCP**. The upload target is the "
             f"**{quarter_folder}** quarter folder under your team's Release Notes library. "
-            "When upload completes, paste the SharePoint document URL in chat "
+            "Upload Release Notes and Client Release Notes to that same folder. "
+            "When upload completes, paste both SharePoint document URLs in chat "
             "(or say **sharepoint done**)."
         ),
         "local_path": abs_path,
         "remote_name": file_name,
+        "extra_files": extra_meta,
         "quarter_folder": quarter_folder,
         "folder_relative_path": folder_relative,
         "folder_browse_url": folder_url,
@@ -506,6 +547,7 @@ def build_playwright_slack_compose(
 ) -> dict[str, Any]:
     """Structured Slack web compose payload — hyperlinks + @mentions for Playwright."""
     from slack_announce import (
+        format_client_notes_display,
         format_deploy_day,
         format_service_desk_display,
         format_sharepoint_download_display,
@@ -537,6 +579,11 @@ def build_playwright_slack_compose(
         )
     ticket_url = (draft.ticket_url or "").strip()
     ticket_label = format_service_desk_display(draft, for_preview=True)
+    mix_line = str(getattr(draft, "ticket_mix_line", "") or "").strip()
+    client_label = format_client_notes_display(draft, for_preview=True)
+    client_url = sharepoint_document_open_url(
+        str(getattr(draft, "client_sharepoint_url", "") or "").strip()
+    )
     cc_people = list(getattr(channel, "cc", ()) or ())
 
     def _link(url: str, label: str) -> dict[str, str]:
@@ -573,27 +620,58 @@ def build_playwright_slack_compose(
             "parts": [_text("Deployment notes and the deployment ticket are below for reference:")],
         },
         {"type": "blank"},
-        {
-            "type": "line",
-            "parts": [_text("SharePoint — Release Notes: "), sharepoint_download_part],
-        },
-        {
-            "type": "line",
-            "parts": [_text("SharePoint — Folder: "), sharepoint_folder_part],
-        },
-        {"type": "line", "parts": [_text("Service Desk: "), service_desk_part]},
-        {"type": "line", "parts": cc_parts},
     ]
+    if mix_line:
+        blocks.append(
+            {
+                "type": "line",
+                "parts": [{"type": "bold", "text": mix_line}],
+            }
+        )
+    blocks.extend(
+        [
+            {
+                "type": "line",
+                "parts": [_text("SharePoint — Release Notes: "), sharepoint_download_part],
+            },
+        ]
+    )
+    if client_label:
+        client_part = _link(client_url, client_label) if client_url else _text(client_label)
+        blocks.append(
+            {
+                "type": "line",
+                "parts": [_text("SharePoint — Client Notes: "), client_part],
+            }
+        )
+    blocks.extend(
+        [
+            {
+                "type": "line",
+                "parts": [_text("SharePoint — Folder: "), sharepoint_folder_part],
+            },
+            {"type": "line", "parts": [_text("SHIPIT ticket: "), service_desk_part]},
+            {"type": "line", "parts": cc_parts},
+        ]
+    )
     plain_lines = [
         "Hello Team,",
         f"Our upcoming deployment is scheduled for {day}.",
         "Deployment notes and the deployment ticket are below for reference:",
         "",
-        f"SharePoint — Release Notes: {sp_label}",
-        f"SharePoint — Folder: {sp_folder_label}",
-        f"Service Desk: {ticket_label}",
-        "CC: " + " ".join(f"@{p.name}" for p in cc_people),
     ]
+    if mix_line:
+        plain_lines.append(f"*{mix_line}*")
+    plain_lines.append(f"SharePoint — Release Notes: {sp_label}")
+    if client_label:
+        plain_lines.append(f"SharePoint — Client Notes: {client_label}")
+    plain_lines.extend(
+        [
+            f"SharePoint — Folder: {sp_folder_label}",
+            f"SHIPIT ticket: {ticket_label}",
+            "CC: " + " ".join(f"@{p.name}" for p in cc_people),
+        ]
+    )
     return {"blocks": blocks, "plain_fallback": "\n".join(plain_lines)}
 
 
@@ -635,6 +713,7 @@ def playwright_slack_send_code(compose: dict[str, Any] | str) -> str:
         "    .replace(/\"/g, '&quot;');"
         "  const partHtml = (part) => {"
         "    if (part.type === 'text') return escapeHtml(part.text);"
+        "    if (part.type === 'bold') return `<strong>${escapeHtml(part.text)}</strong>`;"
         "    if (part.type === 'link') {"
         "      const href = escapeHtml(part.url);"
         "      const label = escapeHtml(part.label);"
@@ -679,6 +758,11 @@ def playwright_slack_send_code(compose: dict[str, Any] | str) -> str:
         "        }"
         "        for (const part of block.parts || []) {"
         "          if (part.type === 'text') p.appendChild(document.createTextNode(part.text || ''));"
+        "          else if (part.type === 'bold') {"
+        "            const strong = document.createElement('strong');"
+        "            strong.textContent = part.text || '';"
+        "            p.appendChild(strong);"
+        "          }"
         "          else if (part.type === 'link') {"
         "            const a = document.createElement('a');"
         "            a.href = part.url || '';"
@@ -764,7 +848,7 @@ def build_slack_post_handoff(
             "Paste linked deployment message and send",
             mcp_tool="browser_run_code_unsafe",
             arguments={"code": send_code},
-            note="Inserts SharePoint + Service Desk hyperlinks and @mentions, then sends.",
+            note="Inserts SharePoint + SHIPIT ticket hyperlinks and @mentions, then sends.",
         ),
     ]
 
@@ -817,4 +901,100 @@ def build_slack_announce_handoff(preview: dict[str, Any]) -> dict[str, Any]:
         "completion": {
             "user_phrases": ["slack done", "posted slack"],
         },
+    }
+
+
+def playwright_sushma_notify_handoff(
+    *,
+    slack_user_id: str,
+    email: str,
+    name: str,
+    subject: str,
+    text: str,
+) -> dict[str, Any]:
+    """Playwright MCP fallback: Slack DM + Outlook compose. Agent runs the steps."""
+    from urllib.parse import quote
+
+    slack_url = (
+        f"https://app.slack.com/client/_/user/{slack_user_id}"
+        if slack_user_id
+        else "https://app.slack.com/"
+    )
+    outlook_url = (
+        "https://outlook.office.com/mail/deeplink/compose"
+        f"?to={quote(email or '')}&subject={quote(subject or '')}"
+    )
+    text_js = json.dumps(text or "")
+    name_js = json.dumps((name or "Sushma").split()[0])
+    return {
+        "delivery": "cursor_playwright_mcp",
+        "mcp": playwright_mcp(),
+        "instruction": (
+            "Need Slack AND Outlook. Use Slack MCP / Graph first. "
+            "If either fails, run these Playwright MCP steps (signed-in Slack + Outlook web)."
+        ),
+        "steps": [
+            {
+                "n": 1,
+                "title": "Slack DM",
+                "mcp_tool": "browser_navigate",
+                "arguments": {"url": slack_url},
+                "note": f"Open DM with {name}. If the URL is not a DM, search that person.",
+            },
+            {
+                "n": 2,
+                "title": "Type Slack message",
+                "mcp_tool": "browser_run_code_unsafe",
+                "arguments": {
+                    "code": (
+                        "async (page) => {"
+                        f"  const text = {text_js};"
+                        "  const box = page.locator('[data-qa=\"message_input\"]').first();"
+                        "  if (!(await box.count())) return 'composer not found';"
+                        "  await box.click();"
+                        "  const lines = text.split('\\n');"
+                        "  for (let i = 0; i < lines.length; i++) {"
+                        "    if (lines[i]) await page.keyboard.type(lines[i], { delay: 2 });"
+                        "    if (i < lines.length - 1) {"
+                        "      await page.keyboard.down('Shift');"
+                        "      await page.keyboard.press('Enter');"
+                        "      await page.keyboard.up('Shift');"
+                        "    }"
+                        "  }"
+                        "  await page.keyboard.press('Enter');"
+                        "  return 'slack dm sent';"
+                        "}"
+                    ),
+                },
+            },
+            {
+                "n": 3,
+                "title": "Outlook compose",
+                "mcp_tool": "browser_navigate",
+                "arguments": {"url": outlook_url},
+                "note": f"To: {email}",
+            },
+            {
+                "n": 4,
+                "title": "Paste Outlook body and send",
+                "mcp_tool": "browser_run_code_unsafe",
+                "arguments": {
+                    "code": (
+                        "async (page) => {"
+                        f"  const text = {text_js};"
+                        "  const body = page.locator('[aria-label=\"Message body\"], div[role=\"textbox\"]').last();"
+                        "  if (!(await body.count())) return 'outlook body not found';"
+                        "  await body.click();"
+                        "  await page.keyboard.type(text, { delay: 1 });"
+                        "  await page.keyboard.press('Control+Enter');"
+                        f"  return 'outlook send attempted to {name_js}';"
+                        "}"
+                    ),
+                },
+            },
+        ],
+        "slack_url": slack_url,
+        "outlook_url": outlook_url,
+        "to": email,
+        "subject": subject,
     }

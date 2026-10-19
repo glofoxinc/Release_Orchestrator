@@ -98,7 +98,8 @@ def test_operator_gold_standard_buddies_channel_2026_3_09_23():
     assert "Deployment notes and the deployment ticket are below for reference:" in preview
     assert "SharePoint — Release Notes: Release Notes 2026.3.09.23.docx" in preview
     assert "SharePoint — Folder:" in preview
-    assert "Service Desk: Glofox Insights Customize BI - Prod Deployment - Release Version 2026.3.09.23" in preview
+    assert "SHIPIT ticket: Glofox Insights Customize BI - Prod Deployment - Release Version 2026.3.09.23" in preview
+    assert "Service Desk:" not in preview
     assert "CC: @Sushma Bhamidipati" in preview
     assert "Sai Anirudh Karre" not in preview
     assert "Thanks!" not in preview
@@ -127,6 +128,8 @@ def test_shipit_17191_style_message_preview():
     assert "Sushma Bhamidipati" in buddies.preview
     assert "SharePoint — Release Notes:" in squad.preview
     assert "SharePoint — Folder:" in squad.preview
+    assert "SHIPIT ticket:" in squad.preview
+    assert "Service Desk:" not in squad.preview
 
 
 def test_load_announce_config_workspace_channels_cc():
@@ -375,3 +378,62 @@ def test_draft_from_session_includes_download_and_folder_links():
     preview = sa.build_channel_messages(draft)[0].preview
     assert "SharePoint — Release Notes:" in preview
     assert "SharePoint — Folder:" in preview
+    assert "SharePoint — Client Notes:" not in preview
+
+
+def test_slack_includes_client_notes_when_url_set():
+    draft = sa.SlackAnnounceDraft(
+        ticket_key="SHIPIT-19102",
+        ticket_summary="Glofox Insights Customize BI - Prod Deployment - Release Version 2026.4.10.15",
+        ticket_url="https://abcfinancial.atlassian.net/browse/SHIPIT-19102",
+        version="v2026.4.10.15",
+        deploy_date=date(2026, 10, 15),
+        sharepoint_url="https://abcfinancial.sharepoint.com/:w:/r/teams/x/Release%20Notes%202026.4.10.15.docx",
+        sharepoint_label="Release Notes 2026.4.10.15.docx",
+        client_sharepoint_url=(
+            "https://abcfinancial.sharepoint.com/:w:/r/teams/x/"
+            "Client%20Release%20Notes%202026.4.10.15.docx"
+        ),
+        client_sharepoint_label="Client Release Notes 2026.4.10.15.docx",
+    )
+    preview = sa.build_channel_messages(draft)[0].preview
+    assert "SharePoint — Release Notes: Release Notes 2026.4.10.15.docx" in preview
+    assert "SharePoint — Client Notes: Client Release Notes 2026.4.10.15.docx" in preview
+    assert "SHIPIT ticket:" in preview
+
+
+def test_ticket_mix_line_from_labels():
+    extracted = [
+        {"ticket": "AN-5596", "labels": ["Report_Enhancement"]},
+        {"ticket": "AN-5567", "labels": ["Report_Enhancement", "sentiment"]},
+        {"ticket": "PIC-6326", "labels": ["Report_Enhancement"]},
+    ]
+    line = sa.format_ticket_mix_line(extracted)
+    assert line == "Total 3 | Report Enhancement - 3 | sentiment - 1"
+    draft = sa.draft_from_session(
+        ticket_key="SHIPIT-19102",
+        summary="Glofox Insights Customize BI - Prod Deployment - Release Version 2026.4.10.15",
+        ticket_url="https://abcfinancial.atlassian.net/browse/SHIPIT-19102",
+        planned_start=date(2026, 10, 15),
+        sharepoint_url="",
+        extracted=extracted,
+    )
+    assert draft.ticket_mix_line == line
+    preview = sa.build_channel_messages(draft)[0].preview
+    text = sa.build_channel_messages(draft)[0].text
+    assert f"**{line}**" in preview
+    assert f"*{line}*" in text
+    assert "SHIPIT ticket:" in preview
+    assert "Service Desk:" not in preview
+
+
+def test_ticket_mix_shows_every_jira_label():
+    extracted = [
+        {"ticket": "PIC-1", "labels": ["Report_Enhancement", "KPI-Forge"]},
+        {"ticket": "PIC-2", "labels": ["semantic_model"]},
+        {"ticket": "AN-3", "labels": ["Looker-Exit", "KPI-Forge"]},
+    ]
+    line = sa.format_ticket_mix_line(extracted)
+    assert line == (
+        "Total 3 | Report Enhancement - 1 | KPI-Forge - 2 | semantic model - 1 | Looker-Exit - 1"
+    )

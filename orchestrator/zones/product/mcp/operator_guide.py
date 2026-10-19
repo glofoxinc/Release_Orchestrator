@@ -63,6 +63,12 @@ def enrich_tool_response(result: dict[str, Any], *, tool: str) -> dict[str, Any]
     )
     guide["tool"] = tool
     enriched["operator_guide"] = guide
+    try:
+        import program_pack as pp
+
+        enriched["program"] = pp.program_context()
+    except Exception:  # noqa: BLE001 — never fail a tool because the pack is missing
+        enriched["program"] = {"program": "glofox", "trained": True}
     return enriched
 
 
@@ -158,8 +164,12 @@ def _related_tools(step: str | None, mode: str) -> list[str]:
     base = ["release_wizard", "fetch_release_tickets", "generate_release_notes_docx"]
     by_step = {
         "ticket_review": ["pre_review_gate", "team_scope_status"],
-        "release_notes": ["generate_release_notes_docx"],
-        "sharepoint": ["release_wizard"],
+        "release_notes": ["generate_release_notes_docx", "generate_client_release_notes_docx"],
+        "sharepoint": [
+            "release_wizard",
+            "sharepoint_upload_notes_pair",
+            "sharepoint_upload_client_notes",
+        ],
         "service_ticket": ["create_service_ticket"],
         "slack": ["release_gate_status"],
         "deploy": ["post_qa_gate"],
@@ -177,9 +187,22 @@ def _tool_guide(tool: str, status: str) -> dict[str, Any]:
     guides = {
         "generate_release_notes_docx": {
             "next_recommended_action": "Use version_name + optional ticket_keys; check readiness in response",
-            "related_tools": ["release_wizard", "fetch_release_tickets"],
+            "related_tools": ["release_wizard", "fetch_release_tickets", "generate_client_release_notes_docx"],
             "note": "SharePoint Graph upload archived — paste manual link on sharepoint step.",
             "note": "Prefer this over deprecated generate_release_notes text tool.",
+        },
+        "generate_client_release_notes_docx": {
+            "next_recommended_action": "Pass version_name; writes PIC/custom notes to Downloads unless output_path is set",
+            "related_tools": [
+                "generate_release_notes_docx",
+                "sharepoint_upload_notes_pair",
+                "fetch_release_tickets",
+            ],
+            "note": (
+                "Analyze / AN tickets are excluded. Upload to the same SharePoint folder as "
+                "internal notes via sharepoint_upload_notes_pair, then pass both URLs into "
+                "create_service_ticket and slack_preview."
+            ),
         },
         "generate_release_notes": {
             "deprecated": True,

@@ -132,11 +132,17 @@ def team_crew_status() -> dict:
     import team_crew as tc
 
     status = tc.team_crew_status()
+    import program_pack as pp
+
     payload = {
         **status,
+        "program": pp.program_context(),
+        "programs": pp.list_programs(),
         "hint": (
-            "Not configured? Say **welcome onboard** → pick team (glofox/ignite/etl) "
-            "→ **crew done** → paste `.env` snippet."
+            "Active program pack is isolated (Glofox vs Ignite vs ETL). "
+            "Glofox is trained. Do not copy Glofox crew into Ignite. "
+            "Say **use glofox** / call train_program(program='glofox'). "
+            "Ignite stays empty until trained on its own roster."
         ),
     }
     return enrich_tool_response(payload, tool="team_crew_status")

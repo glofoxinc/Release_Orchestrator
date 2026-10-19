@@ -480,6 +480,25 @@ def _generate_builtin(ss: dict) -> None:
         mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
         key="rn_download_docx",
     )
+    try:
+        from generators.client_release_notes import (
+            client_notes_filename,
+            generate_client_release_notes_docx,
+        )
+
+        client_bytes = generate_client_release_notes_docx(data)
+        client_name = client_notes_filename(version)
+        st.session_state["rn_client_docx_bytes"] = client_bytes
+        st.session_state["rn_client_docx_filename"] = client_name
+        st.download_button(
+            "Download client-facing notes",
+            data=client_bytes,
+            file_name=client_name,
+            mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            key="rn_download_client_docx",
+        )
+    except Exception as exc:  # noqa: BLE001
+        st.caption(f"Client-facing notes were not generated: {exc}")
 
 
 def _generate_external(ss: dict) -> None:

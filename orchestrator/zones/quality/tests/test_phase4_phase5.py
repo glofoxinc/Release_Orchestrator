@@ -57,6 +57,39 @@ class TestSharePointPaths:
         name = sp.default_remote_name("v2026.3.09.30", cfg.remote_name_template)
         assert name == "Release Notes 2026.3.09.30.docx"
 
+    def test_month_and_quarter_auto_folders(self):
+        import sharepoint_upload as sp
+
+        cfg = sp.SharePointUploadConfig(
+            folder_path="Release Notes",
+            auto_quarter_subfolder=True,
+            auto_month_subfolder=True,
+        )
+        folder = sp.resolve_folder_path(cfg, reference_date=date(2026, 10, 14))
+        assert folder == "Release Notes/2026 - Q4/2026-10"
+
+    def test_tokens_plus_auto_month(self):
+        import sharepoint_upload as sp
+
+        cfg = sp.SharePointUploadConfig(
+            folder_path="Release Notes/{{quarter}}",
+            auto_month_subfolder=True,
+        )
+        folder = sp.resolve_folder_path(cfg, reference_date=date(2026, 4, 14))
+        assert folder == "Release Notes/2026 - Q2/2026-04"
+
+    def test_ensure_folder_treats_existing_as_ok(self):
+        import sharepoint_upload as sp
+
+        class _Graph:
+            def request(self, method, path, **kwargs):
+                assert method == "POST"
+                return 409, {"error": {"code": "nameAlreadyExists"}}
+
+        cfg = sp.SharePointUploadConfig(drive_id="drive-1", graph=_Graph())
+        created = sp.ensure_folder_path(cfg, "Release Notes/2026 - Q4/2026-10")
+        assert created == []
+
 
 class TestReleaseDefaults:
     def test_last_schedule_window_roundtrip(self, monkeypatch, tmp_path):

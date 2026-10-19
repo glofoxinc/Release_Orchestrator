@@ -28,6 +28,8 @@ def build_slack_preview(
     sharepoint_url: str,
     deploy_date: str,
     environments: str = "Analyze & Custom environments",
+    client_sharepoint_url: str = "",
+    extracted: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     """Build both channel messages without sending."""
     if is_archived("slack_announce"):
@@ -41,6 +43,8 @@ def build_slack_preview(
         sharepoint_url=sharepoint_url,
         version_hint=version_name,
         environments=environments,
+        client_sharepoint_url=client_sharepoint_url,
+        extracted=extracted,
     )
     cfg = load_announce_config({"slack_announce": config.SLACK_ANNOUNCE})
     messages = build_channel_messages(draft, cfg.channels)
@@ -83,8 +87,12 @@ def build_slack_preview(
             "sharepoint_download_url": draft.sharepoint_download_url,
             "sharepoint_folder_url": draft.sharepoint_folder_url,
             "sharepoint_folder_label": draft.sharepoint_folder_label,
+            "client_sharepoint_url": draft.client_sharepoint_url,
+            "client_sharepoint_label": draft.client_sharepoint_label,
             "version": draft.version,
             "deploy_date": deploy_date,
+            "ticket_count": draft.ticket_count,
+            "ticket_mix_line": draft.ticket_mix_line,
         },
         "channels": channel_payloads,
     }

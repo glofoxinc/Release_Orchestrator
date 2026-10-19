@@ -46,7 +46,9 @@ class SharePointUploadConfig:
     site_path: str = ""
     folder_path: str = "Release Notes"
     remote_name_template: str = "Release Notes {{version}}.docx"
+    auto_year_subfolder: bool = False
     auto_quarter_subfolder: bool = False
+    auto_month_subfolder: bool = False
     conflict_behavior: str = "replace"  # replace | fail | rename
     graph: GraphClient = field(default_factory=GraphClient)
 
@@ -126,12 +128,19 @@ def load_upload_config(
         remote_name_template=str(
             section.get("remote_name_template") or "Release Notes {{version}}.docx"
         ).strip(),
+        auto_year_subfolder=bool(section.get("auto_year_subfolder", False)),
         auto_quarter_subfolder=bool(section.get("auto_quarter_subfolder", False)),
+        auto_month_subfolder=bool(section.get("auto_month_subfolder", False)),
         conflict_behavior=(
             str(section.get("conflict_behavior") or "replace").strip().lower() or "replace"
         ),
         graph=graph or GraphClient(),
     )
+
+
+def year_label(reference: date | None = None) -> str:
+    ref = reference or date.today()
+    return str(ref.year)
 
 
 def quarter_label(reference: date | None = None) -> str:
@@ -141,20 +150,61 @@ def quarter_label(reference: date | None = None) -> str:
     return f"{ref.year} - Q{quarter}"
 
 
+def month_label(reference: date | None = None) -> str:
+    """``2026-10`` style folder (ISO year-month)."""
+    ref = reference or date.today()
+    return f"{ref.year}-{ref.month:02d}"
+
+
+def apply_folder_tokens(
+    folder_path: str,
+    reference: date | None = None,
+    *,
+    auto_year_subfolder: bool = False,
+    auto_quarter_subfolder: bool = False,
+    auto_month_subfolder: bool = False,
+) -> str:
+    """Expand ``{{year}}`` / ``{{quarter}}`` / ``{{month}}`` and optional auto folders.
+
+    Auto folders append only when that token is not already in the path, so
+    ``Release Notes/{{quarter}}`` plus ``auto_month_subfolder`` becomes
+    ``Release Notes/2026 - Q4/2026-10``.
+    """
+    folder = (folder_path or "Release Notes").replace("\\", "/").strip().strip("/")
+    ref = reference or date.today()
+    had_year = "{{year}}" in folder
+    had_quarter = "{{quarter}}" in folder
+    had_month = "{{month}}" in folder
+    folder = (
+        folder.replace("{{year}}", year_label(ref))
+        .replace("{{quarter}}", quarter_label(ref))
+        .replace("{{month}}", month_label(ref))
+    )
+    extras: list[str] = []
+    if auto_year_subfolder and not had_year:
+        extras.append(year_label(ref))
+    if auto_quarter_subfolder and not had_quarter:
+        extras.append(quarter_label(ref))
+    if auto_month_subfolder and not had_month:
+        extras.append(month_label(ref))
+    if extras:
+        folder = "/".join([folder, *extras])
+    return folder
+
+
 def resolve_folder_path(
     cfg: SharePointUploadConfig,
     *,
     reference_date: date | None = None,
 ) -> str:
-    """Apply ``{{quarter}}`` token or auto quarter subfolder."""
-    folder = (cfg.folder_path or "Release Notes").strip()
-    ref = reference_date or date.today()
-    if "{{quarter}}" in folder:
-        return folder.replace("{{quarter}}", quarter_label(ref))
-    if cfg.auto_quarter_subfolder:
-        base = folder.rstrip("/")
-        return f"{base}/{quarter_label(ref)}"
-    return folder
+    """Apply year/quarter/month tokens and auto subfolders from the release date."""
+    return apply_folder_tokens(
+        cfg.folder_path or "Release Notes",
+        reference_date or date.today(),
+        auto_year_subfolder=cfg.auto_year_subfolder,
+        auto_quarter_subfolder=cfg.auto_quarter_subfolder,
+        auto_month_subfolder=cfg.auto_month_subfolder,
+    )
 
 
 def default_remote_name(version: str, template: str | None = None) -> str:
@@ -163,6 +213,10 @@ def default_remote_name(version: str, template: str | None = None) -> str:
     if not ver:
         ver = date.today().strftime("%Y.%m.%d")
     return sanitize_remote_name(tmpl.replace("{{version}}", ver))
+
+
+def default_client_remote_name(version: str) -> str:
+    return default_remote_name(version, "Client Release Notes {{version}}.docx")
 
 
 def sanitize_remote_name(name: str) -> str:
@@ -177,6 +231,48 @@ def sanitize_remote_name(name: str) -> str:
 def _folder_segments(folder_path: str) -> str:
     parts = [p.strip().strip("/") for p in (folder_path or "").split("/") if p.strip()]
     return "/".join(parts)
+
+
+def ensure_folder_path(cfg: SharePointUploadConfig, folder_path: str) -> list[str]:
+    """Create each SharePoint folder segment if missing (year / quarter / month).
+
+    Graph ``nameAlreadyExists`` (409) is treated as success so monthly folders
+    can be created once and reused for later uploads.
+    """
+    drive_id = resolve_drive_id(cfg)
+    created: list[str] = []
+    parent = ""
+    for seg in _folder_segments(folder_path).split("/"):
+        if not seg:
+            continue
+        if parent:
+            encoded = "/".join(quote(p, safe="") for p in parent.split("/"))
+            children_url = f"/drives/{drive_id}/root:/{encoded}:/children"
+        else:
+            children_url = f"/drives/{drive_id}/root/children"
+        status, body = cfg.graph.request(
+            "POST",
+            children_url,
+            json_body={
+                "name": seg,
+                "folder": {},
+                "@microsoft.graph.conflictBehavior": "fail",
+            },
+        )
+        if status in (200, 201):
+            created.append(seg)
+        elif status not in (409, 405):
+            err = body if isinstance(body, str) else (body or {})
+            code = ""
+            if isinstance(err, dict):
+                code = str((err.get("error") or {}).get("code") or "")
+            if code.lower() not in {"namealreadyexists", "itemnotfound"} and status >= 400:
+                raise RuntimeError(
+                    f"Could not create SharePoint folder '{parent + '/' + seg if parent else seg}' "
+                    f"(HTTP {status}): {body}"
+                )
+        parent = f"{parent}/{seg}" if parent else seg
+    return created
 
 
 def resolve_drive_id(cfg: SharePointUploadConfig) -> str:
@@ -357,6 +453,7 @@ def upload_release_notes(
 
     try:
         drive_id = resolve_drive_id(cfg)
+        ensure_folder_path(cfg, plan.folder_path)
         plan.drive_id = drive_id
         plan.site_id = cfg.site_id
         plan.upload_url = build_upload_url(drive_id, plan.folder_path, plan.remote_name)

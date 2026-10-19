@@ -2,7 +2,9 @@ Hello Team,
 Our upcoming deployment is scheduled for {{ deploy_day }}.
 Deployment notes and the deployment ticket are below for reference:
 
-SharePoint — Release Notes: {{ sharepoint_download_display }}
-SharePoint — Folder: {{ sharepoint_folder_display }}
-Service Desk: {{ service_desk_display }}
+{% if ticket_mix_display %}{{ ticket_mix_display }}
+{% endif %}SharePoint — Release Notes: {{ sharepoint_download_display }}
+{% if client_notes_display %}SharePoint — Client Notes: {{ client_notes_display }}
+{% endif %}SharePoint — Folder: {{ sharepoint_folder_display }}
+SHIPIT ticket: {{ service_desk_display }}
 {{ cc_line }}

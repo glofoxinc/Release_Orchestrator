@@ -323,10 +323,12 @@ workspace:
       hostname: "abcfinancial.sharepoint.com"
       site_path: "/teams/ABCFitnessSolutionsLLC-Glofox-Customize"
       folder_path: "Shared Documents/Glofox - Customize/Release Notes"
+      auto_year_subfolder: false
       auto_quarter_subfolder: true
+      auto_month_subfolder: true
       remote_name_template: "Release Notes {{version}}.docx"
       viewid: "ba435012-557c-4c11-9c9b-638fba9707f6"
-      # Quarter folder example: .../Release Notes/2026 - Q3 (derived from release version date)
+      # Folders created from the release version date: .../Release Notes/2026 - Q4/2026-10
       # Optional override — paste exact AllItems.aspx URL; use {{quarter}} token for dynamic quarter:
       # folder_browse_url: "https://abcfinancial.sharepoint.com/teams/.../AllItems.aspx?id=.../Release%20Notes/{{quarter}}"
     slack:
@@ -388,6 +390,19 @@ workspace:
         - "In Review"
         - "Ready for Review"
         - "In Progress"
+
+  # Role notify (Slack DM + Outlook). Any operator / Ignite can use MCP tools.
+  # Live send stays dry_run until the operator confirms. Emails stay in .env.
+  release_notify:
+    enabled: true
+    mail_from_upn: ""  # defaults to teams_schedule.organizer_upn
+    fix_version_owner:
+      name: "Sushma Bhamidipati"
+      slack_user_id: "U08LDAQ7SDV"
+      email_env: "RELEASE_NOTIFY_SUSHMA_EMAIL"
+      email: "VenkataSuryaNagaSushma.Bhamidipati@abcfitness.com"
+    glofox_projects: ["PIC", "AN"]
+    jira_team_id: "317996a7-118a-4cf3-a3c6-04163516ed32"
 
   # Which apps are available on the home page
   apps:

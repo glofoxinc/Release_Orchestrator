@@ -14,6 +14,7 @@ from __future__ import annotations
 import logging
 import os
 import re
+from collections import OrderedDict
 from dataclasses import dataclass, field
 from datetime import date, datetime
 from typing import Any
@@ -97,8 +98,11 @@ class SlackAnnounceDraft:
     sharepoint_download_url: str = ""
     sharepoint_folder_url: str = ""
     sharepoint_folder_label: str = ""
+    client_sharepoint_url: str = ""
+    client_sharepoint_label: str = ""
     environments: str = "Analyze & Custom environments"
     ticket_count: int = 0
+    ticket_mix_line: str = ""
 
 
 @dataclass
@@ -442,6 +446,24 @@ def format_sharepoint_display(
     return format_sharepoint_download_display(draft, for_preview=for_preview)
 
 
+def format_client_notes_display(
+    draft: SlackAnnounceDraft,
+    *,
+    for_preview: bool = False,
+) -> str:
+    """SharePoint link for PIC / custom client notes (same folder as release notes)."""
+    from sharepoint_url import client_notes_docx_name, sharepoint_document_open_url
+
+    url = (draft.client_sharepoint_url or "").strip()
+    if not url:
+        return ""
+    label = (draft.client_sharepoint_label or "").strip() or client_notes_docx_name(draft.version)
+    open_url = sharepoint_document_open_url(url)
+    if for_preview or not open_url:
+        return label
+    return f"<{open_url}|{label}>"
+
+
 def format_sharepoint_download_display(
     draft: SlackAnnounceDraft,
     *,
@@ -472,16 +494,70 @@ def format_sharepoint_folder_display(
     return f"<{url}|{label}>"
 
 
+def _entry_labels(entry: dict[str, Any] | None) -> list[str]:
+    labels = (entry or {}).get("labels") or []
+    if isinstance(labels, str):
+        labels = [labels]
+    return [
+        str(item).strip().replace("_", " ")
+        for item in labels
+        if str(item).strip()
+    ]
+
+
+def ticket_mix_counts(extracted: list[dict[str, Any]] | None) -> dict[str, Any]:
+    """Ticket total plus a count for each Jira label that appears."""
+    rows = list(extracted or [])
+    labels: OrderedDict[str, int] = OrderedDict()
+    for entry in rows:
+        seen: set[str] = set()
+        for name in _entry_labels(entry):
+            if name in seen:
+                continue
+            seen.add(name)
+            labels[name] = labels.get(name, 0) + 1
+    return {"total": len(rows), "labels": labels}
+
+
+def format_ticket_mix_line(extracted: list[dict[str, Any]] | None) -> str:
+    """Total N | Label - n | Label - n  from Jira labels only."""
+    mix = ticket_mix_counts(extracted)
+    total = int(mix.get("total") or 0)
+    if total <= 0:
+        return ""
+    parts = [f"Total {total}"]
+    for name, value in (mix.get("labels") or {}).items():
+        parts.append(f"{name} - {value}")
+    return " | ".join(parts)
+
+
+def format_ticket_mix_display(
+    draft: SlackAnnounceDraft,
+    *,
+    for_preview: bool = False,
+) -> str:
+    """Bold mix line for Slack Bot API (*...*) or UI preview (**...*)."""
+    line = (draft.ticket_mix_line or "").strip()
+    if not line:
+        return ""
+    if for_preview:
+        return f"**{line}**"
+    return f"*{line}*"
+
+
 def format_service_desk_display(
     draft: SlackAnnounceDraft,
     *,
     for_preview: bool = False,
 ) -> str:
-    """Service Desk line — full ticket title as link text (not key-only)."""
+    """SHIPIT ticket line — full ticket title as link text (not key-only)."""
     label = (draft.ticket_summary or "").strip() or draft.ticket_key
     if for_preview or not draft.ticket_url:
         return label
     return f"<{draft.ticket_url}|{label}>"
+
+
+format_shipit_display = format_service_desk_display
 
 
 def build_announce_text(
@@ -503,16 +579,22 @@ def build_announce_text(
 
     day = format_deploy_day(draft.deploy_date)
     sharepoint_download = format_sharepoint_download_display(draft, for_preview=for_preview)
+    client_notes = format_client_notes_display(draft, for_preview=for_preview)
     sharepoint_folder = format_sharepoint_folder_display(draft, for_preview=for_preview)
-    service_desk_display = format_service_desk_display(draft, for_preview=for_preview)
+    shipit_display = format_service_desk_display(draft, for_preview=for_preview)
+    mix_display = format_ticket_mix_display(draft, for_preview=for_preview)
     cc_line = format_cc_line(channel, for_preview=for_preview)
+    client_line = f"SharePoint — Client Notes: {client_notes}\n" if client_notes else ""
+    mix_line = f"{mix_display}\n" if mix_display else ""
     body = (
         "Hello Team,\n"
         f"Our upcoming deployment is scheduled for {day}.\n"
         "Deployment notes and the deployment ticket are below for reference:\n\n"
+        f"{mix_line}"
         f"SharePoint — Release Notes: {sharepoint_download}\n"
+        f"{client_line}"
         f"SharePoint — Folder: {sharepoint_folder}\n"
-        f"Service Desk: {service_desk_display}\n"
+        f"SHIPIT ticket: {shipit_display}\n"
         f"{cc_line}"
     )
     return body
@@ -554,6 +636,8 @@ def draft_from_session(
     sharepoint_url: str,
     version_hint: str = "",
     environments: str = "Analyze & Custom environments",
+    client_sharepoint_url: str = "",
+    extracted: list[dict[str, Any]] | None = None,
 ) -> SlackAnnounceDraft:
     """Build a draft from Service Ticket session values."""
     if isinstance(planned_start, datetime):
@@ -568,6 +652,9 @@ def draft_from_session(
     from sharepoint_url import resolve_sharepoint_folder_link, sharepoint_direct_download_url
 
     folder_url, folder_label = resolve_sharepoint_folder_link(version_name=version)
+    from sharepoint_url import client_notes_docx_name
+
+    client_url = (client_sharepoint_url or "").strip()
     return SlackAnnounceDraft(
         ticket_key=ticket_key,
         ticket_summary=summary,
@@ -579,7 +666,11 @@ def draft_from_session(
         sharepoint_download_url=sharepoint_direct_download_url(sp_url),
         sharepoint_folder_url=folder_url,
         sharepoint_folder_label=folder_label,
+        client_sharepoint_url=client_url,
+        client_sharepoint_label=client_notes_docx_name(version) if client_url else "",
         environments=environments,
+        ticket_count=len(extracted or []),
+        ticket_mix_line=format_ticket_mix_line(extracted),
     )
 
 
@@ -930,6 +1021,10 @@ __all__ = [
     "format_cc_line",
     "format_deploy_day",
     "format_service_desk_display",
+    "format_shipit_display",
+    "format_ticket_mix_display",
+    "format_ticket_mix_line",
+    "ticket_mix_counts",
     "format_sharepoint_display",
     "format_sharepoint_download_display",
     "format_sharepoint_folder_display",

@@ -291,6 +291,13 @@ def teams_schedule_meeting(
     )
     result = ts.schedule_meeting(cfg, draft, dry_run=dry_run)
     payload = result.to_dict()
+    if kind_norm == "review":
+        payload["next_notify"] = {
+            "tool": "notify_review_call",
+            "version": version,
+            "when": start,
+            "hint": "Call notify_review_call for testers and main assignees (not optional attendees). dry_run=true first.",
+        }
     if dry_run:
         payload["playwright_handoff"] = teams_playwright_handoff(
             kind=kind,

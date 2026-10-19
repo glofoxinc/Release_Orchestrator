@@ -30,6 +30,15 @@ def test_resolve_pic_jetts_repo():
     assert result["report_host_repo"] == "glofoxinc/abc-customize-insights-jetts"
 
 
+def test_resolve_fabric_lakehouse_repo():
+    result = github_host_repo.resolve_report_host_repo(
+        jira_key="AN-5491",
+        summary="Improve Gold Layer processing In Fabric",
+    )
+    assert result["report_host_repo"] == "glofoxinc/gf-fabric-fitnessbi"
+    assert result.get("training_repos", 0) >= 18
+
+
 def test_pr_needs_attention_open_unapproved():
     pr = {"state": "open", "draft": False, "merged": False, "mergeable": True}
     reviews = {"approved_count": 0, "changes_requested_count": 0, "pending_count": 1}

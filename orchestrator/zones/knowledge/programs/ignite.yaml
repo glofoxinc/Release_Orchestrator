@@ -1,0 +1,54 @@
+# Untrained MCP program pack — Ignite Insights Customize.
+# Empty on purpose. Do not copy Glofox squad, QA, leaders, Slack, or SharePoint here.
+program: ignite
+trained: false
+trained_at: ""
+display_name: "Ignite Insights Customize"
+jira_team_id: "9b5dc24e-0a1b-4634-98ac-9a1a43bcec4e"
+projects: ["PIC"]
+isolation:
+  never_reuse_for: ["glofox", "etl"]
+  never_import_from: ["glofox", "etl"]
+  rule: >-
+    Until Ignite is trained with its own crew, MCP must not use Glofox people,
+    comment aliases, Test-by pool, SharePoint folder, or Slack channels.
+    Train later with switch_program/train_program(program=ignite) after the
+    Ignite roster is collected — never by copying glofox.yaml.
+
+review_call:
+  kind: review
+  standing_review_crew: []
+  standing_release_crew: []
+  required_roles: []
+  optional_roles: []
+  never_invite_roles: []
+  slack_notify_skips_optional: true
+  notes: "Not trained — collect Ignite leadership, QA, squad, optional, exclude."
+
+developer_comments:
+  allowed:
+    - "ready for review"
+    - "ready for release"
+  forbidden:
+    - links
+    - group chats
+    - fix version
+    - tckt status
+    - shipit status
+
+crew:
+  squad: []
+  leadership: []
+  qa: []
+  optional: []
+  exclude: []
+
+org_leaders: {}
+test_by_pool: []
+sharepoint: {}
+slack: {}
+notify: {}
+setup_note: >-
+  Train Ignite separately: full squad, leadership (required on review calls),
+  QA crew, optional attendees, exclude list, PIC-only projects, Ignite SharePoint
+  folder. Do not reuse Glofox names.

@@ -58,6 +58,8 @@ RELEASE_STEPS: tuple[dict[str, Any], ...] = (
             "sharepoint_playwright_handoff",
             "browser_automation_status",
             "sharepoint_upload_release_notes",
+            "sharepoint_upload_client_notes",
+            "sharepoint_upload_notes_pair",
             "sharepoint_upload_status",
         ],
         "required_mcps": ["release-orchestrator", "playwright"],

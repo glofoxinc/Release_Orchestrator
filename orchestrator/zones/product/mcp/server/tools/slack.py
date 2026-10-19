@@ -40,6 +40,8 @@ def slack_preview(
     deploy_date: str,
     environments: str = "Analyze & Custom environments",
     edits: dict[str, str] | None = None,
+    client_sharepoint_url: str = "",
+    extracted: list[dict] | None = None,
 ) -> dict:
     """Build deployment Slack channel previews without sending.
 
@@ -52,6 +54,8 @@ def slack_preview(
         deploy_date: ISO date (YYYY-MM-DD) for the deployment window
         environments: Environment label in the message body
         edits: Optional per-channel body overrides keyed by channel key/name
+        client_sharepoint_url: Optional Client Release Notes SharePoint link
+        extracted: Optional PIC/AN ticket dicts with ``labels`` for the bold mix line
     """
     preview = slack_ops.build_slack_preview(
         ticket_key=ticket_key,
@@ -61,6 +65,8 @@ def slack_preview(
         sharepoint_url=sharepoint_url,
         deploy_date=deploy_date,
         environments=environments,
+        client_sharepoint_url=client_sharepoint_url,
+        extracted=extracted,
     )
     if edits:
         preview = slack_ops.apply_slack_message_edits(preview, edits)

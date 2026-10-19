@@ -1,0 +1,371 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Training and routing exemplars: Jira ticket title patterns → glofoxinc GitHub repo. Sample tickets fetched 2026-10-07 (2 per repo, recent matches on summary keywords).",
+  "excludedRepos": [
+    "glofoxinc/release-orchestrator",
+    "LyNarasimha/Demo_repo"
+  ],
+  "routingRules": [
+    "project AN (Glofox Analytics) → default glofoxinc/gf-insights-fitnessbi unless summary is clearly Fabric/lakehouse/gold layer/notebook → glofoxinc/gf-fabric-fitnessbi",
+    "project PIC (Customize BI) → match client/brand in summary (Jetts, Lift, Xtreme Fitness, …) → glofoxinc/abc-customize-* repo",
+    "Explicit github.com/glofoxinc/... in ticket overrides heuristics",
+    "Club Pilates/XPO tickets map to abc-customize-insights-xpo",
+    "F45 SK / FS8 SK map to abc-customize-f45-SK and abc-customize-insights-FS8-SouthKorea respectively"
+  ],
+  "repos": [
+    {
+      "github": "glofoxinc/gf-insights-fitnessbi",
+      "scope": "standard_analyze",
+      "clientDisplayName": "Glofox Analytics (Standard / Analyze)",
+      "jiraProjects": ["AN"],
+      "titleKeywords": ["Revenue Analysis", "New Members", "Insights", "Class Utilization", "Payouts", "Attrition"],
+      "sampleTickets": [
+        {
+          "key": "AN-5593",
+          "summary": "Revenue Analysis - Add new filters",
+          "url": "https://abcfinancial.atlassian.net/browse/AN-5593"
+        },
+        {
+          "key": "AN-5567",
+          "summary": "Insights - New Member Details filters",
+          "url": "https://abcfinancial.atlassian.net/browse/AN-5567"
+        }
+      ]
+    },
+    {
+      "github": "glofoxinc/gf-fabric-fitnessbi",
+      "scope": "fabric_data",
+      "clientDisplayName": "Fabric lakehouse / gold layer / notebooks",
+      "jiraProjects": ["AN", "PIC"],
+      "titleKeywords": ["Fabric", "Lakehouse", "gold layer", "Databricks", "notebook", "ingestion"],
+      "sampleTickets": [
+        {
+          "key": "AN-5491",
+          "summary": "Data Extraction for Internal Fabric Lakehouse",
+          "url": "https://abcfinancial.atlassian.net/browse/AN-5491"
+        },
+        {
+          "key": "AN-5417",
+          "summary": "Improve Gold Layer processing In Fabric",
+          "url": "https://abcfinancial.atlassian.net/browse/AN-5417"
+        }
+      ]
+    },
+    {
+      "github": "glofoxinc/abc-customize-insights-jetts",
+      "scope": "custom_client",
+      "clientDisplayName": "Jetts",
+      "tenantCode": "corp_Jetts",
+      "jiraProjects": ["PIC"],
+      "titleKeywords": ["Jetts"],
+      "sampleTickets": [
+        {
+          "key": "PIC-6290",
+          "summary": "Validation of Members Churned between the Glofox Dashboard and Jetts Membership Performance Report",
+          "url": "https://abcfinancial.atlassian.net/browse/PIC-6290"
+        },
+        {
+          "key": "PIC-6306",
+          "summary": "Analysis: Jetts historical data ingestion into Fabric",
+          "url": "https://abcfinancial.atlassian.net/browse/PIC-6306"
+        }
+      ]
+    },
+    {
+      "github": "glofoxinc/abc-customize-insights-lift",
+      "scope": "custom_client",
+      "clientDisplayName": "Lift",
+      "tenantCode": "corp_Lift",
+      "jiraProjects": ["PIC"],
+      "titleKeywords": ["Lift"],
+      "sampleTickets": [
+        {
+          "key": "PIC-6321",
+          "summary": "Lift - remove column from Australia Client report",
+          "url": "https://abcfinancial.atlassian.net/browse/PIC-6321"
+        },
+        {
+          "key": "PIC-6027",
+          "summary": "Lift - \"Royalties - Net Billing\" - New Dashboard",
+          "url": "https://abcfinancial.atlassian.net/browse/PIC-6027"
+        }
+      ]
+    },
+    {
+      "github": "glofoxinc/abc-customize-insights-xpo",
+      "scope": "custom_client",
+      "clientDisplayName": "XPO / Club Pilates",
+      "jiraProjects": ["PIC"],
+      "titleKeywords": ["XPO", "Club Pilates"],
+      "sampleTickets": [
+        {
+          "key": "PIC-4150",
+          "summary": "Club Pilates/XPO - Glofox Customize Implementation",
+          "url": "https://abcfinancial.atlassian.net/browse/PIC-4150"
+        },
+        {
+          "key": "PIC-4814",
+          "summary": "Club Pilates/XPO - Create new Workspaces for XPO France and Spain",
+          "url": "https://abcfinancial.atlassian.net/browse/PIC-4814"
+        }
+      ]
+    },
+    {
+      "github": "glofoxinc/abc-customize-insights-xtremefitness",
+      "scope": "custom_client",
+      "clientDisplayName": "Xtreme Fitness",
+      "tenantCode": "corp_XtremeFitness",
+      "jiraProjects": ["PIC"],
+      "titleKeywords": ["Xtreme Fitness", "Xtreme"],
+      "sampleTickets": [
+        {
+          "key": "PIC-6297",
+          "summary": "Xtreme Fitness - documentation update",
+          "url": "https://abcfinancial.atlassian.net/browse/PIC-6297"
+        },
+        {
+          "key": "PIC-6308",
+          "summary": "Xtreme Fitness - Sales League Report - additional requests and feature to filter logic",
+          "url": "https://abcfinancial.atlassian.net/browse/PIC-6308"
+        }
+      ]
+    },
+    {
+      "github": "glofoxinc/abc-customize-insights-jazzercise",
+      "scope": "custom_client",
+      "clientDisplayName": "Jazzercise",
+      "tenantCode": "corp_Jazzercise",
+      "jiraProjects": ["PIC"],
+      "titleKeywords": ["Jazzercise"],
+      "sampleTickets": [
+        {
+          "key": "PIC-6230",
+          "summary": "Jazzercise - Royalty Report variances between Looker version and Fitness BI",
+          "url": "https://abcfinancial.atlassian.net/browse/PIC-6230"
+        },
+        {
+          "key": "PIC-5983",
+          "summary": "Jazzercise - Copy these Analyze reports into Customize to add the BA Advisor filter to them",
+          "url": "https://abcfinancial.atlassian.net/browse/PIC-5983"
+        }
+      ]
+    },
+    {
+      "github": "glofoxinc/abc-customize-insights-bft",
+      "scope": "custom_client",
+      "clientDisplayName": "BFT",
+      "jiraProjects": ["PIC"],
+      "titleKeywords": ["BFT"],
+      "sampleTickets": [
+        {
+          "key": "PIC-5620",
+          "summary": "BFT - Create new non prod PBI workspaces",
+          "url": "https://abcfinancial.atlassian.net/browse/PIC-5620"
+        },
+        {
+          "key": "PIC-5619",
+          "summary": "BFT - Create new GitHub Repo for this new club",
+          "url": "https://abcfinancial.atlassian.net/browse/PIC-5619"
+        }
+      ]
+    },
+    {
+      "github": "glofoxinc/abc-customize-f45-SK",
+      "scope": "custom_client",
+      "clientDisplayName": "F45 South Korea",
+      "jiraProjects": ["PIC"],
+      "titleKeywords": ["F45", "F45 SK"],
+      "sampleTickets": [
+        {
+          "key": "PIC-4610",
+          "summary": "F45 - South Korea - Glofox Customize Implementation",
+          "url": "https://abcfinancial.atlassian.net/browse/PIC-4610"
+        },
+        {
+          "key": "PIC-4611",
+          "summary": "GloFox Customize Onboarding - F45 SK (FBUPYEONG)",
+          "url": "https://abcfinancial.atlassian.net/browse/PIC-4611"
+        }
+      ]
+    },
+    {
+      "github": "glofoxinc/abc-customize-insights-fit4mom",
+      "scope": "custom_client",
+      "clientDisplayName": "FIT4MOM",
+      "tenantCode": "corp_FIT4MOM",
+      "jiraProjects": ["PIC"],
+      "titleKeywords": ["FIT4MOM"],
+      "sampleTickets": [
+        {
+          "key": "PIC-5852",
+          "summary": "FIT4MOM - Marketing Attribution - New Dashboard - Phase 1",
+          "url": "https://abcfinancial.atlassian.net/browse/PIC-5852"
+        },
+        {
+          "key": "PIC-5580",
+          "summary": "FIT4MOM - Glofox Customize Implementation",
+          "url": "https://abcfinancial.atlassian.net/browse/PIC-5580"
+        }
+      ]
+    },
+    {
+      "github": "glofoxinc/abc-customize-insights-energiefitness",
+      "scope": "custom_client",
+      "clientDisplayName": "Energie Fitness",
+      "tenantCode": "corp_EnergieUK",
+      "jiraProjects": ["PIC"],
+      "titleKeywords": ["Energie Fitness", "Energie"],
+      "sampleTickets": [
+        {
+          "key": "PIC-5844",
+          "summary": "Energie Fitness - Debt Collections Export to third party company \"Taurus\"",
+          "url": "https://abcfinancial.atlassian.net/browse/PIC-5844"
+        },
+        {
+          "key": "PIC-5846",
+          "summary": "Energie Fitness - Date range in US format not UK",
+          "url": "https://abcfinancial.atlassian.net/browse/PIC-5846"
+        }
+      ]
+    },
+    {
+      "github": "glofoxinc/abc-customize-insights-yogaone",
+      "scope": "custom_client",
+      "clientDisplayName": "YogaOne",
+      "tenantCode": "corp_YogaOne",
+      "jiraProjects": ["PIC"],
+      "titleKeywords": ["YogaOne", "corp_YogaOne"],
+      "sampleTickets": [
+        {
+          "key": "PIC-5218",
+          "summary": "corp_YogaOne- Changing the Data Source connections of the Custom Semantic Model to Non-PROD connections",
+          "url": "https://abcfinancial.atlassian.net/browse/PIC-5218"
+        },
+        {
+          "key": "RNA-5288",
+          "summary": "New Kisi Single App Pilot Request - YogaOne/",
+          "url": "https://abcfinancial.atlassian.net/browse/RNA-5288",
+          "note": "Sparse PIC history; second sample is best title match outside PIC"
+        }
+      ]
+    },
+    {
+      "github": "glofoxinc/abc-customize-insights-setshybridtraining",
+      "scope": "custom_client",
+      "clientDisplayName": "SETS Hybrid Training",
+      "tenantCode": "corp_SETSHybridTraining",
+      "jiraProjects": ["PIC"],
+      "titleKeywords": ["Sets Hybrid", "SetsHybrid", "SETSHybrid", "corp_Setshybrid"],
+      "sampleTickets": [
+        {
+          "key": "PIC-5346",
+          "summary": "Deployment of the Data Source changes from QA to PROD for Sets Hybrid",
+          "url": "https://abcfinancial.atlassian.net/browse/PIC-5346"
+        },
+        {
+          "key": "PIC-5252",
+          "summary": "SetsHybrid Training - ABC Insights - Branding images changes",
+          "url": "https://abcfinancial.atlassian.net/browse/PIC-5252"
+        }
+      ]
+    },
+    {
+      "github": "glofoxinc/abc-customize-insights-BDGyms",
+      "scope": "custom_client",
+      "clientDisplayName": "BD Gyms",
+      "jiraProjects": ["PIC"],
+      "titleKeywords": ["BDGyms", "BD Gyms"],
+      "sampleTickets": [
+        {
+          "key": "PIC-5763",
+          "summary": "BDGyms - Add Semantic model to ADF refresh pipeline",
+          "url": "https://abcfinancial.atlassian.net/browse/PIC-5763"
+        },
+        {
+          "key": "PIC-5633",
+          "summary": "BDGyms - Create new non prod PBI workspaces",
+          "url": "https://abcfinancial.atlassian.net/browse/PIC-5633"
+        }
+      ]
+    },
+    {
+      "github": "glofoxinc/abc-customize-insights-kidstrong",
+      "scope": "custom_client",
+      "clientDisplayName": "KidStrong",
+      "jiraProjects": ["PIC", "AN", "ESC"],
+      "titleKeywords": ["KidStrong", "Kidstrong"],
+      "sampleTickets": [
+        {
+          "key": "AN-5552",
+          "summary": "Change Kidstrong S3 look",
+          "url": "https://abcfinancial.atlassian.net/browse/AN-5552"
+        },
+        {
+          "key": "ESC-10072",
+          "summary": "KidStrong - Request to bulk update member app settings",
+          "url": "https://abcfinancial.atlassian.net/browse/ESC-10072",
+          "note": "No PIC tickets with KidStrong in summary at fetch time; samples from AN/ESC"
+        }
+      ]
+    },
+    {
+      "github": "glofoxinc/abc-customize-insights-FS8-SouthKorea",
+      "scope": "custom_client",
+      "clientDisplayName": "FS8 South Korea",
+      "jiraProjects": ["PIC"],
+      "titleKeywords": ["FS8 SK", "FS8"],
+      "sampleTickets": [
+        {
+          "key": "PIC-5478",
+          "summary": "FS8 SK - Deploy standard Dataset and standard Executive Dashboard",
+          "url": "https://abcfinancial.atlassian.net/browse/PIC-5478"
+        },
+        {
+          "key": "PIC-5508",
+          "summary": "FS8 SK - Update the name of the PRD workspace",
+          "url": "https://abcfinancial.atlassian.net/browse/PIC-5508"
+        }
+      ]
+    },
+    {
+      "github": "glofoxinc/abc-customize-ChinMusic",
+      "scope": "custom_client",
+      "clientDisplayName": "Chin Music",
+      "tenantCode": "corp_ChinMusic",
+      "jiraProjects": ["PIC"],
+      "titleKeywords": ["Chin Music", "chin Music"],
+      "sampleTickets": [
+        {
+          "key": "PIC-5444",
+          "summary": "chin Music- Add advance filters in documentation page",
+          "url": "https://abcfinancial.atlassian.net/browse/PIC-5444"
+        },
+        {
+          "key": "PIC-5239",
+          "summary": "Chin Music - PIF Liability Report - New Report Addition",
+          "url": "https://abcfinancial.atlassian.net/browse/PIC-5239"
+        }
+      ]
+    },
+    {
+      "github": "glofoxinc/abc-customize-ClisteHospitality",
+      "scope": "custom_client",
+      "clientDisplayName": "Cliste Hospitality",
+      "tenantCode": "corp_ClisteHospitality",
+      "jiraProjects": ["PIC"],
+      "titleKeywords": ["Cliste Hospitality", "Cliste"],
+      "sampleTickets": [
+        {
+          "key": "PIC-6063",
+          "summary": "Cliste Hospitality - Lifetime Value of Membership - New Dashboard",
+          "url": "https://abcfinancial.atlassian.net/browse/PIC-6063"
+        },
+        {
+          "key": "PIC-4910",
+          "summary": "Cliste Hospitality - Glofox Customize Implementation",
+          "url": "https://abcfinancial.atlassian.net/browse/PIC-4910"
+        }
+      ]
+    }
+  ]
+}

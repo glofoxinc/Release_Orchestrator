@@ -8,10 +8,12 @@ from slack_announce import (
     SlackAnnounceDraft,
     SlackChannelTarget,
     format_cc_line,
+    format_client_notes_display,
     format_deploy_day,
     format_service_desk_display,
     format_sharepoint_download_display,
     format_sharepoint_folder_display,
+    format_ticket_mix_display,
 )
 from template_engine import render_template
 
@@ -41,7 +43,9 @@ def build_announce_body_from_template(
     sharepoint_folder_display = format_sharepoint_folder_display(
         draft, for_preview=for_preview
     )
+    client_notes_display = format_client_notes_display(draft, for_preview=for_preview)
     service_desk_display = format_service_desk_display(draft, for_preview=for_preview)
+    ticket_mix_display = format_ticket_mix_display(draft, for_preview=for_preview)
     cc_line = format_cc_line(channel, for_preview=for_preview)
     try:
         return render_template(
@@ -51,11 +55,13 @@ def build_announce_body_from_template(
             environments=draft.environments,
             sharepoint_download_display=sharepoint_download_display,
             sharepoint_folder_display=sharepoint_folder_display,
+            client_notes_display=client_notes_display,
             sharepoint_display=sharepoint_download_display,
             sharepoint_line=sharepoint_download_display,
             service_desk_display=service_desk_display,
             ticket_key=draft.ticket_key,
             ticket_line=service_desk_display,
+            ticket_mix_display=ticket_mix_display,
             cc_line=cc_line,
             ticket_summary=draft.ticket_summary,
             ticket_url=draft.ticket_url,

@@ -923,8 +923,7 @@ def _write_report_inventory_table(
     table_width = sum(widths) if widths else REPORT_TABLE_WIDTH
     _apply_reference_table_style(table, GRID_TABLE_ACCENT_STYLE)
     _set_reference_tbl_look(table)
-    if indent_twips is not None:
-        _set_table_indent(table, indent_twips)
+    _set_table_indent(table, 0 if indent_twips is None else indent_twips)
     header_row = table.rows[0]
     _set_deployment_header_row_cnf(header_row)
     for col_idx, header in enumerate(header_list):
@@ -1025,6 +1024,7 @@ def _write_summary_table(table, headers: tuple[str, ...] | list[str], rows: list
     """Generic styled table for Key Highlights summary blocks."""
     _apply_reference_table_style(table, GRID_TABLE_ACCENT_STYLE)
     _set_reference_tbl_look(table)
+    _set_table_indent(table, 0)
     header_row = table.rows[0]
     _set_deployment_header_row_cnf(header_row)
     header_list = list(headers)

@@ -154,7 +154,8 @@ DEPLOYMENT_CELL_BORDER_COLOR = "45B0E1"
 DEPLOYMENT_HEADER_BORDER_COLOR = "156082"
 DEPLOYMENT_CELL_BORDER_SZ = "4"
 DEPLOYMENT_TBL_LOOK_VAL = "06A0"
-DEPLOYMENT_TBL_IND_TWIPS = 595
+# 0 = same left edge as body text and other tables (avoids staggered indents).
+DEPLOYMENT_TBL_IND_TWIPS = 0
 
 # Change table extends past margins (reference tblInd=-922, tblW=11580).
 CHANGE_TBL_IND_TWIPS = -922

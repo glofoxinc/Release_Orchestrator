@@ -498,6 +498,11 @@ TEAMS_SCHEDULE: dict[str, Any] = (
     dict(_teams_schedule) if isinstance(_teams_schedule, dict) else {}
 )
 
+_release_notify = _ws.get("release_notify", {})
+RELEASE_NOTIFY: dict[str, Any] = (
+    dict(_release_notify) if isinstance(_release_notify, dict) else {}
+)
+
 _release_gates = _ws.get("release_gates", {})
 RELEASE_GATES: dict[str, Any] = (
     dict(_release_gates) if isinstance(_release_gates, dict) else {}
@@ -697,7 +702,7 @@ def reload_workspace() -> None:
     global TCKT_REQUEST_TYPE_ID, TCKT_REQUEST_TYPE_NAME, TCKT_FIELDS, TCKT_DEFAULTS
     global DEPLOY_ENVIRONMENT, RELEASE_NOTES_ENABLED, RELEASE_META
     global RELEASE_NOTES_TEST_BY_POOL, RELEASE_NOTES_GENERATOR, _apps
-    global SLACK_ANNOUNCE, SHAREPOINT_UPLOAD, TEAMS_SCHEDULE, RELEASE_GATES, GITHUB
+    global SLACK_ANNOUNCE, SHAREPOINT_UPLOAD, TEAMS_SCHEDULE, RELEASE_GATES, GITHUB, RELEASE_NOTIFY
     global TICKET_REVIEW_DEFAULT_CHECKED_STATUSES, RELEASE_NOTES_DEFAULT_STATUSES
     global TCKT_SCHEDULE_TZ, TCKT_DISPLAY_TZ, TCKT_SCHEDULE_SOURCE_TZ, TCKT_SUMMARY_TEAM
     global SHIPIT_POST_CREATE, BROWSER_AUTOMATION, CONFIG_WARNINGS
@@ -788,6 +793,9 @@ def reload_workspace() -> None:
 
     _teams_r = _ws.get("teams_schedule", {})
     TEAMS_SCHEDULE = dict(_teams_r) if isinstance(_teams_r, dict) else {}
+
+    _notify_r = _ws.get("release_notify", {})
+    RELEASE_NOTIFY = dict(_notify_r) if isinstance(_notify_r, dict) else {}
 
     _gates_r = _ws.get("release_gates", {})
     RELEASE_GATES = dict(_gates_r) if isinstance(_gates_r, dict) else {}

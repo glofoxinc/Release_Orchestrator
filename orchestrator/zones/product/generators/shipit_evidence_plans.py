@@ -183,6 +183,8 @@ def build_evidence_description_adf(
     window: dict[str, str] | None = None,
     sharepoint_url: str = "",
     sharepoint_label: str | None = None,
+    client_sharepoint_url: str = "",
+    client_sharepoint_label: str | None = None,
 ) -> dict:
     """ADF description matching SHIPIT-17036 sections."""
     content: list[dict] = []
@@ -383,6 +385,13 @@ def build_evidence_description_adf(
     if sp:
         label = sharepoint_label or f"Release Notes {version_label.lstrip('v')}.docx"
         content.append(adf.bullet_item(adf.link(label, sp)))
+    client_sp = str(client_sharepoint_url or "").strip()
+    if client_sp:
+        client_label = (
+            client_sharepoint_label
+            or f"Client Release Notes {version_label.lstrip('v')}.docx"
+        )
+        content.append(adf.bullet_item(adf.link(client_label, client_sp)))
 
     return adf.doc(*content)
 

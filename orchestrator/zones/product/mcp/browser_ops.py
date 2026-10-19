@@ -53,12 +53,21 @@ def sharepoint_playwright_handoff(
     *,
     version_name: str = "",
     remote_name: str | None = None,
+    client_notes_path: str = "",
 ) -> dict[str, Any]:
     """Return Playwright MCP steps to upload Release Notes .docx to SharePoint."""
+    extra: list[tuple[str, str]] = []
+    if (client_notes_path or "").strip():
+        import sharepoint_upload as sp
+
+        extra.append(
+            (client_notes_path, sp.default_client_remote_name(version_name))
+        )
     return browser_automation.build_sharepoint_upload_handoff(
         local_path,
         version_name=version_name,
         remote_name=remote_name,
+        extra_files=extra,
     )
 
 
@@ -72,6 +81,8 @@ def slack_playwright_handoff(
     deploy_date: str,
     environments: str = "Analyze & Custom environments",
     message_edits: dict[str, Any] | None = None,
+    client_sharepoint_url: str = "",
+    extracted: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     """Return Playwright MCP steps for both Slack channels (browser fallback)."""
     preview = slack_ops.build_slack_preview(
@@ -82,6 +93,8 @@ def slack_playwright_handoff(
         sharepoint_url=sharepoint_url,
         deploy_date=deploy_date,
         environments=environments,
+        client_sharepoint_url=client_sharepoint_url,
+        extracted=extracted,
     )
     preview = slack_ops.apply_slack_message_edits(preview, message_edits)
     handoff = browser_automation.build_slack_announce_handoff(preview)

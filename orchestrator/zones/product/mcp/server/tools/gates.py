@@ -103,9 +103,10 @@ def generate_release_notes_docx(
     ticket_keys: list[str] | None = None,
     output_path: str | None = None,
 ) -> dict:
-    """Generate the Release Notes Word .docx using the same generator as the web UI.
+    """Generate internal Release Notes Word .docx and a client-facing sibling.
 
-    Same style/format as Streamlit Release Notes. Writes a .docx and returns its path.
+    Internal file matches Streamlit. Client sibling is PIC/custom only, using the
+    same Insights Cambria / navy / Grid Table 4 Accent 1 styling.
 
     Args:
         version_name: Fix version / release name (e.g. 2026.3.08.12)
@@ -121,6 +122,37 @@ def generate_release_notes_docx(
             output_path=output_path,
         ),
         tool="generate_release_notes_docx",
+    )
+
+
+@mcp.tool()
+def generate_client_release_notes_docx(
+    version_name: str,
+    ticket_keys: list[str] | None = None,
+    output_path: str | None = None,
+    projects: list[str] | None = None,
+) -> dict:
+    """Generate client-facing Word notes for custom (PIC) clients only.
+
+    Client language (not Jira tasks). Per-client: what changed, user impact,
+    implementation, expected impact, validation. Ticket and fix-version
+    hyperlinks on one References line. Tables share one left edge.
+    Writes to Downloads when output_path is omitted.
+
+    Args:
+        version_name: Fix version / release name (e.g. 2026.4.10.15)
+        ticket_keys: Optional include-only keys (AN keys are still dropped)
+        output_path: Optional full .docx path; default is Downloads
+        projects: Optional Jira projects (default PIC, then PIC+AN if PIC empty)
+    """
+    return enrich_tool_response(
+        release_ops.generate_client_release_notes_docx_file(
+            version_name=version_name,
+            ticket_keys=ticket_keys,
+            output_path=output_path,
+            projects=projects,
+        ),
+        tool="generate_client_release_notes_docx",
     )
 
 

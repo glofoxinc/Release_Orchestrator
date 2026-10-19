@@ -1,0 +1,18 @@
+# Untrained MCP program pack — Insights Customize (ETL). Isolated from Glofox/Ignite.
+program: etl
+trained: false
+trained_at: ""
+display_name: "Insights Customize (ETL)"
+jira_team_id: "610eda40-8934-4ffa-915a-c41767e38a3e"
+projects: ["PIC"]
+isolation:
+  never_reuse_for: ["glofox", "ignite"]
+  never_import_from: ["glofox", "ignite"]
+  rule: Train ETL with its own crew. Never copy Glofox or Ignite packs.
+crew:
+  squad: []
+  leadership: []
+  qa: []
+  optional: []
+  exclude: []
+setup_note: Not trained. Collect ETL squad, leadership, QA, optional, exclude, SharePoint.

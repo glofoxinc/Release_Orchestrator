@@ -1,5 +1,10 @@
 # One-time team crew templates — copied into .env at welcome onboard.
-# Glofox is pre-filled; Ignite / ETL / other teams customize during onboarding.
+# MCP program packs (isolated, do not mix people):
+#   orchestrator/zones/knowledge/programs/glofox.yaml  (trained)
+#   orchestrator/zones/knowledge/programs/ignite.yaml  (empty until trained)
+#   orchestrator/zones/knowledge/programs/etl.yaml     (empty until trained)
+# Glofox is pre-filled; Ignite / ETL / other teams customize during onboarding
+# into THEIR pack only — never copy Glofox squad/QA/leaders.
 
 teams:
   glofox:
@@ -44,10 +49,12 @@ teams:
       site_path: "/teams/ABCFitnessSolutionsLLC-Glofox-Customize"
       folder_path: "Shared Documents/Glofox - Customize/Release Notes"
       auto_quarter_subfolder: true
+      auto_month_subfolder: true
       viewid: "ba435012-557c-4c11-9c9b-638fba9707f6"
       confirm_note: >-
         Release Notes upload to Glofox - Customize/Release Notes/{Year} - Q{N}.
-        The quarter folder is created automatically each release.
+        Quarter and month folders are created automatically each release
+        (e.g. 2026 - Q4/2026-10). Ignite must use its own SharePoint path.
 
   ignite:
     display_name: "Ignite Insights Customize"
@@ -62,11 +69,10 @@ teams:
     release: []
     exclude: []
     setup_note: >-
-      Add your Ignite crew during onboarding — we will ask for: full dev squad,
-      leadership (required on review calls), QA crew, optional attendees, and
-      anyone to exclude (cross-team / outside squad). Use crew add / crew exclude,
-      then crew done. After crew, we will ask for your SharePoint Release Notes
-      folder URL (quarter subfolders are created automatically each release).
+      Train Ignite as its own MCP program pack (programs/ignite.yaml). Do not copy
+      Glofox names. Collect: full dev squad, leadership (required on review calls),
+      QA crew, optional attendees, exclude list, PIC-only projects, Ignite SharePoint
+      folder. Use crew add / crew exclude, then crew done, then train_program(ignite).
 
   etl:
     display_name: "Insights Customize (ETL)"

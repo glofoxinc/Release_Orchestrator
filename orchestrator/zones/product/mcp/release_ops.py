@@ -156,6 +156,16 @@ def extracted_row_from_jira_issue(
     pk = (project_key or (key.split("-", 1)[0] if "-" in key else "")).strip().upper()
     assignee_obj = fields.get("assignee") or {}
     info = jira_client.extract_ticket_info(summary, key)
+    fv_names = [
+        str(v.get("name") or "").strip()
+        for v in (fields.get("fixVersions") or [])
+        if isinstance(v, dict) and str(v.get("name") or "").strip()
+    ]
+    desc_raw = fields.get("description")
+    if isinstance(desc_raw, dict):
+        details_plain = adf.adf_to_plain_text(desc_raw).strip()
+    else:
+        details_plain = str(desc_raw or "").strip()
     info.update(
         {
             "ticket": key,
@@ -163,9 +173,20 @@ def extracted_row_from_jira_issue(
             "status": (fields.get("status") or {}).get("name"),
             "assignee": assignee_obj.get("displayName", ""),
             "assignee_email": assignee_obj.get("emailAddress", ""),
+            "assignee_account_id": assignee_obj.get("accountId", ""),
             "parent": (fields.get("parent") or {}).get("key", key),
             "project": pk,
-            "fix_version": source_label,
+            "priority": (fields.get("priority") or {}).get("name") or "",
+            "issuetype": (fields.get("issuetype") or {}).get("name") or "",
+            "labels": [
+                str(label).strip()
+                for label in (fields.get("labels") or [])
+                if str(label).strip()
+            ],
+            "details_plain": details_plain,
+            "jira_description": details_plain,
+            "fix_version": source_label or (fv_names[0] if fv_names else ""),
+            "fix_versions": fv_names,
             "link": f"{config.JIRA_BASE_URL.rstrip('/')}/browse/{key}",
         }
     )
@@ -954,6 +975,14 @@ def generate_release_notes_docx_file(
         hyperlink_check=publish.hyperlink_check,
         output_path=output_path,
     )
+    try:
+        from generators.client_release_notes import write_client_release_notes_beside
+
+        client_meta = write_client_release_notes_beside(data, docx_meta["docx_path"])
+        docx_meta.update(client_meta)
+    except Exception as exc:  # noqa: BLE001 — internal notes still succeed
+        docx_meta["client_docx_error"] = str(exc)
+
     docx_meta["release_date"] = data["release_date"]
     docx_meta["ticket_count"] = len(extracted)
     docx_meta["projects"] = fetch.get("projects")
@@ -962,11 +991,71 @@ def generate_release_notes_docx_file(
         for pk, info in (fetch.get("by_project") or {}).items()
         if isinstance(info, dict)
     }
+    client_name = docx_meta.get("client_docx_filename") or ""
+    extra = f" Client notes: {client_name}." if client_name else ""
     docx_meta["message"] = (
         f"Release notes DOCX written ({docx_meta.get('docx_bytes', 0)} bytes). "
         "Same generator/style as the Release Orchestrator web UI."
+        f"{extra}"
     )
     return docx_meta
+
+
+def generate_client_release_notes_docx_file(
+    version_name: str,
+    ticket_keys: list[str] | None = None,
+    output_path: str | None = None,
+    extracted_override: list[dict] | None = None,
+    projects: list[str] | None = None,
+) -> dict[str, Any]:
+    """PIC / custom-client Word notes (Analyze tickets excluded). Default path: Downloads."""
+    from generators.client_release_notes import (
+        filter_pic_custom_extracted,
+        write_client_release_notes_file,
+    )
+
+    if extracted_override is not None:
+        extracted = list(extracted_override)
+        fetch_status = "ok"
+    elif ticket_keys:
+        fetch = fetch_tickets_by_keys(ticket_keys)
+        if fetch.get("status") == "needs_input":
+            return fetch
+        extracted = list(fetch.get("extracted") or [])
+        fetch_status = str(fetch.get("status") or "ok")
+    else:
+        fetch = fetch_release_notes_extracted(
+            selection_mode="fix_version",
+            projects=projects or ["PIC"],
+            version_name=version_name,
+        )
+        if fetch.get("status") == "needs_input":
+            return fetch
+        extracted = list(fetch.get("extracted") or [])
+        fetch_status = str(fetch.get("status") or "ok")
+        if not filter_pic_custom_extracted(extracted):
+            both = fetch_release_notes_extracted(
+                selection_mode="fix_version",
+                projects=_default_projects(None),
+                version_name=version_name,
+            )
+            if both.get("status") != "needs_input":
+                extracted = list(both.get("extracted") or [])
+                fetch_status = str(both.get("status") or fetch_status)
+
+    pic = filter_pic_custom_extracted(extracted)
+    data = _build_docx_data(pic if pic else extracted, version_name)
+    data["extracted"] = pic
+    written = write_client_release_notes_file(data, output_path)
+    written["version"] = data.get("version") or version_name
+    written["release_date"] = data.get("release_date") or ""
+    written["fetch_status"] = fetch_status
+    written["message"] = (
+        f"Client release notes written ({written.get('client_docx_bytes', 0)} bytes). "
+        f"PIC/custom only ({written.get('client_ticket_count', 0)} ticket(s)). "
+        f"{written.get('client_docx_filename')}"
+    )
+    return written
 
 
 def _text_to_adf(plain: str) -> dict:
@@ -989,15 +1078,23 @@ def _build_description_adf(
     sharepoint_url: str,
     version_label: str,
     window: dict[str, str] | None = None,
+    client_sharepoint_url: str = "",
 ) -> dict:
     """ADF description — SHIPIT-17036 evidence-based standard."""
     link_label = f"Release Notes {version_label.lstrip('v')}.docx" if sharepoint_url else None
+    client_label = (
+        f"Client Release Notes {version_label.lstrip('v')}.docx"
+        if client_sharepoint_url
+        else None
+    )
     return build_evidence_description_adf(
         extracted,
         version_label=version_label,
         window=window,
         sharepoint_url=sharepoint_url,
         sharepoint_label=link_label,
+        client_sharepoint_url=client_sharepoint_url,
+        client_sharepoint_label=client_label,
     )
 
 
@@ -1048,6 +1145,7 @@ def _plan_context(
 def create_service_ticket(
     version_name: str,
     sharepoint_url: str | None = None,
+    client_sharepoint_url: str | None = None,
     projects: list[str] | None = None,
     ticket_keys: list[str] | None = None,
     planned_start_date: str | None = None,
@@ -1086,7 +1184,8 @@ def create_service_ticket(
             "field": "sharepoint_url",
             "prompt": (
                 "Paste the SharePoint URL for the Release Notes Word doc "
-                f"(Release Notes {version_name or '<version>'}.docx)."
+                f"(Release Notes {version_name or '<version>'}.docx). "
+                "Upload Client Release Notes to the same folder when PIC tickets exist."
             ),
         })
 
@@ -1227,10 +1326,27 @@ def create_service_ticket(
         summary = shipit_test_mode.default_test_summary(version_label)
     else:
         summary = build_shipit_summary(version_name=version_name)
+    client_sp = (client_sharepoint_url or "").strip() or str(
+        (draft_overrides or {}).get("client_sharepoint_url") or ""
+    ).strip()
+    if not client_sp:
+        try:
+            from generators.client_release_notes import filter_pic_custom_extracted
+            from sharepoint_url import sibling_client_notes_url
+
+            if filter_pic_custom_extracted(extracted):
+                client_sp = sibling_client_notes_url(sharepoint, version_label)
+        except Exception:  # noqa: BLE001
+            client_sp = ""
     desc_adf = draft.get("description_adf") or _build_description_adf(
-        extracted, sharepoint, version_label, window,
+        extracted,
+        sharepoint,
+        version_label,
+        window,
+        client_sharepoint_url=client_sp,
     )
     ctx = _plan_context(extracted, sharepoint, version_label, window)
+    ctx["client_sharepoint"] = client_sp
     ctx["version"] = version_label
     implementation_plan = str(draft.get("implementation_plan") or _build_impl(ctx))
     test_plan = str(draft.get("test_plan") or _build_test(ctx))
@@ -1336,6 +1452,26 @@ def create_service_ticket(
                 "dry_run": False,
             }
 
+    def _sushma_on_shipit(shipit_key: str, *, notify_dry_run: bool) -> dict[str, Any]:
+        if is_test:
+            return {"ok": True, "skipped": "test SHIPIT — Sushma is not pinged"}
+        if not (shipit_key or "").strip():
+            return {"ok": False, "skipped": "no SHIPIT key yet"}
+        try:
+            import release_role_notify as rn
+
+            return rn.notify_sushma_on_shipit_created(
+                extracted,
+                version_name=version_name,
+                shipit_key=shipit_key,
+                deploy_when=str((window or {}).get("sentence") or ""),
+                dry_run=notify_dry_run,
+                sharepoint_url=sharepoint,
+                client_sharepoint_url=client_sp,
+            )
+        except Exception as exc:  # noqa: BLE001 — never fail SHIPIT create
+            return {"ok": False, "error": str(exc)}
+
     if dry_run:
         from generators.shipit_quality import assess_shipit_draft
 
@@ -1384,6 +1520,11 @@ def create_service_ticket(
             "cab_quality": quality,
             "request_type": config.TCKT_REQUEST_TYPE_NAME or "Manual Change",
             "post_create_plan": post_create_plan,
+            "sushma_notify": _sushma_on_shipit("SHIPIT-????", notify_dry_run=True),
+            "sushma_notify_hint": (
+                "Sushma is Slack+Outlook'd when this SHIPIT is created for real "
+                "(not as tester/assignee). Preview above."
+            ),
         }
 
     result, rt_status = jira_client.create_tckt_issue(summary, fields)
@@ -1436,6 +1577,7 @@ def create_service_ticket(
         "supplementalWarning": result.get("supplementalWarning"),
         "linked_tickets": shipit_post_create.release_ticket_keys_from_extracted(extracted),
         "post_create": post_create_result,
+        "sushma_notify": _sushma_on_shipit(str(key or ""), notify_dry_run=False),
         "message": f"Service ticket {key} created." if key else "Create returned without a key.",
     }
 

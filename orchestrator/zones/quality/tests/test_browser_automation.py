@@ -35,6 +35,26 @@ def test_sharepoint_folder_url_from_config(monkeypatch):
     assert "2026%20-%20Q3" in url or "2026 - Q3" in url
 
 
+def test_sharepoint_month_folder_from_version(monkeypatch):
+    import config
+
+    monkeypatch.setattr(config, "BROWSER_AUTOMATION", {
+        "enabled": True,
+        "sharepoint": {
+            "enabled": True,
+            "hostname": "abcfinancial.sharepoint.com",
+            "site_path": "/teams/ABCFitnessSolutionsLLC-Glofox-Customize",
+            "folder_path": "Shared Documents/Glofox - Customize/Release Notes",
+            "auto_quarter_subfolder": True,
+            "auto_month_subfolder": True,
+        },
+    })
+    from browser_automation import resolve_sharepoint_folder_relative
+
+    rel = resolve_sharepoint_folder_relative(version_name="2026.4.10.15")
+    assert rel.endswith("2026 - Q4/2026-10")
+
+
 def test_parse_sharepoint_folder_browse_url():
     from sharepoint_url import parse_sharepoint_folder_browse_url
 

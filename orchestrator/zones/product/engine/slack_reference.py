@@ -222,7 +222,7 @@ def compare_preview_to_reference(
             "Deployment notes and the deployment ticket are below for reference:",
             "SharePoint — Release Notes:",
             "SharePoint — Folder:",
-            "Service Desk:",
+            "SHIPIT ticket:",
             "CC:",
         ):
             if needle not in text:

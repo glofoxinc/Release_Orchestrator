@@ -54,9 +54,9 @@ def _install_ui_legacy_shim() -> None:
 
 _install_ui_legacy_shim()
 
-from orchestrator.paths import ALIASES_DIR, ENV_FILE as _ENV_FILE, REPO_ROOT as _REPO_ROOT
+from orchestrator.paths import ALIASES_DIR, ENGINE_DIR, ENV_FILE as _ENV_FILE, REPO_ROOT as _REPO_ROOT
 
-for _path in (_REPO_ROOT, ALIASES_DIR):
+for _path in (_REPO_ROOT, ALIASES_DIR, ENGINE_DIR):
     if str(_path) not in sys.path:
         sys.path.insert(0, str(_path))
 

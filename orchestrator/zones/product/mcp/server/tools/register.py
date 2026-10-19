@@ -19,6 +19,8 @@ TOOL_MODULES: tuple[str, ...] = (
     "confluence",
     "deploy",
     "readiness",
+    "notify",
+    "program",
 )
 
 
@@ -37,6 +39,8 @@ def load_tool_modules() -> list[ModuleType]:
         confluence,
         deploy,
         readiness,
+        notify,
+        program,
     )
     return [
         jira,
@@ -52,6 +56,8 @@ def load_tool_modules() -> list[ModuleType]:
         confluence,
         deploy,
         readiness,
+        notify,
+        program,
     ]
 
 

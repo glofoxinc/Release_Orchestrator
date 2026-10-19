@@ -1,0 +1,120 @@
+# Trained MCP program pack — Glofox Insights Customize.
+# Isolated from ignite / etl. Do not copy people or rules into those packs.
+program: glofox
+trained: true
+trained_at: "2026-10-14"
+display_name: "Glofox Insights Customize"
+jira_team_id: "317996a7-118a-4cf3-a3c6-04163516ed32"
+projects: ["PIC", "AN"]
+isolation:
+  never_reuse_for: ["ignite", "etl", "other"]
+  never_import_from: ["ignite", "etl", "other"]
+  rule: >-
+    Glofox squad, QA, leaders, Slack channels, SharePoint, and comment gates
+    apply only when RELEASE_PROGRAM=glofox. Ignite training is a separate pack.
+
+review_call:
+  kind: review
+  standing_review_crew: []
+  standing_release_crew: []
+  required_roles:
+    - leadership
+    - qa
+    - squad_assignees_with_tickets
+  optional_roles:
+    - optional
+  never_invite_roles:
+    - exclude
+  slack_notify_skips_optional: true
+  notes: >-
+    Glofox has no standing TEAM_CREW_REVIEW / TEAM_CREW_RELEASE list.
+    Review call = leadership + QA + in-squad people who own tickets.
+    Optional (Sai Anirudh) is invited as optional only — not Slack-notified.
+
+developer_comments:
+  allowed:
+    - "ready for review"
+    - "ready for release"
+  forbidden:
+    - links
+    - group chats
+    - fix version
+    - tckt status
+    - shipit status
+
+crew:
+  squad:
+    - name: "Lakshmi Narasimha"
+      email: "lakshminarasimhanaidu.yalamarti@abcfitness.com"
+    - name: "Chanti Kumar Jakkula"
+      email: "chantikumar.jakkula@abcfitness.com"
+    - name: "Rekha"
+    - name: "Mona"
+    - name: "Navya"
+    - name: "Nikhath"
+    - name: "Bharathi"
+  leadership:
+    - name: "Sushma Bhamidipati"
+      email: "VenkataSuryaNagaSushma.Bhamidipati@abcfitness.com"
+      role: "Sr. Manager — Fix Version owner / approver"
+    - name: "Soumyakant Mishra"
+      email: "Soumyakant.Mishra@abcfitness.com"
+  qa:
+    - name: "Akhil Sree Kumar"
+      email: "akhil.sreekumar@abcfitness.com"
+    - name: "Nikhila Sree Ramisetti"
+      email: "nikhilasree.ramisetti@abcfitness.com"
+  optional:
+    - name: "Sai Anirudh"
+      email: "saianirudh.karre@abcfitness.com"
+  exclude:
+    - name: "Gabriel Barbosa"
+      email: "gabriel.barbosa@abcfitness.com"
+    - name: "Erasmo García"
+      email: "erasmo.garcia@abcfitness.com"
+
+org_leaders:
+  release_owner: "Lakshmi Narasimha"
+  senior_mgr: "Sushma Bhamidipati"
+  director: "Trent Vanest"
+  svp: "Rahul Das"
+  slack_cc:
+    - name: "Sushma Bhamidipati"
+      user_id: "U08LDAQ7SDV"
+    - name: "Sai Anirudh Karre"
+      user_id: "U0BSG4ABZC0"
+    - name: "Zeke Brustkern"
+      user_id: "U083R8TP1J9"
+    - name: "Eoin George"
+      user_id: "U01H0UL5JGP"
+    - name: "Soumyakant Mishra"
+      user_id: "U062RM3T87Q"
+    - name: "Trent Vanest"
+      user_id: "U0ASR2XGRPZ"
+
+test_by_pool:
+  - Rekha
+  - Mona
+  - Navya
+  - Chanti
+  - Narasimha
+  - Nikhath
+  - Bharathi
+  - Soumya
+  - Sushma
+
+sharepoint:
+  hostname: "abcfinancial.sharepoint.com"
+  site_path: "/teams/ABCFitnessSolutionsLLC-Glofox-Customize"
+  folder_path: "Shared Documents/Glofox - Customize/Release Notes"
+  auto_quarter_subfolder: true
+  auto_month_subfolder: true
+
+slack:
+  squad_channel: "insights-customize-squad"
+  buddies_channel: "customize-bi-buddies"
+
+notify:
+  missing_fix_versions_to: "Sushma Bhamidipati"
+  review_call_recipients: "testers + main assignees (not optional attendees)"
+  shipit_reminders: "assignee on each linked PIC/AN ticket"

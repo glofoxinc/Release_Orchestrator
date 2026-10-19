@@ -1,4 +1,4 @@
-"""Resolve GitHub report-host repo per Jira ticket (AN default + PIC corp map)."""
+"""Resolve GitHub report-host repo per Jira ticket (18-repo exemplars + fabric override)."""
 
 from __future__ import annotations
 
@@ -6,12 +6,7 @@ import re
 from typing import Any
 
 import config
-
-_JIRA_KEY = re.compile(r"\b([A-Z][A-Z0-9]+)-(\d+)\b")
-_GH_REPO = re.compile(
-    r"github\.com/(?P<owner>[\w.-]+)/(?P<repo>[\w.-]+)",
-    re.IGNORECASE,
-)
+import glofox_jira_routing as gjr
 
 
 def _host_cfg() -> dict[str, Any]:
@@ -20,47 +15,21 @@ def _host_cfg() -> dict[str, Any]:
     return repos if isinstance(repos, dict) else {}
 
 
-def detect_jira_project(jira_key_or_url: str | None, text: str = "") -> str | None:
-    blob = f"{jira_key_or_url or ''} {text or ''}"
-    match = _JIRA_KEY.search(blob)
-    return match.group(1).upper() if match else None
-
-
-def detect_explicit_github_repo(text: str) -> str | None:
-    for match in _GH_REPO.finditer(text or ""):
-        owner = match.group("owner")
-        repo = match.group("repo").rstrip(".git")
-        skip = {"gf-fabric-fitnessbi", "paginated-reports-mcp"}
-        if repo.lower() in skip:
-            continue
-        return f"{owner}/{repo}"
-    return None
-
-
-def detect_corp(text: str, corps: dict[str, str] | None = None) -> tuple[str | None, str | None]:
-    mapping = corps if corps is not None else (_host_cfg().get("pic_corp_repos") or {})
-    blob = (text or "").lower()
-    for corp in sorted(mapping.keys(), key=len, reverse=True):
-        if corp.lower() in blob:
-            return corp, mapping[corp]
-    return None, None
-
-
 def resolve_report_host_repo(
     *,
     jira_key: str | None = None,
     summary: str | None = None,
     description: str | None = None,
 ) -> dict[str, Any]:
-    """Map ticket to glofoxinc/gf-insights-fitnessbi or corp customize repo."""
+    """Map ticket to glofoxinc host repo using workspace.yaml + repo-jira-exemplars.json."""
     cfg = _host_cfg()
-    an_default = str(cfg.get("an_default") or "glofoxinc/gf-insights-fitnessbi")
-    pic_corps = cfg.get("pic_corp_repos") or {}
+    an_default = str(cfg.get("an_default") or gjr._ANALYZE_REPO)
+    pic_corps = {**(cfg.get("pic_corp_repos") or {}), **gjr.pic_corp_repos_from_exemplars()}
     text = "\n".join(x for x in (summary, description) if x)
 
-    explicit = detect_explicit_github_repo(text)
-    project = detect_jira_project(jira_key, text)
-    corp, corp_repo = detect_corp(text, pic_corps)
+    explicit = gjr.detect_explicit_github_repo(text)
+    project = gjr.detect_jira_project(jira_key, text)
+    corp, corp_repo = gjr.detect_corp(text, pic_corps, prefer_text=summary or "")
 
     repo: str | None = None
     reason = ""
@@ -70,10 +39,22 @@ def resolve_report_host_repo(
         repo = explicit
         confidence = "high"
         reason = "Explicit GitHub repo in ticket text."
-    elif project == "AN":
-        repo = an_default
+    elif gjr.is_fabric_pipeline_work(text):
+        repo = gjr._FABRIC_REPO
         confidence = "high"
-        reason = "AN ticket — default Analyze host repo."
+        reason = (
+            "Fabric/lakehouse/gold layer, notebook, or ingestion work "
+            "→ gf-fabric-fitnessbi."
+        )
+    elif project == "AN":
+        if corp_repo:
+            repo = corp_repo
+            confidence = "high"
+            reason = f"AN ticket with client/brand '{corp}' mapped to customize host repo."
+        else:
+            repo = an_default
+            confidence = "high"
+            reason = "AN ticket — default Analyze host repo."
     elif project == "PIC":
         if corp_repo:
             repo = corp_repo
@@ -99,7 +80,10 @@ def resolve_report_host_repo(
         "repo": repo_name,
         "confidence": confidence,
         "reason": reason,
+        "routing_catalog": "repo-jira-exemplars",
+        "training_repos": gjr.training_repo_count(),
         "an_default": an_default,
+        "fabric_default": gjr._FABRIC_REPO,
         "pic_corp_repos": pic_corps,
     }
 

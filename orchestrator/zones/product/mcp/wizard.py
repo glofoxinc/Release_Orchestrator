@@ -1752,6 +1752,13 @@ def _confirm_release_notes(session: dict[str, Any]) -> dict[str, Any]:
         hyperlink_check=publish.hyperlink_check,
     )
     result = docx_meta
+    if result.get("status") == "ok":
+        try:
+            from generators.client_release_notes import write_client_release_notes_beside
+
+            result.update(write_client_release_notes_beside(draft, result["docx_path"]))
+        except Exception as exc:  # noqa: BLE001
+            result["client_docx_error"] = str(exc)
     if result.get("status") != "ok":
         return _response(
             session,
@@ -1775,6 +1782,25 @@ def _confirm_release_notes(session: dict[str, Any]) -> dict[str, Any]:
             audit_event="sharepoint_upload_auto_playwright",
         )
     return _process_sharepoint(session)
+
+
+def _client_docx_path(session: dict[str, Any]) -> str:
+    docx = (session.get("artifacts") or {}).get("release_notes_docx") or {}
+    return str(docx.get("client_docx_path") or "").strip()
+
+
+def _client_sharepoint_url(session: dict[str, Any]) -> str:
+    arts = session.get("artifacts") or {}
+    inputs = session.get("inputs") or {}
+    url = str(arts.get("client_sharepoint_url") or inputs.get("client_sharepoint_url") or "").strip()
+    if url:
+        return url
+    if not _client_docx_path(session):
+        return ""
+    from sharepoint_url import sibling_client_notes_url
+
+    rn = str(arts.get("sharepoint_url") or inputs.get("sharepoint_url") or "").strip()
+    return sibling_client_notes_url(rn, _release_version_label(session))
 
 
 def _process_sharepoint(session: dict[str, Any]) -> dict[str, Any]:
@@ -1807,7 +1833,12 @@ def _process_sharepoint(session: dict[str, Any]) -> dict[str, Any]:
         session = wizard_store.update_session(
             session["id"],
             step=next_step,
-            artifacts={"sharepoint_url": url, "sharepoint_delivery": "playwright_or_manual"},
+            artifacts={
+                "sharepoint_url": url,
+                "client_sharepoint_url": str(session["inputs"].get("client_sharepoint_url") or "").strip()
+                or _client_sharepoint_url(session),
+                "sharepoint_delivery": "playwright_or_manual",
+            },
             audit_event="sharepoint_playwright_done",
         )
         return _process_step(session, next_step)
@@ -1817,7 +1848,11 @@ def _process_sharepoint(session: dict[str, Any]) -> dict[str, Any]:
         session = wizard_store.update_session(
             session["id"],
             step=next_step,
-            artifacts={"sharepoint_url": url},
+            artifacts={
+                "sharepoint_url": url,
+                "client_sharepoint_url": str(session["inputs"].get("client_sharepoint_url") or "").strip()
+                or _client_sharepoint_url(session),
+            },
             audit_event="sharepoint_link_saved",
         )
         return _process_step(session, next_step)
@@ -1829,6 +1864,7 @@ def _process_sharepoint(session: dict[str, Any]) -> dict[str, Any]:
             str(docx["docx_path"]),
             version_name=_release_version_label(session),
             remote_name=docx.get("docx_filename"),
+            client_notes_path=_client_docx_path(session),
         )
         preview = browser_ops.enrich_sharepoint_preview(
             {"docx": docx, "upload_status": upload_status, "playwright_upload": handoff},
@@ -1847,6 +1883,11 @@ def _process_sharepoint(session: dict[str, Any]) -> dict[str, Any]:
                 _question(
                     "sharepoint_url",
                     "Paste the SharePoint document URL after upload.",
+                    required=False,
+                ),
+                _question(
+                    "client_sharepoint_url",
+                    "Paste the Client Release Notes SharePoint URL (same folder).",
                     required=False,
                 ),
                 _question(
@@ -1869,9 +1910,10 @@ def _process_sharepoint(session: dict[str, Any]) -> dict[str, Any]:
                 questions=[_question("sharepoint_url", "SharePoint URL for the Release Notes DOCX.", required=False)],
                 preview={"docx": docx, "upload_status": upload_status},
             )
-        plan = sharepoint_ops.sharepoint_upload_release_notes(
+        plan = sharepoint_ops.sharepoint_upload_notes_pair(
             str(docx["docx_path"]),
-            remote_name=docx.get("docx_filename"),
+            client_notes_path=_client_docx_path(session),
+            version_name=_release_version_label(session),
             dry_run=True,
         )
         if not plan.get("ok"):
@@ -1889,13 +1931,18 @@ def _process_sharepoint(session: dict[str, Any]) -> dict[str, Any]:
                 "docx": docx,
                 "upload_status": upload_status,
             },
-            "Confirm Graph upload of the generated Release Notes DOCX to SharePoint.",
+            "Confirm Graph upload of Release Notes and Client Release Notes to the same SharePoint folder.",
         )
 
     sharepoint_questions = [
         _question(
             "sharepoint_url",
             "SharePoint URL for the Release Notes DOCX.",
+            required=False,
+        ),
+        _question(
+            "client_sharepoint_url",
+            "SharePoint URL for Client Release Notes (same folder; skip if no PIC tickets).",
             required=False,
         ),
         _question(
@@ -1945,9 +1992,10 @@ def _confirm_sharepoint(session: dict[str, Any]) -> dict[str, Any]:
             status="error",
             prompt="No generated DOCX found to upload.",
         )
-    result = sharepoint_ops.sharepoint_upload_release_notes(
+    result = sharepoint_ops.sharepoint_upload_notes_pair(
         str(path),
-        remote_name=docx.get("docx_filename"),
+        client_notes_path=_client_docx_path(session),
+        version_name=_release_version_label(session),
         dry_run=False,
     )
     if not result.get("ok"):
@@ -1958,12 +2006,17 @@ def _confirm_sharepoint(session: dict[str, Any]) -> dict[str, Any]:
             preview=result,
         )
     url = str(result.get("web_url") or "").strip()
+    client_url = str(result.get("client_web_url") or "").strip()
     next_step = _advance_to_next_step(session, STEP_SHAREPOINT)
     session = wizard_store.update_session(
         session["id"],
         step=next_step,
-        inputs={"sharepoint_url": url},
-        artifacts={"sharepoint_url": url, "sharepoint_upload_result": result},
+        inputs={"sharepoint_url": url, "client_sharepoint_url": client_url},
+        artifacts={
+            "sharepoint_url": url,
+            "client_sharepoint_url": client_url,
+            "sharepoint_upload_result": result,
+        },
         audit_event="sharepoint_uploaded",
     )
     return _process_step(session, next_step)
@@ -2186,6 +2239,7 @@ def _process_service_ticket(session: dict[str, Any]) -> dict[str, Any]:
     dry_run = release_ops.create_service_ticket(
         _release_version_label(session),
         sharepoint_url=session["artifacts"]["sharepoint_url"],
+        client_sharepoint_url=_client_sharepoint_url(session),
         projects=_selected_projects(session["inputs"]),
         ticket_keys=_effective_selected_keys(session),
         planned_start_date=session["inputs"].get("planned_start_date"),
@@ -2327,6 +2381,7 @@ def _confirm_service_ticket(session: dict[str, Any]) -> dict[str, Any]:
         result = release_ops.create_service_ticket(
             _release_version_label(session),
             sharepoint_url=session["artifacts"]["sharepoint_url"],
+            client_sharepoint_url=_client_sharepoint_url(session),
             projects=_selected_projects(session["inputs"]),
             ticket_keys=_effective_selected_keys(session),
             planned_start_date=session["inputs"].get("planned_start_date"),
@@ -2531,6 +2586,8 @@ def _slack_preview(session: dict[str, Any]) -> dict[str, Any]:
         sharepoint_url=session["artifacts"]["sharepoint_url"],
         deploy_date=schedule["start_date"].isoformat(),
         environments=str(session["inputs"].get("slack_environments") or "Analyze & Custom environments"),
+        client_sharepoint_url=_client_sharepoint_url(session),
+        extracted=_effective_extracted(session),
     )
     edits = session["inputs"].get("slack_messages")
     if isinstance(edits, dict):

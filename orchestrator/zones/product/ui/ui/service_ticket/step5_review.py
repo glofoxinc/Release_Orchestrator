@@ -886,11 +886,13 @@ def _render_slack_announce(ss, ticket_key: str, ticket_url: str) -> None:
         ss["stk_slack_init_ticket"] = ticket_key
 
     snapshot = ss.get("shared_snapshot") or {}
+    extracted = list(snapshot.get("extracted") or snapshot.get("issues") or [])
     ticket_count = len(
         snapshot.get("ticket_keys")
-        or snapshot.get("issues")
+        or extracted
         or []
     )
+    ticket_mix_line = sa.format_ticket_mix_line(extracted)
 
     regen_col, _ = st.columns([1, 3])
     with regen_col:
@@ -948,6 +950,7 @@ def _render_slack_announce(ss, ticket_key: str, ticket_url: str) -> None:
         ),
         environments=str(ss["stk_slack_environments"] or draft.environments),
         ticket_count=ticket_count,
+        ticket_mix_line=ticket_mix_line,
     )
     body_overrides = dict(ss.get("stk_slack_body_overrides") or {})
     messages = sa.build_channel_messages(live, cfg.channels, body_overrides=body_overrides)

@@ -7,10 +7,7 @@ import os
 import sys
 
 from dotenv import load_dotenv
-from orchestrator.paths import ENV_FILE, REPO_ROOT
-
-if str(REPO_ROOT) not in sys.path:
-    sys.path.insert(0, str(REPO_ROOT))
+from orchestrator.paths import ENV_FILE
 
 load_dotenv(ENV_FILE, override=True)
 

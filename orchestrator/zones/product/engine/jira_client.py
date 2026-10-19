@@ -96,6 +96,34 @@ def get_project_versions(project_key: str, released: bool | None = None) -> list
     return versions
 
 
+def create_project_version(
+    project_key: str,
+    name: str,
+    *,
+    description: str = "",
+    released: bool = False,
+) -> dict[str, Any]:
+    """Create a Jira fix version on a project. Caller must confirm before live create."""
+    pk = (project_key or "").strip().upper()
+    version_name = (name or "").strip()
+    if not pk or not version_name:
+        raise ValueError("project_key and name are required")
+    existing = get_project_versions(pk)
+    for row in existing:
+        if str(row.get("name") or "").strip() == version_name:
+            return {"created": False, "existing": True, "version": row}
+    body: dict[str, Any] = {
+        "name": version_name,
+        "project": pk,
+        "released": released,
+    }
+    if description.strip():
+        body["description"] = description.strip()
+    created = _post("/version", body)
+    clear_version_cache()
+    return {"created": True, "existing": False, "version": created}
+
+
 def _search_jql_paginated(
     jql: str,
     *,
@@ -353,10 +381,13 @@ def get_issues_for_version(
     team_field = config.JIRA_ISSUE_TEAM_FIELD or "customfield_10700"
     search_fields = [
         "summary",
+        "description",
         "status",
         "issuetype",
         "assignee",
+        "priority",
         "fixVersions",
+        "labels",
         "parent",
         team_field,
     ]
@@ -404,10 +435,13 @@ def get_issues_for_statuses(
     team_field = config.JIRA_ISSUE_TEAM_FIELD or "customfield_10700"
     search_fields = [
         "summary",
+        "description",
         "status",
         "issuetype",
         "assignee",
+        "priority",
         "fixVersions",
+        "labels",
         "parent",
         team_field,
     ]
