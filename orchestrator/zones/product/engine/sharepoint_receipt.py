@@ -40,6 +40,11 @@ def build_receipt(
         "local_checksum_sha256": file_checksum(local) if local.is_file() else "",
         "remote_name": remote_name,
         "quarter_folder": browser_automation.resolve_sharepoint_quarter_label(version_name=version_name),
+        "month_folder": (
+            browser_automation.resolve_sharepoint_month_label(version_name=version_name)
+            if browser_automation.month_subfolder_enabled()
+            else ""
+        ),
         "folder_url": folder_url or folder,
         "file_url": sharepoint_url,
         "url_valid": sp_url.validate_sharepoint_url(sharepoint_url),

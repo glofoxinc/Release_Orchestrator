@@ -160,17 +160,23 @@ def resolve_sharepoint_folder_relative(
     *,
     version_name: str = "",
     reference_date: date | None = None,
+    auto_month_subfolder: bool | None = None,
 ) -> str:
     """Folder path under the site root, including quarter subfolder when configured."""
     cfg = sp_cfg or sharepoint_section()
     folder_path = str(cfg.get("folder_path") or "Shared Documents/Release Notes").strip()
     ref = reference_date or parse_release_version_date(version_name) or date.today()
+    month_auto = (
+        bool(cfg.get("auto_month_subfolder", False))
+        if auto_month_subfolder is None
+        else auto_month_subfolder
+    )
     return sp.apply_folder_tokens(
         folder_path,
         ref,
         auto_year_subfolder=bool(cfg.get("auto_year_subfolder", False)),
         auto_quarter_subfolder=bool(cfg.get("auto_quarter_subfolder", False)),
-        auto_month_subfolder=bool(cfg.get("auto_month_subfolder", False)),
+        auto_month_subfolder=month_auto,
     )
 
 
@@ -179,33 +185,55 @@ def resolve_sharepoint_id_path(
     version_name: str = "",
     reference_date: date | None = None,
     sp_cfg: dict[str, Any] | None = None,
+    include_month_subfolder: bool = True,
 ) -> str:
     """Server-relative SharePoint path used in AllItems.aspx ``id=``."""
     cfg = sp_cfg or sharepoint_section()
     site_path = str(cfg.get("site_path") or "").strip()
     if not site_path.startswith("/"):
         site_path = f"/{site_path}"
+    month_auto: bool | None = None if include_month_subfolder else False
     folder = resolve_sharepoint_folder_relative(
         cfg,
         version_name=version_name,
         reference_date=reference_date,
+        auto_month_subfolder=month_auto,
     )
     return f"{site_path}/{folder}".replace("//", "/")
+
+
+def resolve_sharepoint_month_label(
+    *,
+    version_name: str = "",
+    reference_date: date | None = None,
+) -> str:
+    ref = reference_date or parse_release_version_date(version_name) or date.today()
+    return sp.month_label(ref)
+
+
+def month_subfolder_enabled(sp_cfg: dict[str, Any] | None = None) -> bool:
+    cfg = sp_cfg or sharepoint_section()
+    return bool(cfg.get("auto_month_subfolder", False))
 
 
 def resolve_sharepoint_folder_url(
     *,
     version_name: str = "",
     reference_date: date | None = None,
+    include_month_subfolder: bool | None = None,
 ) -> str:
-    """Build the SharePoint quarter folder URL operators open before upload."""
+    """Build the SharePoint folder URL operators open before upload."""
     sp_cfg = sharepoint_section()
     explicit = str(sp_cfg.get("folder_browse_url") or "").strip()
     ref = reference_date or parse_release_version_date(version_name) or date.today()
     quarter = sp.quarter_label(ref)
+    month = sp.month_label(ref)
     if explicit:
         if "{{quarter}}" in explicit:
-            return explicit.replace("{{quarter}}", quarter)
+            resolved = explicit.replace("{{quarter}}", quarter)
+            if "{{month}}" in resolved:
+                resolved = resolved.replace("{{month}}", month)
+            return resolved
         return explicit
 
     hostname = str(sp_cfg.get("hostname") or "").strip()
@@ -216,10 +244,16 @@ def resolve_sharepoint_folder_url(
     if not site_path.startswith("/"):
         site_path = f"/{site_path}"
 
+    month_in_path = (
+        month_subfolder_enabled(sp_cfg)
+        if include_month_subfolder is None
+        else include_month_subfolder
+    )
     id_path = resolve_sharepoint_id_path(
         version_name=version_name,
         reference_date=reference_date,
         sp_cfg=sp_cfg,
+        include_month_subfolder=month_in_path,
     )
     encoded_id = quote(id_path, safe="")
     site_segment = site_path.lstrip("/")
@@ -299,6 +333,8 @@ def status() -> dict[str, Any]:
             "folder_path": folder_relative,
             "quarter_folder_example": quarter_example,
             "auto_quarter_subfolder": bool(sp_cfg.get("auto_quarter_subfolder", False)),
+            "auto_month_subfolder": bool(sp_cfg.get("auto_month_subfolder", False)),
+            "month_folder_example": resolve_sharepoint_month_label(),
             "hostname": sp_cfg.get("hostname"),
             "site_path": sp_cfg.get("site_path"),
         },
@@ -316,6 +352,46 @@ def status() -> dict[str, Any]:
         "config_issues": issues,
         "ready": enabled() and not any(i["level"] == "error" for i in issues),
     }
+
+
+def _playwright_create_folder_js(folder_name: str) -> str:
+    return (
+        "async (page) => {"
+        f"  const name = {folder_name!r};"
+        "  const exists = await page.getByRole('button', { name, exact: true }).count();"
+        "  if (exists) return 'Folder already exists: ' + name;"
+        "  const newBtn = page.getByRole('button', { name: /^new$/i }).first();"
+        "  if (!(await newBtn.count())) {"
+        "    const createBtn = page.getByRole('button', { name: /create or upload/i }).first();"
+        "    if (await createBtn.count()) await createBtn.click();"
+        "    else return 'Click Create or upload → Folder manually and name it: ' + name;"
+        "  } else {"
+        "    await newBtn.click();"
+        "  }"
+        "  const folderItem = page.getByRole('menuitem', { name: /folder/i }).first();"
+        "  if (await folderItem.count()) await folderItem.click();"
+        "  const input = page.getByRole('textbox').first();"
+        "  if (await input.count()) {"
+        "    await input.fill(name);"
+        "    await input.press('Enter');"
+        "    return 'Created folder: ' + name;"
+        "  }"
+        "  return 'Create folder manually: ' + name;"
+        "}"
+    )
+
+
+def _playwright_open_folder_js(folder_name: str) -> str:
+    return (
+        "async (page) => {"
+        f"  const name = {folder_name!r};"
+        "  const btn = page.getByRole('button', { name, exact: true }).first();"
+        "  if (!(await btn.count())) return 'Folder not visible yet: ' + name;"
+        "  await btn.dblclick();"
+        "  await page.waitForTimeout(1500);"
+        "  return 'Opened folder: ' + name;"
+        "}"
+    )
 
 
 def _step(
@@ -347,9 +423,18 @@ def build_sharepoint_upload_handoff(
 ) -> dict[str, Any]:
     """Playwright MCP playbook to upload Release Notes .docx to SharePoint."""
     st = status()
-    folder_url = resolve_sharepoint_folder_url(version_name=version_name).strip()
+    sp_cfg = sharepoint_section()
+    month_enabled = month_subfolder_enabled(sp_cfg)
+    month_folder = resolve_sharepoint_month_label(version_name=version_name) if month_enabled else ""
     quarter_folder = resolve_sharepoint_quarter_label(version_name=version_name)
     folder_relative = resolve_sharepoint_folder_relative(version_name=version_name)
+    # Open the quarter folder first when month subfolders are enabled — the month
+    # folder may not exist yet (deep links to missing folders show SharePoint errors).
+    folder_url = resolve_sharepoint_folder_url(
+        version_name=version_name,
+        include_month_subfolder=not month_enabled,
+    ).strip()
+    target_relative = folder_relative
     file_name = remote_name or resolve_remote_name(version_name)
     abs_path = os.path.abspath(local_path)
 
@@ -360,6 +445,11 @@ def build_sharepoint_upload_handoff(
             "delivery": "cursor_playwright_mcp",
         }
 
+    path_hint = (
+        f"**{quarter_folder}/{month_folder}**"
+        if month_enabled and month_folder
+        else f"**{quarter_folder}**"
+    )
     steps = [
         _step(
             1,
@@ -373,109 +463,135 @@ def build_sharepoint_upload_handoff(
             "Snapshot the page",
             mcp_tool="browser_snapshot",
             arguments={},
-            note=f"Confirm you are in **{folder_relative}** before uploading.",
+            note=f"Confirm you are in the quarter folder **{quarter_folder}** before continuing.",
         ),
         _step(
             3,
             f"Create quarter folder '{quarter_folder}' if missing",
             mcp_tool="browser_run_code_unsafe",
-            arguments={
-                "code": (
-                    "async (page) => {"
-                    f"  const name = {quarter_folder!r};"
-                    "  const exists = await page.getByText(name, { exact: true }).count();"
-                    "  if (exists) return 'Folder already exists: ' + name;"
-                    "  const newBtn = page.getByRole('button', { name: /^new$/i }).first();"
-                    "  if (!(await newBtn.count())) {"
-                    "    return 'Click New → Folder manually and name it: ' + name;"
-                    "  }"
-                    "  await newBtn.click();"
-                    "  const folderItem = page.getByRole('menuitem', { name: /folder/i }).first();"
-                    "  if (await folderItem.count()) await folderItem.click();"
-                    "  const input = page.getByRole('textbox').first();"
-                    "  if (await input.count()) {"
-                    "    await input.fill(name);"
-                    "    await input.press('Enter');"
-                    "    return 'Created folder: ' + name;"
-                    "  }"
-                    "  return 'Create folder manually: ' + name;"
-                    "}"
-                ),
-            },
+            arguments={"code": _playwright_create_folder_js(quarter_folder)},
             note=(
                 f"SharePoint path uses a quarter subfolder per release (e.g. **{quarter_folder}**). "
                 "Create it if the folder list does not show it yet."
             ),
             optional=True,
         ),
-        _step(
-            4,
-            "Open Upload menu",
-            mcp_tool="browser_run_code_unsafe",
-            arguments={
-                "code": (
-                    "async (page) => {"
-                    "  const upload = page.getByRole('button', { name: /upload/i }).first();"
-                    "  if (await upload.count()) { await upload.click(); return 'clicked Upload'; }"
-                    "  const menu = page.locator('[data-automationid=\"uploadCommand\"]').first();"
-                    "  if (await menu.count()) { await menu.click(); return 'clicked uploadCommand'; }"
-                    "  return 'Upload control not found — use snapshot and click Upload manually';"
-                    "}"
-                ),
-            },
-            note="If this fails, click **Upload → Files** manually from the snapshot.",
-            optional=True,
-        ),
-        _step(
-            5,
-            "Choose Files upload",
-            mcp_tool="browser_run_code_unsafe",
-            arguments={
-                "code": (
-                    "async (page) => {"
-                    "  const files = page.getByRole('menuitem', { name: /files/i }).first();"
-                    "  if (await files.count()) { await files.click(); return 'Files menu'; }"
-                    "  return 'Files menu not found';"
-                    "}"
-                ),
-            },
-            optional=True,
-        ),
-        _step(
-            6,
-            f"Upload {file_name}",
-            mcp_tool="browser_file_upload",
-            arguments={"paths": [abs_path]},
-            note=f"Select the generated DOCX: {abs_path}",
-        ),
-        _step(
-            7,
-            "Wait for upload to finish",
-            mcp_tool="browser_wait_for",
-            arguments={"text": file_name.replace(".docx", ""), "time": 120},
-            note="SharePoint may take a minute for large files.",
-        ),
-        _step(
-            8,
-            "Copy document link",
-            mcp_tool="browser_run_code_unsafe",
-            arguments={
-                "code": (
-                    "async (page) => {"
-                    f"  const row = page.getByText('{file_name}', {{ exact: false }}).first();"
-                    "  if (!(await row.count())) return 'File row not visible yet';"
-                    "  await row.click({ button: 'right' });"
-                    "  return 'Right-click the file → Copy link, or open file and copy browser URL';"
-                    "}"
-                ),
-            },
-            note=(
-                "Copy the SharePoint document URL (must contain abcfinancial.sharepoint.com). "
-                "Paste it in chat or say **sharepoint done <url>**."
-            ),
-        ),
     ]
-    order = 9
+    if month_enabled and month_folder:
+        steps.extend(
+            [
+                _step(
+                    4,
+                    f"Create month folder '{month_folder}' if missing",
+                    mcp_tool="browser_run_code_unsafe",
+                    arguments={"code": _playwright_create_folder_js(month_folder)},
+                    note=(
+                        f"Month folders (e.g. **{month_folder}**) live inside the quarter folder. "
+                        "Create the folder if it is not listed yet."
+                    ),
+                    optional=True,
+                ),
+                _step(
+                    5,
+                    f"Open month folder '{month_folder}'",
+                    mcp_tool="browser_run_code_unsafe",
+                    arguments={"code": _playwright_open_folder_js(month_folder)},
+                    note=f"Breadcrumb should end with **{month_folder}** before upload.",
+                ),
+                _step(
+                    6,
+                    "Snapshot month folder",
+                    mcp_tool="browser_snapshot",
+                    arguments={},
+                    note=f"Confirm you are in **{target_relative}** before uploading.",
+                ),
+            ]
+        )
+    else:
+        steps.append(
+            _step(
+                4,
+                "Confirm target folder",
+                mcp_tool="browser_snapshot",
+                arguments={},
+                note=f"Confirm you are in **{target_relative}** before uploading.",
+            )
+        )
+
+    upload_order_start = len(steps) + 1
+    steps.extend(
+        [
+            _step(
+                upload_order_start,
+                "Open Upload menu",
+                mcp_tool="browser_run_code_unsafe",
+                arguments={
+                    "code": (
+                        "async (page) => {"
+                        "  const upload = page.getByRole('button', { name: /upload/i }).first();"
+                        "  if (await upload.count()) { await upload.click(); return 'clicked Upload'; }"
+                        "  const create = page.getByRole('button', { name: /create or upload/i }).first();"
+                        "  if (await create.count()) { await create.click(); return 'opened Create or upload'; }"
+                        "  const menu = page.locator('[data-automationid=\"uploadCommand\"]').first();"
+                        "  if (await menu.count()) { await menu.click(); return 'clicked uploadCommand'; }"
+                        "  return 'Upload control not found — use snapshot and click Upload manually';"
+                        "}"
+                    ),
+                },
+                note="If this fails, click **Upload → Files** manually from the snapshot.",
+                optional=True,
+            ),
+            _step(
+                upload_order_start + 1,
+                "Choose Files upload",
+                mcp_tool="browser_run_code_unsafe",
+                arguments={
+                    "code": (
+                        "async (page) => {"
+                        "  const files = page.getByRole('menuitem', { name: /files/i }).first();"
+                        "  if (await files.count()) { await files.click(); return 'Files menu'; }"
+                        "  return 'Files menu not found';"
+                        "}"
+                    ),
+                },
+                optional=True,
+            ),
+            _step(
+                upload_order_start + 2,
+                f"Upload {file_name}",
+                mcp_tool="browser_file_upload",
+                arguments={"paths": [abs_path]},
+                note=f"Select the generated DOCX: {abs_path}",
+            ),
+            _step(
+                upload_order_start + 3,
+                "Wait for upload to finish",
+                mcp_tool="browser_wait_for",
+                arguments={"text": file_name.replace(".docx", ""), "time": 120},
+                note="SharePoint may take a minute for large files.",
+            ),
+            _step(
+                upload_order_start + 4,
+                "Copy document link",
+                mcp_tool="browser_run_code_unsafe",
+                arguments={
+                    "code": (
+                        "async (page) => {"
+                        f"  const row = page.getByText('{file_name}', {{ exact: false }}).first();"
+                        "  if (!(await row.count())) return 'File row not visible yet';"
+                        "  await row.click({ button: 'right' });"
+                        "  return 'Right-click the file → Copy link, or open file and copy browser URL';"
+                        "}"
+                    ),
+                },
+                note=(
+                    "Copy the SharePoint document URL (must contain abcfinancial.sharepoint.com). "
+                    "Paste it in chat or say **sharepoint done <url>**."
+                ),
+            ),
+        ]
+    )
+    order = upload_order_start + 5
     extras = extra_files or []
     extra_meta: list[dict[str, str]] = []
     for extra_path, extra_name in extras:
@@ -518,8 +634,9 @@ def build_sharepoint_upload_handoff(
         "delivery": "cursor_playwright_mcp",
         "mcp": playwright_mcp(),
         "instruction": (
-            "Execute each step below using **Playwright MCP**. The upload target is the "
-            f"**{quarter_folder}** quarter folder under your team's Release Notes library. "
+            "Execute each step below using **Playwright MCP**. The upload target is "
+            f"{path_hint} under your team's Release Notes library "
+            "(quarter folder, then month folder when enabled). "
             "Upload Release Notes and Client Release Notes to that same folder. "
             "When upload completes, paste both SharePoint document URLs in chat "
             "(or say **sharepoint done**)."
@@ -528,6 +645,7 @@ def build_sharepoint_upload_handoff(
         "remote_name": file_name,
         "extra_files": extra_meta,
         "quarter_folder": quarter_folder,
+        "month_folder": month_folder or None,
         "folder_relative_path": folder_relative,
         "folder_browse_url": folder_url,
         "completion": {

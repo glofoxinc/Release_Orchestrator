@@ -93,6 +93,36 @@ def test_sharepoint_playwright_handoff_steps():
     assert any("quarter folder" in (s.get("title") or "").lower() for s in handoff["steps"])
 
 
+def test_sharepoint_playwright_handoff_includes_month_folder(monkeypatch):
+    import config
+
+    monkeypatch.setattr(config, "BROWSER_AUTOMATION", {
+        "enabled": True,
+        "sharepoint": {
+            "enabled": True,
+            "hostname": "abcfinancial.sharepoint.com",
+            "site_path": "/teams/ABCFitnessSolutionsLLC-Glofox-Customize",
+            "folder_path": "Shared Documents/Glofox - Customize/Release Notes",
+            "auto_quarter_subfolder": True,
+            "auto_month_subfolder": True,
+        },
+    })
+    from browser_automation import build_sharepoint_upload_handoff
+
+    with tempfile.NamedTemporaryFile(suffix=".docx", delete=False) as tmp:
+        tmp.write(b"fake")
+        path = tmp.name
+    try:
+        handoff = build_sharepoint_upload_handoff(path, version_name="2026.4.11.16")
+    finally:
+        os.unlink(path)
+
+    assert handoff.get("month_folder") == "2026-11"
+    titles = [str(s.get("title") or "").lower() for s in handoff["steps"]]
+    assert any("month folder" in t for t in titles)
+    assert "2026-11" in handoff["folder_relative_path"]
+
+
 def test_playwright_slack_send_code_inserts_hyperlinks():
     from browser_automation import playwright_slack_send_code
 
