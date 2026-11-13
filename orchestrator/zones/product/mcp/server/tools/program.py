@@ -40,6 +40,38 @@ def train_program(program: str = "glofox", lock_env: bool = False) -> dict:
 
 
 @mcp.tool()
+def build_review_call_attendees(
+    ticket_keys: list[str] | None = None,
+    issues: list[dict] | None = None,
+    program_key: str | None = None,
+) -> dict:
+    """Build required/optional review invite list from program pack + ticket assignees.
+
+    Pass ``ticket_keys`` (Jira AN-xxxx) or pre-shaped ``issues`` rows with assignee_email.
+    Each attendee includes ``type``: required | optional.
+    """
+    import jira_client
+
+    rows = list(issues or [])
+    if ticket_keys:
+        for key in ticket_keys:
+            raw = jira_client.get_issue(key.strip())
+            rows.extend(pp.issue_rows_from_jira_issues([raw]))
+    people = pp.build_program_review_attendees(issues=rows, program_key=program_key)
+    required = [p for p in people if p.get("type") == "required"]
+    optional = [p for p in people if p.get("type") == "optional"]
+    return enrich_tool_response(
+        {
+            "ok": True,
+            "attendees": people,
+            "required_count": len(required),
+            "optional_count": len(optional),
+        },
+        tool="build_review_call_attendees",
+    )
+
+
+@mcp.tool()
 def switch_program(program: str) -> dict:
     """Switch RELEASE_PROGRAM. Untrained packs (Ignite/ETL) are blocked — no Glofox fallback.
 

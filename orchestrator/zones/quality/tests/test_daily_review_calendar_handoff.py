@@ -25,15 +25,18 @@ def test_build_handoff_shape():
         start_iso="2026-09-22T11:30:00+05:30",
         end_iso="2026-09-22T12:00:00+05:30",
         attendees=[
-            {"email": "a@abcfitness.com", "name": "A"},
-            {"email": "b@abcfitness.com", "name": "B"},
+            {"email": "a@abcfitness.com", "name": "A", "type": "required"},
+            {"email": "b@abcfitness.com", "name": "B", "type": "optional"},
         ],
+        body_text="Daily agenda",
     )
     assert handoff["ok"] is True
     assert handoff["delivery"] == "cursor_playwright_mcp"
     assert handoff["mcp"] == "playwright"
-    assert len(handoff["steps"]) >= 6
+    assert len(handoff["steps"]) >= 8
     assert handoff["meeting"]["attendees"] == ["a@abcfitness.com", "b@abcfitness.com"]
+    assert handoff.get("handoff_version")
+    assert any("optional" in (s.get("title") or "").lower() for s in handoff["steps"])
     assert "calendar done" in handoff["completion"]["user_phrases"]
 
 

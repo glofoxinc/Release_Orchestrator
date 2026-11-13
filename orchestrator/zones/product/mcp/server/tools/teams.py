@@ -127,7 +127,7 @@ def teams_playwright_handoff(
         subject: Optional subject (auto-built from kind/version when empty)
         end: Optional ISO end datetime
         timezone_name: IANA zone (default Asia/Kolkata)
-        attendees: Optional list of {email, name?}
+        attendees: Required for ``review``. List of {email, name?, type?: required|optional}
         body: Optional meeting body
         version: Release version for default subject
     """
@@ -143,6 +143,43 @@ def teams_playwright_handoff(
             version=version,
         ),
         tool="teams_playwright_handoff",
+    )
+
+
+@mcp.tool()
+def review_call_prepare(
+    ticket_keys: list[str],
+    start: str,
+    end: str | None = None,
+    timezone_name: str | None = None,
+    program_key: str | None = None,
+    subject: str = "",
+    body: str = "",
+) -> dict:
+    """Prepare a Glofox-style review call: Jira assignees → attendees, subject/body, Playwright handoff.
+
+    Preferred entry for ad-hoc ticket review (e.g. AN-5672). Not the same as ``dr_attendee_policy``.
+
+    Args:
+        ticket_keys: Jira keys (AN-xxxx)
+        start: ISO start datetime (include offset or use timezone_name)
+        end: ISO end (defaults to program review_call.duration_minutes, 30 for glofox)
+        timezone_name: IANA zone (default Asia/Kolkata)
+        program_key: glofox (default from RELEASE_PROGRAM)
+        subject: Override auto Review call MM/DD/YYYY
+        body: Override ticket-line agenda
+    """
+    return enrich_tool_response(
+        teams_ops.review_call_prepare(
+            ticket_keys=ticket_keys,
+            start=start,
+            end=end,
+            timezone_name=timezone_name,
+            program_key=program_key,
+            subject=subject,
+            body=body,
+        ),
+        tool="review_call_prepare",
     )
 
 

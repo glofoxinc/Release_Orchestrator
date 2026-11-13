@@ -257,6 +257,15 @@ During **`welcome onboard`**, **`crew done`** writes `TEAM_CREW_*` into `.env`. 
 
 **Preview before live run:** MCP **`daily_review_attendee_policy`** or **`daily_review_run_dry`** (includes `skipped_outside_squad` + `invite_policy`).
 
+### Ad-hoc Glofox ticket review call (Playwright)
+
+| Use | Do not use |
+|-----|------------|
+| **`review_call_prepare`** → Playwright steps → **calendar done** | `daily_review_run_live` / `dr_attendee_policy` (different pipeline) |
+| **`build_review_call_attendees`** + **`teams_playwright_handoff`** with explicit `attendees` | Omit `attendees` on review handoff (fail-closed) |
+
+See `orchestrator/zones/knowledge/guides/REVIEW_CALL_PLAYWRIGHT.md`.
+
 **Exclude someone permanently:** **`crew exclude email@abcfitness.com`** during onboarding.
 
 ### Every release (minimal phrases)

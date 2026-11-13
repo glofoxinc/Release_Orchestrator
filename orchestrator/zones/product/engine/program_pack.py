@@ -7,6 +7,7 @@ review-call rules, SharePoint, and Slack from one pack never fill another.
 from __future__ import annotations
 
 import os
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
@@ -52,6 +53,141 @@ def load_program(key: str | None = None) -> dict[str, Any]:
     data["program"] = pack_key
     data["pack_path"] = str(path)
     return data
+
+
+def _crew_rows(pack: dict[str, Any], group: str) -> list[dict[str, Any]]:
+    rows = ((pack.get("crew") or {}).get(group)) or []
+    out: list[dict[str, Any]] = []
+    for item in rows:
+        if isinstance(item, dict):
+            out.append(item)
+    return out
+
+
+def _exclude_emails(pack: dict[str, Any]) -> set[str]:
+    emails: set[str] = set()
+    for row in _crew_rows(pack, "exclude"):
+        em = str(row.get("email") or "").strip().lower()
+        if em:
+            emails.add(em)
+    return emails
+
+
+def _issue_assignee(issue: dict[str, Any]) -> tuple[str, str]:
+    assignee = issue.get("assignee")
+    if isinstance(assignee, dict):
+        name = str(assignee.get("displayName") or assignee.get("name") or "").strip()
+        email = str(
+            assignee.get("emailAddress") or assignee.get("email") or ""
+        ).strip()
+        return name, email
+    name = str(issue.get("assignee") or issue.get("assignee_name") or "").strip()
+    email = str(issue.get("assignee_email") or issue.get("email") or "").strip()
+    return name, email
+
+
+def build_program_review_attendees(
+    issues: list[dict[str, Any]] | None = None,
+    program_key: str | None = None,
+) -> list[dict[str, str]]:
+    """Glofox-style review invite: leadership + QA + ticket owners required; squad optional."""
+    pack = load_program(program_key)
+    exclude = _exclude_emails(pack)
+    attendees: list[dict[str, str]] = []
+    seen: set[str] = set()
+
+    def add(email: str, name: str = "", invite_type: str = "required") -> None:
+        norm = email.strip().lower()
+        if not norm or norm in exclude or norm in seen:
+            return
+        seen.add(norm)
+        row: dict[str, str] = {"email": email.strip(), "type": invite_type}
+        if name.strip():
+            row["name"] = name.strip()
+        attendees.append(row)
+
+    for row in _crew_rows(pack, "leadership") + _crew_rows(pack, "qa"):
+        add(str(row.get("email") or ""), str(row.get("name") or ""), "required")
+
+    for issue in issues or []:
+        name, email = _issue_assignee(issue)
+        add(email, name, "required")
+
+    for row in _crew_rows(pack, "squad"):
+        name = str(row.get("name") or "").strip()
+        email = str(row.get("email") or "").strip()
+        if not email:
+            continue
+        if "rekha" in name.lower():
+            add(email, name, "required")
+        else:
+            add(email, name, "optional")
+
+    for row in _crew_rows(pack, "optional"):
+        add(str(row.get("email") or ""), str(row.get("name") or ""), "optional")
+
+    return attendees
+
+
+def issue_rows_from_jira_issues(jira_issues: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Normalize Jira REST issues for build_program_review_attendees."""
+    rows: list[dict[str, Any]] = []
+    for raw in jira_issues:
+        fields = raw.get("fields") or {}
+        assignee = fields.get("assignee") or {}
+        key = str(raw.get("key") or "").strip()
+        summary = str(fields.get("summary") or "").strip()
+        rows.append(
+            {
+                "key": key,
+                "summary": summary,
+                "assignee": str(assignee.get("displayName") or ""),
+                "assignee_email": str(assignee.get("emailAddress") or ""),
+            }
+        )
+    return rows
+
+
+def build_review_call_subject(start: datetime, *, timezone_name: str = "Asia/Kolkata") -> str:
+    """US-style subject date to match Glofox review call convention (Review call MM/DD/YYYY)."""
+    from zoneinfo import ZoneInfo
+
+    dt = start
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=ZoneInfo(timezone_name))
+    local = dt.astimezone(ZoneInfo(timezone_name))
+    return f"Review call {local.strftime('%m/%d/%Y')}"
+
+
+def build_review_call_body(
+    issues: list[dict[str, Any]],
+    start: datetime,
+    end: datetime,
+    *,
+    timezone_name: str = "Asia/Kolkata",
+    jira_site: str = "https://abcfinancial.atlassian.net/browse",
+) -> str:
+    """Ticket-only agenda body for Glofox ad-hoc review calls."""
+    from zoneinfo import ZoneInfo
+
+    start_l = start if start.tzinfo else start.replace(tzinfo=ZoneInfo(timezone_name))
+    end_l = end if end.tzinfo else end.replace(tzinfo=ZoneInfo(timezone_name))
+    start_l = start_l.astimezone(ZoneInfo(timezone_name))
+    end_l = end_l.astimezone(ZoneInfo(timezone_name))
+    tz_label = "IST" if timezone_name == "Asia/Kolkata" else timezone_name
+    st = start_l.strftime("%I:%M %p").lstrip("0")
+    et = end_l.strftime("%I:%M %p").lstrip("0")
+    header = (
+        f"Glofox release review — {start_l.day} {start_l.strftime('%b %Y')}, "
+        f"{st}–{et} {tz_label}"
+    )
+    lines = [header, ""]
+    for issue in issues:
+        key = str(issue.get("key") or "").strip()
+        name = str(issue.get("assignee") or issue.get("assignee_name") or "").strip()
+        if key:
+            lines.append(f"{key} — {jira_site}/{key} — {name}")
+    return "\n".join(lines).strip()
 
 
 def crew_names(pack: dict[str, Any], group: str) -> list[str]:

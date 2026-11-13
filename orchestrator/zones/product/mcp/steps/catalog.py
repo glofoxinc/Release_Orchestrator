@@ -93,9 +93,11 @@ RELEASE_STEPS: tuple[dict[str, Any], ...] = (
         "title": "Teams / Outlook meeting (optional)",
         "user_phrases": ["schedule review call", "calendar done"],
         "mcp_tools": [
+            "review_call_prepare",
             "teams_playwright_handoff",
             "teams_schedule_meeting",
             "teams_schedule_status",
+            "build_review_call_attendees",
             "browser_automation_status",
         ],
         "required_mcps": ["release-orchestrator", "playwright"],

@@ -15,6 +15,8 @@ isolation:
 
 review_call:
   kind: review
+  duration_minutes: 30
+  single_send_required: true
   standing_review_crew: []
   standing_release_crew: []
   required_roles:
@@ -48,11 +50,15 @@ crew:
       email: "lakshminarasimhanaidu.yalamarti@abcfitness.com"
     - name: "Chanti Kumar Jakkula"
       email: "chantikumar.jakkula@abcfitness.com"
-    - name: "Rekha"
+    - name: "Rekha Pavani Kancharla"
+      email: "rekhapavani.kancharla@abcfitness.com"
     - name: "Mona"
+      email: "ramugalla.monasujitha@abcfitness.com"
     - name: "Navya"
     - name: "Nikhath"
-    - name: "Bharathi"
+      email: "nikhath.begum@abcfitness.com"
+    - name: "Bharathi Aribolu"
+      email: "bharathi.aribolu@abcfitness.com"
   leadership:
     - name: "Sushma Bhamidipati"
       email: "VenkataSuryaNagaSushma.Bhamidipati@abcfitness.com"

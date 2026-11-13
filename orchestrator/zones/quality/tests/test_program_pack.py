@@ -11,7 +11,7 @@ def test_glofox_pack_is_trained_with_review_call_roles():
     assert pack["projects"] == ["PIC", "AN"]
     names = set(pp.crew_names(pack, "squad"))
     assert "Lakshmi Narasimha" in names
-    assert "Rekha" in names
+    assert any("Rekha" in n for n in names)
     qa = set(pp.crew_names(pack, "qa"))
     assert "Akhil Sree Kumar" in qa
     assert "Nikhila Sree Ramisetti" in qa
@@ -52,6 +52,21 @@ def test_train_ignite_refuses_copy():
     assert out["ok"] is False
     assert out["clash_prevented"] is True
     assert "glofox.yaml" in out["error"].lower() or "do not copy" in out["error"].lower()
+
+
+def test_build_glofox_review_attendees_required_and_optional():
+    people = pp.build_program_review_attendees(
+        issues=[{"assignee_email": "navyasri.kalla@abcfitness.com", "assignee": "Navyasri Kalla"}],
+        program_key="glofox",
+    )
+    by_email = {p["email"].lower(): p["type"] for p in people}
+    assert by_email["venkatasuryanagasushma.bhamidipati@abcfitness.com"] == "required"
+    assert by_email["akhil.sreekumar@abcfitness.com"] == "required"
+    assert by_email["rekhapavani.kancharla@abcfitness.com"] == "required"
+    assert by_email["navyasri.kalla@abcfitness.com"] == "required"
+    assert by_email["chantikumar.jakkula@abcfitness.com"] == "optional"
+    assert by_email["saianirudh.karre@abcfitness.com"] == "optional"
+    assert "gabriel.barbosa@abcfitness.com" not in by_email
 
 
 def test_train_glofox_returns_full_context():
