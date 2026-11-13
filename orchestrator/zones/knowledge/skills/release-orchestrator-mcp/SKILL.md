@@ -523,7 +523,7 @@ Set `inputs.workflow_mode` on `release_wizard(action="start", ...)`:
 | `validate_service_ticket` | Draft validation |
 | `team_scope_status` | Team JQL scope preflight |
 | `browser_automation_status` | Playwright + Slack MCP setup readiness |
-| `sharepoint_playwright_handoff` | Step-by-step Playwright upload playbook |
+| `sharepoint_playwright_handoff` | Playwright upload — opens **quarter** folder, creates/opens **`YYYY-MM` month** subfolder when `auto_month_subfolder` is on, then uploads |
 | `slack_playwright_handoff` | Playwright post to both Slack channels (fallback) |
 
 ### Gates / recovery
