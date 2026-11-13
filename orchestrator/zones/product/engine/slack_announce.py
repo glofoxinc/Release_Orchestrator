@@ -531,6 +531,94 @@ def format_ticket_mix_line(extracted: list[dict[str, Any]] | None) -> str:
     return " | ".join(parts)
 
 
+def normalize_extracted_rows(extracted: list[dict[str, Any]] | None) -> list[dict[str, Any]]:
+    """Accept ``ticket`` or ``key`` on each row for mix-line counts."""
+    rows: list[dict[str, Any]] = []
+    for raw in extracted or []:
+        row = dict(raw)
+        if not str(row.get("ticket") or "").strip() and str(row.get("key") or "").strip():
+            row["ticket"] = str(row["key"]).strip()
+        rows.append(row)
+    return rows
+
+
+def enrich_extracted_labels_for_slack(
+    extracted: list[dict[str, Any]] | None,
+) -> list[dict[str, Any]]:
+    """Fill missing Jira ``labels`` on extracted rows when REST credentials work."""
+    rows = normalize_extracted_rows(extracted)
+    if not rows:
+        return []
+    missing = [
+        str(r.get("ticket") or "").strip().upper()
+        for r in rows
+        if str(r.get("ticket") or "").strip() and not _entry_labels(r)
+    ]
+    if not missing:
+        return rows
+    try:
+        import jira_client
+    except Exception:  # noqa: BLE001
+        return rows
+
+    labels_by_key: dict[str, list[str]] = {}
+    try:
+        for key in missing:
+            issue = jira_client.get_issue(key)
+            fields = issue.get("fields") or {}
+            labels_by_key[key] = [
+                str(label).strip()
+                for label in (fields.get("labels") or [])
+                if str(label).strip()
+            ]
+    except Exception:  # noqa: BLE001
+        return rows
+
+    enriched: list[dict[str, Any]] = []
+    for row in rows:
+        copy = dict(row)
+        key = str(copy.get("ticket") or "").strip().upper()
+        if key in labels_by_key and not _entry_labels(copy):
+            copy["labels"] = labels_by_key[key]
+        enriched.append(copy)
+    return enriched
+
+
+def build_announce_manual_paste(
+    draft: SlackAnnounceDraft,
+    channel: SlackChannelTarget,
+) -> str:
+    """Plain text for manual Slack paste — full URLs, no mrkdwn angle-bracket links."""
+    from sharepoint_url import sharepoint_document_open_url
+
+    day = format_deploy_day(draft.deploy_date)
+    lines = [
+        "Hello Team,",
+        f"Our upcoming deployment is scheduled for {day}.",
+        "Deployment notes and the deployment ticket are below for reference:",
+        "",
+    ]
+    mix = (draft.ticket_mix_line or "").strip()
+    if mix:
+        lines.append(mix)
+    sp_raw = (draft.sharepoint_url or draft.sharepoint_download_url or "").strip()
+    sp_url = (sharepoint_document_open_url(sp_raw) or sp_raw).strip()
+    if sp_url:
+        lines.append(f"SharePoint — Release Notes: {sp_url}")
+    client_raw = (draft.client_sharepoint_url or "").strip()
+    client_url = (sharepoint_document_open_url(client_raw) or client_raw).strip()
+    if client_url:
+        lines.append(f"SharePoint — Client Notes: {client_url}")
+    folder_url = (draft.sharepoint_folder_url or "").strip()
+    if folder_url:
+        lines.append(f"SharePoint — Folder: {folder_url}")
+    shipit_url = (draft.ticket_url or "").strip()
+    if shipit_url:
+        lines.append(f"SHIPIT ticket: {shipit_url}")
+    lines.append(format_cc_line(channel, for_preview=True))
+    return "\n".join(lines)
+
+
 def format_ticket_mix_display(
     draft: SlackAnnounceDraft,
     *,
@@ -1010,8 +1098,11 @@ __all__ = [
     "SlackChannelTarget",
     "SlackPreflightResult",
     "SlackSendResult",
+    "build_announce_manual_paste",
     "build_announce_text",
     "build_channel_messages",
+    "enrich_extracted_labels_for_slack",
+    "normalize_extracted_rows",
     "default_cc_people",
     "default_channels",
     "deployer_slack_gate_open",

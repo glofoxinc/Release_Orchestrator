@@ -55,7 +55,9 @@ def slack_preview(
         environments: Environment label in the message body
         edits: Optional per-channel body overrides keyed by channel key/name
         client_sharepoint_url: Optional Client Release Notes SharePoint link
-        extracted: Optional PIC/AN ticket dicts with ``labels`` for the bold mix line
+        extracted: Optional PIC/AN ticket dicts with ``labels`` (or ``ticket``/``key`` only —
+        labels fetched from Jira when REST works). Response includes ``manual_paste`` per
+        channel: full URLs for operator copy-paste into Slack.
     """
     preview = slack_ops.build_slack_preview(
         ticket_key=ticket_key,

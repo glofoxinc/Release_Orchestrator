@@ -10,8 +10,10 @@ from integration_archive import archived_response, is_archived
 from slack_announce import (
     SlackChannelMessage,
     SlackChannelTarget,
+    build_announce_manual_paste,
     build_channel_messages,
     draft_from_session,
+    enrich_extracted_labels_for_slack,
     ensure_canonical_cc,
     load_announce_config,
     send_announce_messages,
@@ -35,6 +37,7 @@ def build_slack_preview(
     if is_archived("slack_announce"):
         return archived_response("slack_announce")
     parsed_date = date.fromisoformat(deploy_date)
+    extracted = enrich_extracted_labels_for_slack(extracted)
     draft = draft_from_session(
         ticket_key=ticket_key,
         summary=summary,
@@ -51,8 +54,11 @@ def build_slack_preview(
     issues = validate_announce_config(cfg)
     import browser_automation
 
+    manual_paste_by_channel: dict[str, str] = {}
     channel_payloads = []
     for message in messages:
+        manual = build_announce_manual_paste(draft, message.channel)
+        manual_paste_by_channel[message.channel.key] = manual
         channel_payloads.append(
             {
                 "key": message.channel.key,
@@ -60,6 +66,7 @@ def build_slack_preview(
                 "channel_id": message.channel.channel_id,
                 "preview": message.preview,
                 "text": message.text,
+                "manual_paste": manual,
                 "cc": [
                     {
                         "name": person.name,
@@ -95,6 +102,10 @@ def build_slack_preview(
             "ticket_mix_line": draft.ticket_mix_line,
         },
         "channels": channel_payloads,
+        "manual_paste": manual_paste_by_channel,
+        "manual_paste_hint": (
+            "Copy channels[].manual_paste into Slack; bold the label mix line after paste."
+        ),
     }
 
 

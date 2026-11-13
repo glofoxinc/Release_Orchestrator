@@ -294,7 +294,7 @@ Per-step MCP helpers: **`release_step_status`** (full map), **`release_step_slac
 7. Step 3 release notes → agent shows **Ready for Release** ticket list → **`create release notes`** or **`yes`** — generates DOCX **and auto-starts SharePoint upload** (Playwright)
 8. Step 4 SharePoint → complete browser upload → **`sharepoint done`** + paste URL (or agent captures link)
 9. Step 5 SHIPIT → review dry-run + `cab_quality` → **`create shipit`** or **`yes`** — creates live ticket **and auto-starts Slack**
-10. Step 6 Slack → complete Playwright post to squad + buddies → **`slack done`**
+10. Step 6 Slack → `slack_preview` → copy **`channels[].manual_paste`** (full URLs + label mix line) into each channel → **`slack done`**
 11. Step 7 deploy → **`yes`** after preview
 12. Step 8 mark released → **`yes`** or skip
 

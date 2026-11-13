@@ -427,6 +427,37 @@ def test_ticket_mix_line_from_labels():
     assert "Service Desk:" not in preview
 
 
+def test_manual_paste_uses_full_urls_and_plain_mix_line():
+    draft = sa.SlackAnnounceDraft(
+        ticket_key="SHIPIT-20884",
+        ticket_summary="Glofox Insights Customize BI - Prod Deployment - Release Version 2026.4.11.16",
+        ticket_url="https://abcfinancial.atlassian.net/browse/SHIPIT-20884",
+        version="v2026.4.11.16",
+        deploy_date=date(2026, 11, 16),
+        sharepoint_url="https://sp.example/Release%20Notes.docx",
+        client_sharepoint_url="https://sp.example/Client.docx",
+        sharepoint_folder_url="https://sp.example/folder",
+        ticket_mix_line="Total 2 | Report Enhancement - 2",
+    )
+    squad, _buddies = sa.build_channel_messages(draft)
+    body = sa.build_announce_manual_paste(draft, squad.channel)
+    assert "Hello Team," in body
+    assert "Total 2 | Report Enhancement - 2" in body
+    assert "<https://" not in body
+    assert "SharePoint — Release Notes: https://sp.example/Release%20Notes.docx" in body
+    assert "SharePoint — Client Notes: https://sp.example/Client.docx" in body
+    assert "SharePoint — Folder: https://sp.example/folder" in body
+    assert "SHIPIT ticket: https://abcfinancial.atlassian.net/browse/SHIPIT-20884" in body
+    assert body.startswith("Hello Team,")
+    assert "CC: @" in body or "CC: @Sushma" in body
+
+
+def test_normalize_extracted_accepts_key_alias():
+    rows = sa.normalize_extracted_rows([{"key": "PIC-1", "labels": ["X"]}])
+    assert rows[0]["ticket"] == "PIC-1"
+    assert sa.format_ticket_mix_line(rows) == "Total 1 | X - 1"
+
+
 def test_ticket_mix_shows_every_jira_label():
     extracted = [
         {"ticket": "PIC-1", "labels": ["Report_Enhancement", "KPI-Forge"]},
